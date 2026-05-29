@@ -24,4 +24,6 @@ Design rules:
 - Keep VNC localhost-only by default.
 - Treat graphics acceleration, audio, boot autostart, wake locks, and LAN
   exposure as separate gates.
-
+- Full desktop recipes should remain opt-in lab sessions with explicit
+  start/status/stop/cleanup checks. A working desktop does not make Termux a
+  HOME surface, broker authority, watchdog, or product dependency.

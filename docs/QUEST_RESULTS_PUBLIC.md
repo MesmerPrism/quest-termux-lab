@@ -12,17 +12,23 @@ private paths, serials, screenshots, package identities, and project names.
 - Pointer behavior can depend on Quest focus/click capture rather than hover.
 - Proot can be useful for CLI tools and small GUI clients, but compatibility is
   package-specific.
+- A full XFCE desktop can be launched as a lab sidecar through Termux:X11, and
+  a Proot-hosted XFCE session can render through the same display path.
+- A Proot-hosted terminal window can run ordinary Linux userland commands
+  inside the desktop session.
 - Host-visible VNC capture can work through localhost/ADB forwarding when the
   VNC server is configured to avoid shared-memory paths that Android blocks.
 - VNC mirrors the X display; it does not fix headset-side panel geometry.
+- Full-desktop evidence may be clearer through VNC than through the headset's
+  Android panel screenshot path, which can show a black panel while the X root
+  is alive.
 
 ## Still Open
 
 - Robust desktop-size geometry.
 - Text-heavy terminal or editor ergonomics.
-- Full desktop environments.
+- Full desktop performance and long-session stability.
 - Wake-lock behavior without external guard conditions.
 - Termux:Boot behavior after reboot.
 - Graphics acceleration and renderer classification.
 - Audio and remote shell services.
-

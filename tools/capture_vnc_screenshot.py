@@ -58,20 +58,26 @@ def capture(host: str, port: int, output: Path, timeout: float) -> tuple[int, in
 
         sock.sendall(b"\x01")
         width, height = struct.unpack(">HH", read_exact(sock, 4))
-        pixel_format = read_exact(sock, 16)
+        _server_pixel_format = read_exact(sock, 16)
         name_len = struct.unpack(">I", read_exact(sock, 4))[0]
         _name = read_exact(sock, name_len)
 
-        bits_per_pixel = pixel_format[0]
-        depth = pixel_format[1]
-        big_endian = pixel_format[2]
-        true_color = pixel_format[3]
-        if bits_per_pixel != 32 or depth not in (24, 32) or big_endian != 0 or true_color != 1:
-            raise RuntimeError(
-                "unsupported pixel format "
-                f"bpp={bits_per_pixel} depth={depth} big_endian={big_endian} true_color={true_color}"
-            )
-
+        # Request a narrow client-side format instead of trusting each VNC
+        # server's default. Some x11vnc builds report true_color as 255.
+        pixel_format = struct.pack(
+            ">BBBBHHHBBBxxx",
+            32,
+            24,
+            0,
+            1,
+            255,
+            255,
+            255,
+            16,
+            8,
+            0,
+        )
+        sock.sendall(b"\x00\x00\x00\x00" + pixel_format)
         sock.sendall(struct.pack(">BBH", 2, 0, 1) + struct.pack(">i", 0))
         sock.sendall(struct.pack(">B?HHHH", 3, False, 0, 0, width, height))
 
@@ -130,4 +136,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
