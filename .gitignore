@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+
+# Local evidence and device output.
+runs/
+artifacts/
+captures/
+logs/
+*.log
+*.png
+*.jpg
+*.jpeg
+*.mp4
+
+# Local configuration.
+.env
+.vscode/
+.idea/
+

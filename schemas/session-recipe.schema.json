@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/session-recipe.schema.json",
+  "title": "Quest Termux Lab Session Recipe",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "purpose",
+    "authority_boundary",
+    "preflight",
+    "start",
+    "status",
+    "stop",
+    "cleanup",
+    "evidence",
+    "risks"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.session-recipe.v1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{2,80}$"
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authority_boundary": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "preflight": {
+      "$ref": "#/$defs/stepList"
+    },
+    "start": {
+      "$ref": "#/$defs/stepList"
+    },
+    "status": {
+      "$ref": "#/$defs/stepList"
+    },
+    "stop": {
+      "$ref": "#/$defs/stepList"
+    },
+    "cleanup": {
+      "$ref": "#/$defs/stepList"
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["risk", "recovery"],
+        "properties": {
+          "risk": { "type": "string", "minLength": 1 },
+          "recovery": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "stepList": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "command", "operator_visible"],
+        "properties": {
+          "label": { "type": "string", "minLength": 1 },
+          "command": { "type": "string", "minLength": 1 },
+          "operator_visible": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}
+

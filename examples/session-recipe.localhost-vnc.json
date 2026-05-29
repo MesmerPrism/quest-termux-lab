@@ -1,0 +1,81 @@
+{
+  "schema": "quest-termux-lab.session-recipe.v1",
+  "id": "termux_x11_localhost_vnc",
+  "purpose": "Expose an already-running Termux:X11 display to the host for bounded evidence capture through localhost forwarding.",
+  "authority_boundary": [
+    "Does not replace HOME",
+    "Does not grant Android shell identity",
+    "Does not expose LAN VNC by default",
+    "Does not own XR runtime state"
+  ],
+  "preflight": [
+    {
+      "label": "Confirm X11 display",
+      "command": "pgrep -f 'termux-x11 .*:1'",
+      "operator_visible": false
+    }
+  ],
+  "start": [
+    {
+      "label": "Start localhost VNC",
+      "command": "DISPLAY=:1 x11vnc -display :1 -localhost -nopw -forever -shared -noshm -noxdamage -rfbport 5901",
+      "operator_visible": false
+    },
+    {
+      "label": "Forward host port",
+      "command": "adb forward tcp:15901 tcp:5901",
+      "operator_visible": false
+    }
+  ],
+  "status": [
+    {
+      "label": "Check listener",
+      "command": "ss -ltnp | grep 5901",
+      "operator_visible": false
+    }
+  ],
+  "stop": [
+    {
+      "label": "Stop VNC",
+      "command": "pkill x11vnc",
+      "operator_visible": false
+    },
+    {
+      "label": "Remove forward",
+      "command": "adb forward --remove tcp:15901",
+      "operator_visible": false
+    }
+  ],
+  "cleanup": [
+    {
+      "label": "Verify no VNC listener",
+      "command": "ss -ltnp | grep 5901 || true",
+      "operator_visible": false
+    },
+    {
+      "label": "Verify host forwards",
+      "command": "adb forward --list",
+      "operator_visible": false
+    }
+  ],
+  "evidence": [
+    "VNC startup transcript",
+    "ADB forward list",
+    "Host-side screenshot",
+    "Cleanup listener and forward snapshot"
+  ],
+  "risks": [
+    {
+      "risk": "VNC can expose the display if bound beyond localhost.",
+      "recovery": "Keep localhost binding and remove the host forward after capture."
+    },
+    {
+      "risk": "Shared-memory framebuffer paths may fail on Android.",
+      "recovery": "Use the no-shared-memory mode and record the exact server flags."
+    }
+  ],
+  "notes": [
+    "This recipe is for evidence capture. It is not a remote desktop product mode."
+  ]
+}
+
