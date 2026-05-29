@@ -15,6 +15,11 @@ Keep committed content portable and sanitized:
   SELinux changes, ADB authorization bypasses, hidden boot daemons, or default
   LAN VNC exposure.
 - Prefer schemas, runbooks, and synthetic fixtures over real device artifacts.
+- For live Quest builds, installs, launches, screenshots, logcat, ADB
+  forwarding, or headset-visible validation, use the public
+  `meta-quest-workflow` skill/workflow first. This repository owns the
+  Termux/Linux sidecar recipes; the Meta Quest workflow owns device-operation
+  discipline.
 
 Before committing, run:
 
@@ -22,4 +27,3 @@ Before committing, run:
 python tools/check_public_boundary.py --repo-root .
 python -m py_compile tools/capture_vnc_screenshot.py tools/check_public_boundary.py
 ```
-

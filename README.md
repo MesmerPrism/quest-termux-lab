@@ -16,6 +16,21 @@ inform downstream XR tools.
 - Public-safe runbooks for capability testing and cleanup.
 - Small host-side helper tools that do not require private project state.
 
+## Workflow Pairing
+
+Use this repository for Termux/Linux sidecar recipes and sanitized evidence
+models. For live headset work, use the public `meta-quest-workflow` skill or
+the equivalent team workflow before touching ADB, installing APKs, launching
+apps, taking screenshots, collecting logcat, forwarding ports, or relying on
+headset-visible state.
+
+The split is intentional:
+
+- `meta-quest-workflow`: device-operation discipline, provider choice,
+  readiness checks, capture semantics, and cleanup gates.
+- `quest-termux-lab`: Termux, Termux:X11, Proot, local dashboard, and VNC
+  sidecar recipes that remain normal Android app workflows.
+
 ## Non-Goals
 
 - No root, Magisk, bootloader unlock, SELinux changes, or device-owner policy.
@@ -41,6 +56,9 @@ this repository unless license obligations are reviewed.
 
 ## Recommended Test Order
 
+0. Activate the Meta Quest workflow for live headset operations and reserve or
+   coordinate any shared device, ADB, build, capture, or port resources through
+   your team's normal process.
 1. Baseline: record device model, Android version, focused surface, package
    state, and recovery route.
 2. Termux CLI: verify app UID, package updates, bounded child processes, and
@@ -60,4 +78,3 @@ this repository unless license obligations are reviewed.
 python tools/check_public_boundary.py --repo-root .
 python -m py_compile tools/capture_vnc_screenshot.py tools/check_public_boundary.py
 ```
-

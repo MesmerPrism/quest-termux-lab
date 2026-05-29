@@ -4,6 +4,11 @@ Termux on Quest is a normal Android application. This repository treats it as
 a lab sidecar that can run userland tools, display X11 clients, and expose
 operator-approved local diagnostics.
 
+Use the public `meta-quest-workflow` skill or an equivalent team workflow for
+live headset operations such as ADB, APK install/launch, screenshots, logcat,
+port forwarding, capture, and readiness checks. This repository describes the
+Termux sidecar layer; it does not replace device-operation discipline.
+
 It is not:
 
 - Android `shell`
@@ -43,4 +48,3 @@ Use synthetic fixtures and redacted examples instead.
 Screen-on does not always mean XR-ready. After reboot or sleep, verify display,
 tracking, controller/hand input, foreground surface, and camera availability
 before interpreting app failures as meaningful evidence.
-
