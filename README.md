@@ -15,8 +15,8 @@ inform downstream XR tools.
 - Synthetic examples for Termux:X11, Proot, and localhost VNC flows.
 - Public-safe runbooks for capability testing and cleanup.
 - Small host-side helper tools that do not require private project state.
-- Localhost-only host helpers for VNC screenshots and browser-readable MJPEG
-  streams.
+- Localhost-only host helpers for VNC screenshots, direct stream frame pulls,
+  and browser-readable MJPEG streams.
 
 ## Workflow Pairing
 
@@ -70,8 +70,8 @@ this repository unless license obligations are reviewed.
    visible and stoppable.
 5. Local dashboard: bind to device localhost and consume through an explicit
    host forward.
-6. VNC: keep it localhost-only or ADB-forwarded, record screenshot or live
-   stream evidence, then stop it.
+6. VNC: keep it localhost-only or ADB-forwarded, record direct screenshot or
+   live stream endpoint evidence, then stop it.
 7. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
    treat each as a separate high-risk gate.
 

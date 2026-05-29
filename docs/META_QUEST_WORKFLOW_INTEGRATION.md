@@ -27,6 +27,20 @@ proximity state unless the test explicitly changes it, and verify cleanup.
 | Raw device evidence and private artifacts | Local/private workspace, not this repo |
 | Public reusable findings | Sanitized docs, schemas, and synthetic fixtures in this repo |
 
+## Capture Labeling
+
+For Termux/X11 desktop work, label three evidence routes separately:
+
+- X-root evidence: direct localhost/ADB-forwarded VNC screenshots or MJPEG
+  frame/status endpoints.
+- Headset display evidence: ADB or headset-provider screencaps of the Quest
+  panel/compositor view.
+- Human observer evidence: visible browser, cast, or desktop-window captures.
+
+Prefer direct X-root frame/status pulls for automated VNC stream evidence.
+Use headset display evidence only when the question is whether the Quest panel
+itself is presenting the X content.
+
 ## Practical Start
 
 1. Confirm the headset is authorized for ADB and in a meaningful ready state.
@@ -36,4 +50,3 @@ proximity state unless the test explicitly changes it, and verify cleanup.
 4. Stop the sidecar process or server.
 5. Remove any ADB forward.
 6. Record cleanup evidence before interpreting the result.
-
