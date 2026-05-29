@@ -112,7 +112,10 @@ def capture(host: str, port: int, output: Path, timeout: float) -> tuple[int, in
         rgba[index + 3] = 255
 
     output.parent.mkdir(parents=True, exist_ok=True)
-    Image.frombytes("RGBA", (width, height), bytes(rgba)).save(output)
+    image = Image.frombytes("RGBA", (width, height), bytes(rgba))
+    if output.suffix.lower() in {".jpg", ".jpeg"}:
+        image = image.convert("RGB")
+    image.save(output)
     return width, height
 
 

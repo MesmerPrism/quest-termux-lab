@@ -15,6 +15,8 @@ inform downstream XR tools.
 - Synthetic examples for Termux:X11, Proot, and localhost VNC flows.
 - Public-safe runbooks for capability testing and cleanup.
 - Small host-side helper tools that do not require private project state.
+- Localhost-only host helpers for VNC screenshots and browser-readable MJPEG
+  streams.
 
 ## Workflow Pairing
 
@@ -68,7 +70,8 @@ this repository unless license obligations are reviewed.
    visible and stoppable.
 5. Local dashboard: bind to device localhost and consume through an explicit
    host forward.
-6. VNC: keep it localhost-only or ADB-forwarded, record evidence, then stop it.
+6. VNC: keep it localhost-only or ADB-forwarded, record screenshot or live
+   stream evidence, then stop it.
 7. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
    treat each as a separate high-risk gate.
 
@@ -76,5 +79,5 @@ this repository unless license obligations are reviewed.
 
 ```powershell
 python tools/check_public_boundary.py --repo-root .
-python -m py_compile tools/capture_vnc_screenshot.py tools/check_public_boundary.py
+python -m py_compile tools/capture_vnc_screenshot.py tools/stream_vnc_mjpeg.py tools/check_public_boundary.py
 ```

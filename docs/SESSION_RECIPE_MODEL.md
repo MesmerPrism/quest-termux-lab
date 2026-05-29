@@ -22,6 +22,9 @@ Design rules:
 - Prefer small recipes over full desktop bootstrap scripts.
 - Treat Proot app launchers as inventory records before generating wrappers.
 - Keep VNC localhost-only by default.
+- Treat live VNC streams as observation-only browser views. Recipes must record
+  the forwarded port, local stream port, process id, status endpoint, and stop
+  steps.
 - Treat graphics acceleration, audio, boot autostart, wake locks, and LAN
   exposure as separate gates.
 - Full desktop recipes should remain opt-in lab sessions with explicit

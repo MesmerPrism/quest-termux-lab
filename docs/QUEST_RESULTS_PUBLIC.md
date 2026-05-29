@@ -18,6 +18,8 @@ private paths, serials, screenshots, package identities, and project names.
   inside the desktop session.
 - Host-visible VNC capture can work through localhost/ADB forwarding when the
   VNC server is configured to avoid shared-memory paths that Android blocks.
+- Host-visible VNC can also be bridged into a local browser MJPEG stream for
+  continuous observation instead of one-off screenshot capture.
 - VNC mirrors the X display; it does not fix headset-side panel geometry.
 - Full-desktop evidence may be clearer through VNC than through the headset's
   Android panel screenshot path, which can show a black panel while the X root
@@ -28,6 +30,7 @@ private paths, serials, screenshots, package identities, and project names.
 - Robust desktop-size geometry.
 - Text-heavy terminal or editor ergonomics.
 - Full desktop performance and long-session stability.
+- Live stream frame rate, latency, and CPU cost across longer sessions.
 - Wake-lock behavior without external guard conditions.
 - Termux:Boot behavior after reboot.
 - Graphics acceleration and renderer classification.
