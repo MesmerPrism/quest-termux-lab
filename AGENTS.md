@@ -25,5 +25,6 @@ Before committing, run:
 
 ```powershell
 python tools/check_public_boundary.py --repo-root .
-python -m py_compile tools/capture_vnc_screenshot.py tools/check_public_boundary.py
+python -m py_compile tools/capture_vnc_screenshot.py tools/stream_vnc_mjpeg.py tools/check_public_boundary.py
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/build_android_vnc_panel_viewer.ps1 -Unsigned
 ```

@@ -17,6 +17,8 @@ inform downstream XR tools.
 - Small host-side helper tools that do not require private project state.
 - Localhost-only host helpers for VNC screenshots, direct stream frame pulls,
   and browser-readable MJPEG streams.
+- A small Android 2D panel viewer example for showing the localhost MJPEG
+  stream in a landscape Quest panel.
 
 ## Workflow Pairing
 
@@ -80,4 +82,5 @@ this repository unless license obligations are reviewed.
 ```powershell
 python tools/check_public_boundary.py --repo-root .
 python -m py_compile tools/capture_vnc_screenshot.py tools/stream_vnc_mjpeg.py tools/check_public_boundary.py
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\build_android_vnc_panel_viewer.ps1 -Unsigned
 ```

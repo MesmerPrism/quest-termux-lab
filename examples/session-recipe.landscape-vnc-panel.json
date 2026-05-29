@@ -1,0 +1,54 @@
+{
+  "id": "landscape-vnc-panel",
+  "purpose": "Observe a Termux:X11 Linux desktop through a landscape Quest 2D viewer panel.",
+  "status": "validated_observation_surface_with_limits",
+  "authority_boundary": [
+    "Termux remains a normal Android app sidecar.",
+    "The Android viewer is observation-only and does not become HOME, a broker authority, or a shell authority.",
+    "VNC and MJPEG bridge exposure stays on loopback by default."
+  ],
+  "preflight": [
+    "Meta Quest workflow is active for live device operations.",
+    "Termux, Termux:X11, and a desktop session are installed by the operator.",
+    "The X display is configured for an exact landscape root such as 1280x720 before the desktop starts.",
+    "The VNC server binds to device localhost only.",
+    "The host MJPEG bridge is bound to host localhost only."
+  ],
+  "start": [
+    "Start Termux:X11 and the desktop session.",
+    "Start x11vnc against the X display with localhost-only binding.",
+    "Forward VNC from the device to the host.",
+    "Start the host MJPEG bridge against the forwarded VNC port.",
+    "Reverse the host MJPEG bridge back to device loopback on the same port.",
+    "Launch the landscape Android VNC panel viewer."
+  ],
+  "status": [
+    "MJPEG status endpoint reports connected=true.",
+    "MJPEG status endpoint reports the expected landscape dimensions.",
+    "Headset-visible viewer panel shows the full desktop width without left-slice cropping.",
+    "Headset-panel evidence and direct stream evidence are captured as separate artifact types."
+  ],
+  "stop": [
+    "Close the viewer panel.",
+    "Remove the reverse and forward port mappings.",
+    "Stop the host MJPEG bridge.",
+    "Stop x11vnc.",
+    "Stop the desktop session when the lab run is complete."
+  ],
+  "cleanup": [
+    "Confirm no VNC listener remains exposed beyond loopback.",
+    "Confirm no stale Android task resize state is being relied on.",
+    "Record whether the viewer panel or Termux:X11 panel was the headset-visible witness."
+  ],
+  "evidence": [
+    "Direct MJPEG status JSON.",
+    "Direct MJPEG frame capture.",
+    "Headset screenshot of the landscape viewer panel.",
+    "X display geometry readback."
+  ],
+  "risks": [
+    "MJPEG rendering support can vary across Android WebView versions.",
+    "ADB reverse requires an external authorized ADB host for this lab route.",
+    "The viewer panel observes pixels only; it does not provide desktop input forwarding."
+  ]
+}

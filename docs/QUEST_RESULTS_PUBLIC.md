@@ -32,11 +32,26 @@ private paths, serials, screenshots, package identities, and project names.
 - A resized landscape X root can be valid through VNC while the Quest 2D panel
   remains black or incomplete. Keep X-root evidence and headset-panel evidence
   labeled separately.
+- Termux:X11 can expose a clean 1280x720 X root when its display resolution is
+  set to an exact landscape value before the desktop starts. This can remove
+  the left-slice desktop symptom in the X display and VNC stream.
+- Termux:X11's own Android activity may still present as a constrained
+  phone-like Quest panel even when the X root is landscape. For headset-visible
+  ergonomics, a separate landscape Android viewer panel can display the
+  localhost MJPEG bridge without changing Termux's authority boundary.
+- A minimal Android viewer panel with an explicit landscape 2D layout can show
+  the full 1280x720 desktop from the localhost MJPEG bridge in headset. This is
+  an observation surface only; Termux still owns the desktop session.
+- Shell-level Android task resizing is not a reliable product route for this
+  case. It can create mismatched task and root bounds that reintroduce cropped
+  or sliced desktop output.
 
 ## Still Open
 
-- Robust landscape desktop-size geometry that also presents correctly in the
-  headset 2D panel.
+- Robust landscape desktop-size geometry directly inside the Termux:X11
+  Android activity.
+- Longer validation of the landscape viewer panel, including sustained MJPEG
+  frame rate, input expectations, and cleanup behavior.
 - Text-heavy terminal or editor ergonomics.
 - Full desktop performance and long-session stability.
 - Live stream frame rate, latency, and CPU cost across longer sessions.

@@ -31,6 +31,9 @@ Design rules:
 - Keep X-root evidence, headset display evidence, and cast/window evidence as
   separate artifact types. They can disagree when panel geometry or capture
   policy is involved.
+- If a full desktop is VNC-correct but the Termux:X11 Android activity remains
+  constrained, use a separate landscape viewer panel as an observation surface
+  instead of resizing Android tasks through shell commands.
 - Treat graphics acceleration, audio, boot autostart, wake locks, and LAN
   exposure as separate gates.
 - Full desktop recipes should remain opt-in lab sessions with explicit
