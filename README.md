@@ -31,6 +31,11 @@ the foreground Termux:X11 panel, while the larger viewer is observation-only
 and slower because it receives an MJPEG stream rather than the native X11
 surface.
 
+The first headless-sidecar milestone is also positive: a Termux-owned
+localhost JSON command service can continue answering allowlisted commands
+while another headset app is foregrounded. This is the more relevant route for
+XR apps that need Linux tools or scripts without showing a desktop.
+
 ## Workflow Pairing
 
 Use this repository for Termux/Linux sidecar recipes and sanitized evidence

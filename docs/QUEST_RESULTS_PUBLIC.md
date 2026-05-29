@@ -46,6 +46,10 @@ private paths, serials, screenshots, package identities, and project names.
   can receive Quest cursor input well enough to move the X cursor, click, and
   open desktop items. The larger Android viewer panel is not yet interactive
   and is visibly slower because it observes the MJPEG stream.
+- A short headless-sidecar test confirmed that a Termux-owned localhost JSON
+  command service can continue executing allowlisted commands while another
+  headset app is foregrounded. This route does not require an X11 window or a
+  visible Linux desktop.
 - Shell-level Android task resizing is not a reliable product route for this
   case. It can create mismatched task and root bounds that reintroduce cropped
   or sliced desktop output.
@@ -60,6 +64,8 @@ private paths, serials, screenshots, package identities, and project names.
   back into the Linux desktop.
 - Background desktop execution while another Quest app is foregrounded, with a
   controlled message route for commands or launch requests.
+- Longer background-service survival tests across sleep, focus changes,
+  battery policy, and foreground-service constraints.
 - Text-heavy terminal or editor ergonomics.
 - Full desktop performance and long-session stability.
 - Live stream frame rate, latency, and CPU cost across longer sessions.

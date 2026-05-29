@@ -1,0 +1,50 @@
+{
+  "id": "headless-command-sidecar",
+  "status": "short_xr_foreground_pass_with_limits",
+  "purpose": "Run a Termux-owned command/status service without showing a Linux desktop, so a foreground headset app can exchange messages with Linux userland tools.",
+  "authority_boundary": [
+    "Termux remains a normal Android app sidecar.",
+    "The command service is not Android shell, HOME, a broker authority, or a hidden watchdog.",
+    "Commands are allowlisted and scoped to lab diagnostics unless a product protocol is reviewed separately."
+  ],
+  "preflight": [
+    "Meta Quest workflow is active for live device operations.",
+    "Termux is installed and can run Python or another small local service runtime.",
+    "The command service binds to device localhost only.",
+    "The foreground headset app has an explicit communication route to localhost or to a broker-mediated bridge."
+  ],
+  "start": [
+    "Start the Termux command/status service on device loopback.",
+    "Foreground the headset app under test.",
+    "Send status, marker, and allowlisted command requests to the service.",
+    "Record whether responses continue while the headset app stays foregrounded."
+  ],
+  "status": [
+    "The foreground headset app remains active.",
+    "The command service returns status JSON.",
+    "Allowlisted commands return stdout, stderr, exit code, and timing.",
+    "No X11 window or desktop surface is required for the service to operate."
+  ],
+  "stop": [
+    "Stop the command service by recorded pid or visible service control.",
+    "Remove any temporary port forwards.",
+    "Confirm no command listener remains unexpectedly exposed."
+  ],
+  "cleanup": [
+    "Keep event logs as local run evidence only.",
+    "Do not commit real command transcripts, device paths, or package identities.",
+    "Promote only sanitized lessons or synthetic fixtures to public docs."
+  ],
+  "evidence": [
+    "Service status responses.",
+    "Command result responses.",
+    "Foreground app/activity evidence.",
+    "Process snapshot showing the command service without X11 desktop processes."
+  ],
+  "risks": [
+    "Short foreground tests do not prove survival across sleep, reboot, or battery restrictions.",
+    "A real product route needs authentication, allowlists, timeouts, audit logs, and cancellation.",
+    "A headset app may need INTERNET permission or a broker-side adapter to reach localhost.",
+    "Foreground-service policy may apply if the sidecar must run unattended for long sessions."
+  ]
+}
