@@ -49,6 +49,8 @@
   "risks": [
     "MJPEG rendering support can vary across Android WebView versions.",
     "ADB reverse requires an external authorized ADB host for this lab route.",
-    "The viewer panel observes pixels only; it does not provide desktop input forwarding."
+    "The viewer panel observes pixels only; it does not provide desktop input forwarding.",
+    "The foreground Termux:X11 panel can receive Quest cursor input, but it is too small for comfortable desktop interaction.",
+    "The MJPEG viewer path is too slow for a usable interactive desktop until the transport and input path are redesigned."
   ]
 }

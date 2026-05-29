@@ -20,6 +20,17 @@ inform downstream XR tools.
 - A small Android 2D panel viewer example for showing the localhost MJPEG
   stream in a landscape Quest panel.
 
+## Current Milestone
+
+The first landscape-desktop milestone is complete: Termux:X11 can run a
+1280x720 desktop, the localhost VNC/MJPEG bridge can stream it, and the Android
+viewer can show the full frame in a wide Quest panel.
+
+This is still a proof of concept. Direct interaction currently works through
+the foreground Termux:X11 panel, while the larger viewer is observation-only
+and slower because it receives an MJPEG stream rather than the native X11
+surface.
+
 ## Workflow Pairing
 
 Use this repository for Termux/Linux sidecar recipes and sanitized evidence

@@ -42,6 +42,10 @@ private paths, serials, screenshots, package identities, and project names.
 - A minimal Android viewer panel with an explicit landscape 2D layout can show
   the full 1280x720 desktop from the localhost MJPEG bridge in headset. This is
   an observation surface only; Termux still owns the desktop session.
+- A headset interaction check confirmed the small foreground Termux:X11 panel
+  can receive Quest cursor input well enough to move the X cursor, click, and
+  open desktop items. The larger Android viewer panel is not yet interactive
+  and is visibly slower because it observes the MJPEG stream.
 - Shell-level Android task resizing is not a reliable product route for this
   case. It can create mismatched task and root bounds that reintroduce cropped
   or sliced desktop output.
@@ -52,6 +56,10 @@ private paths, serials, screenshots, package identities, and project names.
   Android activity.
 - Longer validation of the landscape viewer panel, including sustained MJPEG
   frame rate, input expectations, and cleanup behavior.
+- Low-latency large-panel rendering and input forwarding from the viewer panel
+  back into the Linux desktop.
+- Background desktop execution while another Quest app is foregrounded, with a
+  controlled message route for commands or launch requests.
 - Text-heavy terminal or editor ergonomics.
 - Full desktop performance and long-session stability.
 - Live stream frame rate, latency, and CPU cost across longer sessions.

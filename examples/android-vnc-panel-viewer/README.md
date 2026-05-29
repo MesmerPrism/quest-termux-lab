@@ -11,6 +11,22 @@ loads `http://127.0.0.1:18080/stream.mjpg` by default and keeps the image
 contained instead of cropped. Early headset validation shows the viewer can
 present a full 1280x720 desktop stream in a wide panel.
 
+## Milestone Status
+
+Validated:
+
+- full-frame 1280x720 desktop observation in a wide Quest 2D panel;
+- localhost-only VNC/MJPEG stream consumption through device loopback;
+- coexistence with the smaller foreground Termux:X11 panel.
+
+Current limits:
+
+- the viewer is observation-only and does not forward pointer or keyboard input
+  into the desktop;
+- interaction still happens through the smaller Termux:X11 panel;
+- the default MJPEG bridge is useful as evidence plumbing, not a low-latency
+  remote-desktop transport.
+
 ## Use
 
 1. Start the Termux:X11 desktop and localhost VNC server.
