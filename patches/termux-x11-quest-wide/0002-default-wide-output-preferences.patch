@@ -1,0 +1,46 @@
+diff --git a/app/src/main/res/xml/preferences.xml b/app/src/main/res/xml/preferences.xml
+index 0000000..0000000 100644
+--- a/app/src/main/res/xml/preferences.xml
++++ b/app/src/main/res/xml/preferences.xml
+@@
+-        <ListPreference
+-            app:key="displayResolutionMode"
+-            app:defaultValue="native"
++        <ListPreference
++            app:key="displayResolutionMode"
++            app:defaultValue="custom"
+@@
+-        <EditTextPreference
+-            app:key="displayResolutionCustom"
+-            app:defaultValue="1280x1024"
++        <EditTextPreference
++            app:key="displayResolutionCustom"
++            app:defaultValue="1920x1080"
+@@
+-        <SwitchPreferenceCompat
+-            app:key="displayStretch"
+-            app:defaultValue="false" />
++        <SwitchPreferenceCompat
++            app:key="displayStretch"
++            app:defaultValue="true" />
+@@
+-        <SwitchPreferenceCompat
+-            app:key="fullscreen"
+-            app:defaultValue="false" />
++        <SwitchPreferenceCompat
++            app:key="fullscreen"
++            app:defaultValue="true" />
+@@
+-        <ListPreference
+-            app:key="forceOrientation"
+-            app:defaultValue="auto"
++        <ListPreference
++            app:key="forceOrientation"
++            app:defaultValue="landscape"
+@@
+-        <SwitchPreferenceCompat
+-            app:key="showAdditionalKbd"
+-            app:defaultValue="true" />
++        <SwitchPreferenceCompat
++            app:key="showAdditionalKbd"
++            app:defaultValue="false" />

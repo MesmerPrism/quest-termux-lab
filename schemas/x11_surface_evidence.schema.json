@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/x11_surface_evidence.schema.json",
+  "title": "Termux X11 Native Surface Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "test_id",
+    "started_at",
+    "package",
+    "resolution_mode",
+    "display_stretch",
+    "force_orientation",
+    "fullscreen",
+    "quest_panel_shape",
+    "x_screen_shape",
+    "native_input_works",
+    "needs_fork",
+    "result",
+    "cleanup"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.x11-surface-evidence.v1"
+    },
+    "test_id": {
+      "type": "string",
+      "pattern": "^X11-WIDE-[0-9A-Z_-]{2,64}$"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ended_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "package": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resolution_mode": {
+      "enum": ["native", "scaled", "exact", "custom", "unknown"]
+    },
+    "resolution": {
+      "type": "string",
+      "pattern": "^[0-9]{3,5}x[0-9]{3,5}$"
+    },
+    "adjust_resolution": {
+      "type": "boolean"
+    },
+    "display_stretch": {
+      "type": "boolean"
+    },
+    "force_orientation": {
+      "enum": ["auto", "landscape", "reverse-landscape", "portrait", "reverse-portrait", "unknown"]
+    },
+    "fullscreen": {
+      "type": "boolean"
+    },
+    "show_additional_keyboard": {
+      "type": "boolean"
+    },
+    "touch_mode": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3
+    },
+    "pointer_capture": {
+      "type": "boolean"
+    },
+    "quest_panel_shape": {
+      "enum": ["wide", "phone", "cropped", "letterboxed", "black", "unknown"]
+    },
+    "x_screen_shape": {
+      "enum": ["wide", "phone", "cropped", "unknown"]
+    },
+    "native_input_works": {
+      "enum": ["yes", "partial", "no", "not_tested", "unknown"]
+    },
+    "needs_fork": {
+      "type": "boolean"
+    },
+    "result": {
+      "enum": ["pass", "pass_with_limits", "partial", "fail", "blocked", "not_run"]
+    },
+    "classification": {
+      "type": "string"
+    },
+    "observations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["string", "number", "boolean", "null"]
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "path"],
+        "properties": {
+          "kind": { "type": "string", "minLength": 1 },
+          "path": { "type": "string", "minLength": 1 },
+          "redacted": { "type": "boolean", "default": true }
+        }
+      }
+    },
+    "cleanup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attempted", "verified"],
+      "properties": {
+        "attempted": { "type": "boolean" },
+        "verified": { "type": "boolean" },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

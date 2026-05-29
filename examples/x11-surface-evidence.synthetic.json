@@ -1,0 +1,38 @@
+{
+  "schema": "quest-termux-lab.x11-surface-evidence.v1",
+  "test_id": "X11-WIDE-00-SYNTHETIC",
+  "started_at": "2026-01-01T00:00:00Z",
+  "ended_at": "2026-01-01T00:05:00Z",
+  "package": "com.termux.x11",
+  "resolution_mode": "custom",
+  "resolution": "1920x1080",
+  "adjust_resolution": false,
+  "display_stretch": true,
+  "force_orientation": "landscape",
+  "fullscreen": true,
+  "show_additional_keyboard": false,
+  "touch_mode": 1,
+  "pointer_capture": false,
+  "quest_panel_shape": "unknown",
+  "x_screen_shape": "wide",
+  "native_input_works": "not_tested",
+  "needs_fork": true,
+  "result": "partial",
+  "classification": "synthetic_preference_probe_record",
+  "observations": {
+    "x_root": "Synthetic example only.",
+    "panel": "Replace with sanitized classification before sharing."
+  },
+  "artifacts": [
+    {
+      "kind": "screenshot",
+      "path": "runs/example/termux_x11_native_wide.png",
+      "redacted": true
+    }
+  ],
+  "cleanup": {
+    "attempted": true,
+    "verified": true,
+    "notes": "Synthetic cleanup record."
+  }
+}

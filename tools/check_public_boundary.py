@@ -34,6 +34,8 @@ TEXT_SUFFIXES = {
     ".yml",
     ".yaml",
     ".gitignore",
+    ".patch",
+    ".diff",
 }
 
 

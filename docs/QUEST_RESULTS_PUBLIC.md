@@ -35,6 +35,13 @@ private paths, serials, screenshots, package identities, and project names.
 - Termux:X11 can expose a clean 1280x720 X root when its display resolution is
   set to an exact landscape value before the desktop starts. This can remove
   the left-slice desktop symptom in the X display and VNC stream.
+- Termux:X11 preference-only native-wide probes can also create wider custom X
+  roots such as 1600x900, 1920x1080, and 2560x1440.
+- A full XFCE desktop can render visibly through the native Termux:X11 surface
+  with an exact 1280x720 X root, without going through the VNC/MJPEG viewer.
+  This is a partial success, not a finished interaction route: panel/layer
+  alignment still needs manual input testing and may need activity manifest
+  hints before it is ergonomic.
 - Termux:X11's own Android activity may still present as a constrained
   phone-like Quest panel even when the X root is landscape. For headset-visible
   ergonomics, a separate landscape Android viewer panel can display the
@@ -57,7 +64,9 @@ private paths, serials, screenshots, package identities, and project names.
 ## Still Open
 
 - Robust landscape desktop-size geometry directly inside the Termux:X11
-  Android activity.
+  Android activity, including clean activity/surface alignment.
+- Manual Quest cursor input and keyboard behavior against the native-wide
+  Termux:X11 surface.
 - Longer validation of the landscape viewer panel, including sustained MJPEG
   frame rate, input expectations, and cleanup behavior.
 - Low-latency large-panel rendering and input forwarding from the viewer panel

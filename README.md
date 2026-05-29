@@ -19,6 +19,8 @@ inform downstream XR tools.
   and browser-readable MJPEG streams.
 - A small Android 2D panel viewer example for showing the localhost MJPEG
   stream in a landscape Quest panel.
+- Public-safe native-wide Termux:X11 preference probes, evidence schema,
+  capture helper, and patch scaffolds for a possible Quest-flavored activity.
 
 ## Current Milestone
 
@@ -35,6 +37,17 @@ The first headless-sidecar milestone is also positive: a Termux-owned
 localhost JSON command service can continue answering allowlisted commands
 while another headset app is foregrounded. This is the more relevant route for
 XR apps that need Linux tools or scripts without showing a desktop.
+
+The current native-wide surface lane is documented in
+`docs/termux-x11-native-wide-surface.md`. It tests upstream Termux:X11
+preferences before any fork and keeps X-root evidence, Android activity panel
+evidence, and fallback viewer evidence separate.
+
+The first preference-only native-wide pass is partial-positive: wide X roots up
+to 2560x1440 can be created, and exact 1280x720 can render a visible XFCE
+desktop through the native Termux:X11 surface. The remaining blocker is
+ergonomics: activity/surface alignment and manual input still need their own
+gate.
 
 ## Workflow Pairing
 
@@ -84,13 +97,15 @@ this repository unless license obligations are reviewed.
 2. Termux CLI: verify app UID, package updates, bounded child processes, and
    cleanup.
 3. Termux:X11: start a minimal X server and one small client.
-4. Proot: run a CLI smoke test, then one small GUI client only after X11 is
+4. Native-wide Termux:X11: apply the preference-only probe and capture X-root
+   evidence separately from Android activity panel evidence.
+5. Proot: run a CLI smoke test, then one small GUI client only after X11 is
    visible and stoppable.
-5. Local dashboard: bind to device localhost and consume through an explicit
+6. Local dashboard: bind to device localhost and consume through an explicit
    host forward.
-6. VNC: keep it localhost-only or ADB-forwarded, record direct screenshot or
+7. VNC: keep it localhost-only or ADB-forwarded, record direct screenshot or
    live stream endpoint evidence, then stop it.
-7. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
+8. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
    treat each as a separate high-risk gate.
 
 ## Validation
@@ -98,5 +113,6 @@ this repository unless license obligations are reviewed.
 ```powershell
 python tools/check_public_boundary.py --repo-root .
 python -m py_compile tools/capture_vnc_screenshot.py tools/stream_vnc_mjpeg.py tools/check_public_boundary.py
+powershell -NoProfile -Command "[scriptblock]::Create((Get-Content -Raw tools\capture_x11_surface_metrics.ps1)) | Out-Null"
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\build_android_vnc_panel_viewer.ps1 -Unsigned
 ```

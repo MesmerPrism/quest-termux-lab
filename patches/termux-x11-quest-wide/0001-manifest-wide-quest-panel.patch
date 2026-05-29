@@ -1,0 +1,27 @@
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+index 0000000..0000000 100644
+--- a/app/src/main/AndroidManifest.xml
++++ b/app/src/main/AndroidManifest.xml
+@@
+         <activity
+             android:name=".MainActivity"
+             android:taskAffinity=".MainActivity"
+             android:launchMode="singleInstance"
+             android:supportsPictureInPicture="true"
+             android:configChanges="fontScale|orientation|screenSize|keyboard|keyboardHidden|layoutDirection|locale|mcc|mnc|navigation|screenLayout|touchscreen|uiMode|smallestScreenSize|density"
+             android:resizeableActivity="true"
++            android:screenOrientation="landscape"
+             android:windowSoftInputMode="stateHidden"
+             android:exported="true">
+@@
+             <meta-data
+                 android:name="android.app.shortcuts"
+                 android:resource="@xml/shortcuts" />
++
++            <layout
++                android:defaultWidth="1080dp"
++                android:defaultHeight="720dp"
++                android:minWidth="720dp"
++                android:minHeight="540dp"
++                android:gravity="center" />
+         </activity>
