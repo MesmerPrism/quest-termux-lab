@@ -46,6 +46,10 @@ kinds are:
    available.
 2. Codex: run `codex --version`, then classify install method, authentication
    status, and sandbox behavior. Use a dedicated Codex home outside the repo.
+   If read-only or workspace-write sandbox helpers fail on Android or Proot,
+   classify sandboxing as best-effort. Use danger-full-access only in a
+   throwaway or public-safe checkout, with operator review, the dedicated Codex
+   home outside the repo, and the public boundary scan.
 3. Public patch: create a branch in this repo, ask Codex to make a small
    public-safe runbook, schema, or synthetic-fixture change, then review the
    diff before any push.
