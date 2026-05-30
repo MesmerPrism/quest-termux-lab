@@ -24,6 +24,11 @@ enables or pairs WiFi ADB, that client can connect to the same headset and use
 the authorized Android shell session. Classify that as an operator-approved
 ADB shell lease, not as Termux becoming Android shell authority.
 
+Current reboot evidence keeps this boundary strict. Termux:Boot did not prove
+post-reboot ADB recovery, and a pre-granted normal helper app did not restore
+classic WiFi ADB after reboot. The helper could receive boot and write its own
+status, but it did not make Termux or the helper Android `shell`.
+
 ## Safe Defaults
 
 - Start visible sessions manually.

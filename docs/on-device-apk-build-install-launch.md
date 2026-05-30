@@ -28,6 +28,9 @@ the user-approved debugging session, not from Termux itself.
 - No ADB authorization bypass.
 - No persistence across reboot, `adb usb`, adbd restart, debugging timeout, or
   user revocation.
+- No proof that a pre-granted normal helper app can restore WiFi ADB after
+  reboot. A helper can record app-owned boot/status evidence, but shell lease
+  recovery remains external or user-authorized.
 - No Makepad or full XR app build loop yet.
 - No OpenXR session creation or headset-rendered XR frame yet.
 - No permission to commit generated APKs, keystores, platform jars, logs, or
@@ -83,6 +86,11 @@ uid=2000(shell)
 If this returns an app UID or cannot connect, the sidecar does not have ADB
 shell authority. Stop and fix the external authorization route before install,
 launch, logcat, or wake-state work.
+
+Do not substitute Termux:Boot or a pre-granted ordinary helper APK for this
+gate. Current public-safe lab evidence says those routes can at most provide
+status evidence after reboot; they did not reopen classic WiFi ADB or create a
+new shell lease.
 
 ## Temporary Keep-Awake Loop
 

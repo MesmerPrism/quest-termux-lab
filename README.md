@@ -68,6 +68,12 @@ locally, installed it, and launched it into a visible Quest panel. This does
 not yet prove a Makepad build or OpenXR rendering. See
 `docs/on-device-apk-build-install-launch.md`.
 
+A follow-up helper-app probe keeps the reboot boundary in place: a normal
+installed helper can receive boot and write its own status after it has been
+launched and pre-granted, but it did not restore classic WiFi ADB after reboot.
+Termux-local ADB still needs an external or user-authorized ADB bootstrap
+before it can connect and receive `uid=2000(shell)`.
+
 ## Workflow Pairing
 
 Use this repository for Termux/Linux sidecar recipes and sanitized evidence
@@ -130,7 +136,10 @@ this repository unless license obligations are reviewed.
    repo edits, validation, and patch review before any build or deploy lane.
 10. On-device APK loop: use an operator-authorized WiFi ADB endpoint to build,
    sign, install, and launch a source-only smoke APK from Termux.
-11. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
+11. Reboot ADB recovery: treat Termux:Boot and pre-granted normal helpers as
+   status probes only unless the target OS proves an official user-authorized
+   wireless-debugging route.
+12. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
    treat each as a separate high-risk gate.
 
 ## Validation

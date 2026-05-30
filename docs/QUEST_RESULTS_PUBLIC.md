@@ -69,6 +69,12 @@ private paths, serials, screenshots, package identities, and project names.
 - A temporary Termux-side ADB keep-awake loop can hold the display awake during
   an attended lab run. It is a shell-lease helper, not a hidden boot service or
   Termux-native authority.
+- Classic WiFi ADB did not survive reboot in the tested route. Termux-local
+  `adb` could not reconnect until an external authorized workflow re-enabled
+  the ADB TCP endpoint.
+- A normal helper app that had been launched and pre-granted before reboot
+  could receive boot and write app-owned status, but it did not restore classic
+  WiFi ADB. Treat that helper shape as diagnostics, not shell recovery.
 - A baseline on-device Android APK toolchain can build, sign, install, and
   launch a simple source-only Activity APK from Quest Termux.
 - A Rust native library can be compiled on the headset and packaged into a
@@ -102,9 +108,10 @@ private paths, serials, screenshots, package identities, and project names.
 - Full desktop performance and long-session stability.
 - Live stream frame rate, latency, and CPU cost across longer sessions.
 - Wake-lock behavior without external guard conditions.
-- Termux:Boot behavior after reboot.
-- WiFi ADB survival across reboot, debugging timeout, adbd restart, and user
-  revocation.
+- Official user-visible wireless-debugging pairing entirely from headset-local
+  tools.
+- WiFi ADB survival across debugging timeout, adbd restart, and user
+  revocation after an active lease is already established.
 - Makepad APK builds directly inside Quest Linux.
 - OpenXR session creation and real headset-rendered XR frames from an
   on-device-built APK.
