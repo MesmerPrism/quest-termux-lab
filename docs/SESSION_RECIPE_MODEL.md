@@ -25,6 +25,10 @@ Design rules:
 - Treat live VNC streams as observation-only browser views. Recipes must record
   the forwarded port, local stream port, process id, status endpoint, and stop
   steps.
+- Treat broker-feedback sidecars as processor modules. They may poll
+  broker-owned status or registry surfaces and publish bounded derived
+  diagnostics, but they do not own broker authority, sensor sessions, or
+  high-rate media paths.
 - Capture live stream evidence from direct frame/status endpoints when
   possible. Window captures of a browser or cast app are less stable and should
   be labeled as human-visible witnesses rather than primary evidence.

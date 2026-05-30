@@ -1,0 +1,56 @@
+{
+  "id": "broker-feedback-sidecar",
+  "status": "short_xr_foreground_pass_with_limits",
+  "purpose": "Run a Termux-owned Python/Linux processor loop that reads broker-owned status and stream-registry state, computes bounded diagnostic feedback, and publishes that feedback back to the broker while a foreground XR app remains active.",
+  "authority_boundary": [
+    "Termux remains a normal Android app sidecar and processor module.",
+    "The broker remains the authority for stream identity, module state, provider ownership, and published-event acceptance.",
+    "The sidecar does not acquire headset sensors, own biometric device sessions, route high-rate media, or become a hidden watchdog.",
+    "Feedback is low-rate diagnostic or derived data, published through an explicit broker route such as diagnostics:termux_python."
+  ],
+  "preflight": [
+    "Meta Quest workflow is active for live device operations.",
+    "A broker endpoint exposes bounded status and stream-registry state to the sidecar.",
+    "Termux can run Python or another reviewed Linux userland tool from its normal app sandbox.",
+    "The feedback stream id, poll interval, payload size, timeout, and stop condition are explicit before launch.",
+    "The foreground XR app does not depend on Termux for display, HOME behavior, or broker authority."
+  ],
+  "start": [
+    "Start the broker and confirm its status endpoint is reachable from the sidecar route.",
+    "Start the Termux processor loop with a bounded poll interval and run duration.",
+    "Poll broker status and stream-registry state.",
+    "Compute a compact feedback payload from the broker-owned state.",
+    "Publish the feedback payload to the broker through the explicit feedback stream.",
+    "Foreground the XR app and keep the sidecar loop running for the planned stress window."
+  ],
+  "status": [
+    "The broker accepts feedback events and reports them in its diagnostics or stream registry.",
+    "The foreground XR app remains active while sidecar feedback continues.",
+    "The sidecar records publish acknowledgements, latency, sequence number, and failure counts.",
+    "The feedback payload remains small, bounded, and derived from broker-visible state."
+  ],
+  "stop": [
+    "Stop the Termux processor loop by recorded process id or service control.",
+    "Remove any temporary port forwards.",
+    "Confirm no unexpected listener remains exposed.",
+    "Leave the broker and foreground app state to the owning workflow unless cleanup is explicitly part of the run."
+  ],
+  "cleanup": [
+    "Keep real run logs, device paths, package identities, and timing dumps as local evidence only.",
+    "Promote only sanitized findings, synthetic examples, or schema changes to public docs.",
+    "Record whether failures were sidecar, broker-route, foreground-app, or cleanup issues."
+  ],
+  "evidence": [
+    "Broker status snapshots before and after the sidecar run.",
+    "Stream-registry snapshots showing the feedback stream.",
+    "Feedback publish acknowledgements and latency summary.",
+    "Foreground XR app liveness or cadence evidence.",
+    "Sidecar process start, stop, and cleanup evidence."
+  ],
+  "risks": [
+    "Short foreground tests do not prove survival across sleep, reboot, or battery restrictions.",
+    "A real product route needs authentication, payload limits, backpressure, cancellation, and audit logs.",
+    "A broker restart or stream-registry change can require reconnect behavior in the sidecar.",
+    "Do not use this low-rate control/diagnostic route for camera frames, audio, or other high-rate media."
+  ]
+}

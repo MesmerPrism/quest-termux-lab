@@ -49,6 +49,13 @@ desktop through the native Termux:X11 surface. The remaining blocker is
 ergonomics: activity/surface alignment and manual input still need their own
 gate.
 
+The first broker-feedback sidecar pass is also positive: a Termux-owned
+Python/Linux process can poll a broker-owned status/stream registry, run small
+bounded processing work, and publish a low-rate diagnostic feedback event while
+an XR app remains foregrounded. This keeps Termux in the processor-sidecar
+role; the broker remains the stream/module authority, and high-rate media or
+sensor ownership stays out of this repository's recipe scope.
+
 ## Workflow Pairing
 
 Use this repository for Termux/Linux sidecar recipes and sanitized evidence
@@ -105,7 +112,9 @@ this repository unless license obligations are reviewed.
    host forward.
 7. VNC: keep it localhost-only or ADB-forwarded, record direct screenshot or
    live stream endpoint evidence, then stop it.
-8. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
+8. Broker feedback sidecar: poll a broker-owned status/registry surface and
+   publish bounded diagnostic feedback through an explicit broker route.
+9. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
    treat each as a separate high-risk gate.
 
 ## Validation

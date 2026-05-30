@@ -57,6 +57,12 @@ private paths, serials, screenshots, package identities, and project names.
   command service can continue executing allowlisted commands while another
   headset app is foregrounded. This route does not require an X11 window or a
   visible Linux desktop.
+- A broker-feedback sidecar test confirmed that Termux can run a small
+  Python/Linux processing loop against a broker-owned status/stream registry
+  and publish bounded diagnostic feedback while an XR app remains foregrounded.
+- This broker-feedback route should treat Termux as an opt-in processor module
+  only. The broker remains responsible for stream identity, module state,
+  provider ownership, and acceptance of published feedback events.
 - Shell-level Android task resizing is not a reliable product route for this
   case. It can create mismatched task and root bounds that reintroduce cropped
   or sliced desktop output.
@@ -73,6 +79,9 @@ private paths, serials, screenshots, package identities, and project names.
   back into the Linux desktop.
 - Background desktop execution while another Quest app is foregrounded, with a
   controlled message route for commands or launch requests.
+- Longer broker-feedback sidecar survival tests across app focus changes,
+  broker restarts, battery restrictions, network interruptions, and explicit
+  sidecar stop/restart cycles.
 - Longer background-service survival tests across sleep, focus changes,
   battery policy, and foreground-service constraints.
 - Text-heavy terminal or editor ergonomics.
