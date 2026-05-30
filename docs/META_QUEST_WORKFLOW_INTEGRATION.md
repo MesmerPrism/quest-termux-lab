@@ -12,6 +12,8 @@ handled by a workflow that already covers:
 - port-forward setup and cleanup;
 - headset readiness after sleep or reboot;
 - operator-visible prompts and protected system UI.
+- explicit user authorization for WiFi ADB before Termux runs any local ADB
+  install, launch, wake, logcat, or shell command.
 
 If your agent environment supports local skills, use `meta-quest-workflow`
 before running a live Quest test. If it does not, apply the same rule manually:
@@ -50,3 +52,20 @@ itself is presenting the X content.
 4. Stop the sidecar process or server.
 5. Remove any ADB forward.
 6. Record cleanup evidence before interpreting the result.
+
+## On-Device ADB Loop
+
+When testing the on-device APK loop, keep the first ADB authorization step
+outside this repository's authority. A host workflow, phone workflow, or the
+headset's own wireless-debugging pairing UI may enable the ADB TCP endpoint.
+Only after that should Termux run:
+
+```sh
+adb connect 127.0.0.1:5555
+adb -s 127.0.0.1:5555 shell id
+```
+
+The pass condition is Android shell UID. If that gate passes, Termux may use
+the approved session for bounded install, launch, status, and temporary
+keep-awake tests. Record protected prompts and controller requirements as
+operator-gated readiness evidence.

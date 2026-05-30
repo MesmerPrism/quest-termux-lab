@@ -1,0 +1,121 @@
+{
+  "schema": "quest-termux-lab.session-recipe.v1",
+  "id": "on-device-apk-build-loop",
+  "purpose": "Build a small Android APK inside Quest Termux, install it through an already authorized WiFi ADB endpoint, and launch it into a visible Quest panel.",
+  "authority_boundary": [
+    "Termux owns the source checkout and local build output only.",
+    "ADB shell authority comes from an operator-approved debugging session.",
+    "The recipe does not pair, bypass authorization, become HOME, or install a hidden boot watchdog.",
+    "Generated APKs, idsig files, debug keystores, platform jars, screenshots, logs, and real package names stay out of the repository."
+  ],
+  "preflight": [
+    {
+      "label": "workflow",
+      "command": "Activate the team's Meta Quest workflow for live device coordination.",
+      "operator_visible": true
+    },
+    {
+      "label": "adb-authority",
+      "command": "Enable or pair WiFi ADB through an already authorized external route.",
+      "operator_visible": true
+    },
+    {
+      "label": "termux-tools",
+      "command": "pkg install android-tools openjdk-17 aapt2 d8 apksigner rust cmake ninja clang make git",
+      "operator_visible": true
+    },
+    {
+      "label": "platform-jar",
+      "command": "Place a user-provided Android SDK platform android.jar outside the repository and set ANDROID_JAR.",
+      "operator_visible": true
+    }
+  ],
+  "start": [
+    {
+      "label": "self-adb",
+      "command": "adb connect 127.0.0.1:5555 && adb -s 127.0.0.1:5555 shell id",
+      "operator_visible": true
+    },
+    {
+      "label": "temporary-watchdog",
+      "command": "sh scripts/wifi-adb-keepawake-watchdog.sh",
+      "operator_visible": true
+    },
+    {
+      "label": "build",
+      "command": "sh scripts/build-minimal-android-apk-on-device.sh",
+      "operator_visible": true
+    },
+    {
+      "label": "install-launch",
+      "command": "INSTALL=1 LAUNCH=1 sh scripts/build-minimal-android-apk-on-device.sh",
+      "operator_visible": true
+    }
+  ],
+  "status": [
+    {
+      "label": "watchdog-status",
+      "command": "cat $HOME/quest-lab/watchdogs/wifi-adb-keepawake.status",
+      "operator_visible": true
+    },
+    {
+      "label": "package-path",
+      "command": "adb -s 127.0.0.1:5555 shell pm path org.questtermuxlab.ondevice.smoke",
+      "operator_visible": true
+    },
+    {
+      "label": "foreground",
+      "command": "Confirm the simple smoke panel is visible; handle protected launch-check prompts manually.",
+      "operator_visible": true
+    }
+  ],
+  "stop": [
+    {
+      "label": "stop-watchdog",
+      "command": "touch $HOME/quest-lab/watchdogs/stop-wifi-adb-keepawake",
+      "operator_visible": true
+    },
+    {
+      "label": "optional-uninstall",
+      "command": "adb -s 127.0.0.1:5555 uninstall org.questtermuxlab.ondevice.smoke || true",
+      "operator_visible": true
+    }
+  ],
+  "cleanup": [
+    {
+      "label": "local-artifacts",
+      "command": "Leave build output under ignored local build directories; do not commit APKs, keystores, idsig files, jars, logs, or screenshots.",
+      "operator_visible": true
+    },
+    {
+      "label": "transport",
+      "command": "Let the workflow that enabled WiFi ADB decide whether to keep it active or return to USB-only ADB.",
+      "operator_visible": true
+    }
+  ],
+  "evidence": [
+    "ADB self-connection reached shell UID.",
+    "Watchdog status showed an awake display and stay-awake state.",
+    "APK build produced a signed local artifact outside Git.",
+    "Install succeeded through the loopback ADB target.",
+    "Launch reached a visible public smoke panel after any operator-gated prompt was accepted."
+  ],
+  "risks": [
+    {
+      "risk": "WiFi ADB does not survive reboot, adbd restart, debugging timeout, or user revocation.",
+      "recovery": "Re-run the external authorization or pairing workflow and repeat the self-ADB gate."
+    },
+    {
+      "risk": "A launch-check or controller prompt can look like an app launch failure.",
+      "recovery": "Use operator-visible headset input to satisfy the prompt, then classify it separately from build or install evidence."
+    },
+    {
+      "risk": "Generated artifacts may contain signing material or device-specific details.",
+      "recovery": "Keep outputs in ignored build directories and run the public-boundary scanner before committing."
+    }
+  ],
+  "notes": [
+    "This recipe proves the baseline APK loop, not full OpenXR rendering.",
+    "Use release assets or CI artifacts for binary APK distribution instead of committing APKs to Git history."
+  ]
+}

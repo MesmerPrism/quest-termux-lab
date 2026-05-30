@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -37,6 +38,18 @@ TEXT_SUFFIXES = {
     ".patch",
     ".diff",
 }
+FORBIDDEN_TRACKED_SUFFIXES = {
+    ".apk",
+    ".idsig",
+    ".keystore",
+    ".jks",
+    ".p12",
+    ".pfx",
+    ".jar",
+    ".aar",
+    ".dex",
+    ".so",
+}
 
 
 def should_scan(path: Path) -> bool:
@@ -56,6 +69,22 @@ def main() -> int:
 
     root = Path(args.repo_root).resolve()
     findings: list[str] = []
+
+    try:
+        tracked = subprocess.run(
+            ["git", "-C", str(root), "ls-files"],
+            check=True,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        ).stdout.splitlines()
+    except (OSError, subprocess.CalledProcessError):
+        tracked = []
+
+    for rel_text in tracked:
+        rel = Path(rel_text)
+        if rel.suffix.lower() in FORBIDDEN_TRACKED_SUFFIXES:
+            findings.append(f"{rel}: forbidden tracked generated/binary artifact")
 
     for path in sorted(root.rglob("*")):
         if not path.is_file() or not should_scan(path.relative_to(root)):

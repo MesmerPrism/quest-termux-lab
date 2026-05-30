@@ -63,6 +63,20 @@ private paths, serials, screenshots, package identities, and project names.
 - This broker-feedback route should treat Termux as an opt-in processor module
   only. The broker remains responsible for stream identity, module state,
   provider ownership, and acceptance of published feedback events.
+- After an operator-approved WiFi ADB route is enabled, the Termux `adb` client
+  can connect to the same headset over loopback and receive shell authority for
+  install, launch, and bounded shell commands.
+- A temporary Termux-side ADB keep-awake loop can hold the display awake during
+  an attended lab run. It is a shell-lease helper, not a hidden boot service or
+  Termux-native authority.
+- A baseline on-device Android APK toolchain can build, sign, install, and
+  launch a simple source-only Activity APK from Quest Termux.
+- A Rust native library can be compiled on the headset and packaged into a
+  native APK experiment, but this currently proves native packaging only. It
+  does not prove OpenXR session creation or XR rendering.
+- Quest launch-check and controller prompts can block an otherwise valid
+  launch. Treat the protected prompt as operator-gated readiness evidence, not
+  as a build failure.
 - Shell-level Android task resizing is not a reliable product route for this
   case. It can create mismatched task and root bounds that reintroduce cropped
   or sliced desktop output.
@@ -89,5 +103,11 @@ private paths, serials, screenshots, package identities, and project names.
 - Live stream frame rate, latency, and CPU cost across longer sessions.
 - Wake-lock behavior without external guard conditions.
 - Termux:Boot behavior after reboot.
+- WiFi ADB survival across reboot, debugging timeout, adbd restart, and user
+  revocation.
+- Makepad APK builds directly inside Quest Linux.
+- OpenXR session creation and real headset-rendered XR frames from an
+  on-device-built APK.
+- Signed release artifact provenance for Git-backed APK download/install flows.
 - Graphics acceleration and renderer classification.
 - Audio and remote shell services.

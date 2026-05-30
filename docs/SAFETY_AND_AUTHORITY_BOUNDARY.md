@@ -19,6 +19,11 @@ It is not:
 - an ADB authorization bypass
 - an XR compositor or runtime authority
 
+Termux can run an `adb` client. If the user or an external workflow explicitly
+enables or pairs WiFi ADB, that client can connect to the same headset and use
+the authorized Android shell session. Classify that as an operator-approved
+ADB shell lease, not as Termux becoming Android shell authority.
+
 ## Safe Defaults
 
 - Start visible sessions manually.
@@ -40,6 +45,8 @@ Do not commit:
 - package names from private applications
 - real IP addresses from private networks
 - generated APKs or downloaded upstream artifacts
+- debug keystores, idsig files, Android platform jars, native libraries, or
+  dex output
 
 Use synthetic fixtures and redacted examples instead.
 

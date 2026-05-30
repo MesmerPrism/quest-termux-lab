@@ -14,6 +14,12 @@ Keep committed content portable and sanitized:
 - Keep Quest automation bounded and operator-visible. Do not document root,
   SELinux changes, ADB authorization bypasses, hidden boot daemons, or default
   LAN VNC exposure.
+- For on-device APK work, treat WiFi ADB as an explicit operator-approved shell
+  lease. Termux may run an ADB client after pairing or external enablement, but
+  Termux itself is not Android shell authority.
+- Do not commit generated APKs, idsig files, debug keystores, Android platform
+  jars, native libraries, dex files, package-manager output, raw logcat, or
+  launch screenshots.
 - Prefer schemas, runbooks, and synthetic fixtures over real device artifacts.
 - For live Quest builds, installs, launches, screenshots, logcat, ADB
   forwarding, or headset-visible validation, use the public
@@ -28,4 +34,5 @@ python tools/check_public_boundary.py --repo-root .
 python -m py_compile tools/capture_vnc_screenshot.py tools/stream_vnc_mjpeg.py tools/check_public_boundary.py
 powershell -NoProfile -Command "[scriptblock]::Create((Get-Content -Raw tools/capture_x11_surface_metrics.ps1)) | Out-Null"
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/build_android_vnc_panel_viewer.ps1 -Unsigned
+bash -n scripts/build-minimal-android-apk-on-device.sh scripts/wifi-adb-keepawake-watchdog.sh scripts/quest-x11-wide-prefs.sh scripts/start-quest-x11-wide.sh
 ```

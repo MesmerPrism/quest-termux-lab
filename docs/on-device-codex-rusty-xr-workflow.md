@@ -13,7 +13,8 @@ Use this lane to prove:
 - The filesystem and sandbox behavior are understood.
 - A small public repo patch can be produced and validated.
 - Build, install, launch, screenshot, and logcat authority stays with the
-  external workflow that owns those operations.
+  external workflow that owns those operations, unless a separate
+  operator-approved WiFi ADB lease is being tested.
 
 Do not use this lane for hidden ADB authorization, root, stored pairing data,
 automatic HOME changes, unattended deployment, high-rate media transport,
@@ -56,9 +57,12 @@ kinds are:
 4. Validation: run the public boundary scan and compile checks. Do not stage
    raw device paths, serials, screenshots, logs, package identities, APKs,
    credentials, or generated artifacts.
-5. Build/deploy: defer until the public patch lane is clean. If later build or
-   deploy steps are attempted, route them through the external Quest workflow
-   unless an explicit, reversible ADB authority gate is being tested.
+5. Build/deploy: start only after the public patch lane is clean. The first
+   positive on-device build/deploy lane uses an externally enabled or paired
+   WiFi ADB endpoint, then requires Termux `adb shell id` to report Android
+   shell UID before any install or launch command. Keep generated APKs,
+   keystores, platform jars, logs, screenshots, and package-manager output out
+   of Git. See `docs/on-device-apk-build-install-launch.md`.
 
 ## Cleanup
 

@@ -23,6 +23,8 @@ inform downstream XR tools.
   capture helper, and patch scaffolds for a possible Quest-flavored activity.
 - Public-safe on-device Codex engineering runbooks and synthetic evidence
   records for treating Termux or Proot as a normal-app developer sidecar.
+- Public-safe on-device APK build/install/launch guidance for an
+  operator-authorized WiFi ADB loopback route.
 
 ## Current Milestone
 
@@ -57,6 +59,14 @@ bounded processing work, and publish a low-rate diagnostic feedback event while
 an XR app remains foregrounded. This keeps Termux in the processor-sidecar
 role; the broker remains the stream/module authority, and high-rate media or
 sensor ownership stays out of this repository's recipe scope.
+
+The first on-device APK loop milestone is positive for a baseline smoke app:
+after an external workflow enabled or paired WiFi ADB, Termux connected back to
+the headset over loopback, received shell authority through that approved ADB
+session, built a small Android Activity APK with source-only inputs, signed it
+locally, installed it, and launched it into a visible Quest panel. This does
+not yet prove a Makepad build or OpenXR rendering. See
+`docs/on-device-apk-build-install-launch.md`.
 
 ## Workflow Pairing
 
@@ -118,7 +128,9 @@ this repository unless license obligations are reviewed.
    publish bounded diagnostic feedback through an explicit broker route.
 9. On-device Codex engineering: prove the CLI, sandbox behavior, small public
    repo edits, validation, and patch review before any build or deploy lane.
-10. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
+10. On-device APK loop: use an operator-authorized WiFi ADB endpoint to build,
+   sign, install, and launch a source-only smoke APK from Termux.
+11. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
    treat each as a separate high-risk gate.
 
 ## Validation
@@ -128,4 +140,5 @@ python tools/check_public_boundary.py --repo-root .
 python -m py_compile tools/capture_vnc_screenshot.py tools/stream_vnc_mjpeg.py tools/check_public_boundary.py
 powershell -NoProfile -Command "[scriptblock]::Create((Get-Content -Raw tools\capture_x11_surface_metrics.ps1)) | Out-Null"
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\build_android_vnc_panel_viewer.ps1 -Unsigned
+bash -n scripts/build-minimal-android-apk-on-device.sh scripts/wifi-adb-keepawake-watchdog.sh scripts/quest-x11-wide-prefs.sh scripts/start-quest-x11-wide.sh
 ```
