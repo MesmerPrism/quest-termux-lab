@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/codex-xr-workflow-evidence.schema.json",
+  "title": "Quest Termux Lab Codex XR Workflow Evidence",
+  "oneOf": [
+    { "$ref": "#/$defs/environment" },
+    { "$ref": "#/$defs/step" },
+    { "$ref": "#/$defs/toolchainClassification" },
+    { "$ref": "#/$defs/agentPatch" },
+    { "$ref": "#/$defs/deployAttempt" }
+  ],
+  "$defs": {
+    "result": {
+      "enum": ["pass", "partial", "blocked", "fail", "not_run"]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "redactedText": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "uri", "redacted"],
+      "properties": {
+        "kind": { "$ref": "#/$defs/redactedText" },
+        "uri": { "$ref": "#/$defs/redactedText" },
+        "redacted": { "type": "boolean" }
+      }
+    },
+    "commandEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "provider", "result"],
+      "properties": {
+        "label": { "$ref": "#/$defs/redactedText" },
+        "provider": {
+          "enum": ["termux", "proot", "codex", "host_workflow", "operator", "other"]
+        },
+        "command_summary": { "type": "string" },
+        "result": { "$ref": "#/$defs/result" },
+        "duration_ms": { "type": "number", "minimum": 0 },
+        "artifacts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/artifact" }
+        }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "captured_at",
+        "result",
+        "authority_boundary",
+        "runtime",
+        "tools",
+        "limits"
+      ],
+      "properties": {
+        "schema": { "const": "codex_xr_environment.v1" },
+        "captured_at": { "$ref": "#/$defs/timestamp" },
+        "result": { "$ref": "#/$defs/result" },
+        "authority_boundary": { "$ref": "#/$defs/redactedText" },
+        "runtime": {
+          "type": "object",
+          "additionalProperties": { "type": ["string", "number", "boolean", "null"] }
+        },
+        "tools": {
+          "type": "object",
+          "additionalProperties": { "type": ["string", "number", "boolean", "null"] }
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": { "type": ["string", "number", "boolean", "null"] }
+        },
+        "artifacts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/artifact" }
+        }
+      }
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "step_id", "started_at", "result", "provider", "authority_boundary"],
+      "properties": {
+        "schema": { "const": "codex_xr_step.v1" },
+        "step_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]{2,80}$" },
+        "started_at": { "$ref": "#/$defs/timestamp" },
+        "ended_at": { "$ref": "#/$defs/timestamp" },
+        "result": { "$ref": "#/$defs/result" },
+        "provider": {
+          "enum": ["termux", "proot", "codex", "host_workflow", "operator", "other"]
+        },
+        "authority_boundary": { "$ref": "#/$defs/redactedText" },
+        "commands": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/commandEvidence" }
+        },
+        "observations": {
+          "type": "object",
+          "additionalProperties": { "type": ["string", "number", "boolean", "null"] }
+        },
+        "cleanup": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["attempted", "verified"],
+          "properties": {
+            "attempted": { "type": "boolean" },
+            "verified": { "type": "boolean" },
+            "notes": { "type": "string" }
+          }
+        }
+      }
+    },
+    "toolchainClassification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "captured_at", "result", "tools"],
+      "properties": {
+        "schema": { "const": "codex_xr_toolchain_classification.v1" },
+        "captured_at": { "$ref": "#/$defs/timestamp" },
+        "result": { "$ref": "#/$defs/result" },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "classification"],
+            "properties": {
+              "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]{2,80}$" },
+              "classification": { "$ref": "#/$defs/result" },
+              "version": { "type": "string" },
+              "architecture": { "type": "string" },
+              "notes": { "type": "string" }
+            }
+          }
+        },
+        "artifacts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/artifact" }
+        }
+      }
+    },
+    "agentPatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "captured_at",
+        "result",
+        "repo",
+        "branch",
+        "files_changed",
+        "validation"
+      ],
+      "properties": {
+        "schema": { "const": "codex_xr_agent_patch.v1" },
+        "captured_at": { "$ref": "#/$defs/timestamp" },
+        "result": { "$ref": "#/$defs/result" },
+        "repo": { "$ref": "#/$defs/redactedText" },
+        "branch": { "$ref": "#/$defs/redactedText" },
+        "files_changed": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/redactedText" }
+        },
+        "validation": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/commandEvidence" }
+        },
+        "public_boundary_passed": { "type": "boolean" },
+        "safe_to_move_off_device": { "type": "boolean" },
+        "artifacts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/artifact" }
+        }
+      }
+    },
+    "deployAttempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "captured_at",
+        "result",
+        "artifact_source",
+        "install_authority",
+        "launch_authority",
+        "rollback"
+      ],
+      "properties": {
+        "schema": { "const": "codex_xr_deploy_attempt.v1" },
+        "captured_at": { "$ref": "#/$defs/timestamp" },
+        "result": { "$ref": "#/$defs/result" },
+        "artifact_source": { "$ref": "#/$defs/redactedText" },
+        "install_authority": {
+          "enum": ["host_workflow", "companion", "externally_leased_adb", "not_attempted"]
+        },
+        "launch_authority": {
+          "enum": ["host_workflow", "companion", "externally_leased_adb", "not_attempted"]
+        },
+        "foreground_result": { "type": "string" },
+        "rollback": { "$ref": "#/$defs/redactedText" },
+        "artifacts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/artifact" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,59 @@
+[
+  {
+    "schema": "codex_xr_environment.v1",
+    "captured_at": "2026-05-30T00:00:00Z",
+    "result": "pass",
+    "authority_boundary": "Termux is a normal-app developer sidecar; host workflow owns device operations.",
+    "runtime": {
+      "sidecar": "termux",
+      "proot_available": true,
+      "device_model": "redacted"
+    },
+    "tools": {
+      "python": "present",
+      "git": "present",
+      "node": "present",
+      "codex": "present"
+    },
+    "limits": {
+      "storage_free_mb": 1024,
+      "memory_free_mb": 512
+    },
+    "artifacts": [
+      {
+        "kind": "summary",
+        "uri": "synthetic://environment-summary",
+        "redacted": true
+      }
+    ]
+  },
+  {
+    "schema": "codex_xr_agent_patch.v1",
+    "captured_at": "2026-05-30T00:05:00Z",
+    "result": "pass",
+    "repo": "quest-termux-lab",
+    "branch": "lab/on-device-codex-xr",
+    "files_changed": [
+      "docs/on-device-codex-rusty-xr-workflow.md"
+    ],
+    "validation": [
+      {
+        "label": "public-boundary",
+        "provider": "termux",
+        "command_summary": "public boundary scan",
+        "result": "pass",
+        "duration_ms": 250.0,
+        "artifacts": []
+      }
+    ],
+    "public_boundary_passed": true,
+    "safe_to_move_off_device": true,
+    "artifacts": [
+      {
+        "kind": "diff",
+        "uri": "synthetic://reviewed-diff",
+        "redacted": true
+      }
+    ]
+  }
+]

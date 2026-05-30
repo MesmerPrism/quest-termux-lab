@@ -21,6 +21,8 @@ inform downstream XR tools.
   stream in a landscape Quest panel.
 - Public-safe native-wide Termux:X11 preference probes, evidence schema,
   capture helper, and patch scaffolds for a possible Quest-flavored activity.
+- Public-safe on-device Codex engineering runbooks and synthetic evidence
+  records for treating Termux or Proot as a normal-app developer sidecar.
 
 ## Current Milestone
 
@@ -114,7 +116,9 @@ this repository unless license obligations are reviewed.
    live stream endpoint evidence, then stop it.
 8. Broker feedback sidecar: poll a broker-owned status/registry surface and
    publish bounded diagnostic feedback through an explicit broker route.
-9. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
+9. On-device Codex engineering: prove the CLI, sandbox behavior, small public
+   repo edits, validation, and patch review before any build or deploy lane.
+10. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
    treat each as a separate high-risk gate.
 
 ## Validation
