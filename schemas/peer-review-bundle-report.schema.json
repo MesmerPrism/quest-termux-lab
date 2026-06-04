@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-review-bundle-report.schema.json",
+  "title": "Quest Termux Lab Peer Review Bundle Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "bundle_id",
+    "experiment_scope",
+    "overall_status",
+    "json_artifacts",
+    "file_artifacts",
+    "status_checks",
+    "summary",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-review-bundle-report.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "bundle_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "overall_status": {
+      "enum": ["review_ready", "manual_review", "review_blocked"]
+    },
+    "json_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifact_id",
+          "path",
+          "expected_schema",
+          "observed_schema",
+          "status",
+          "reason"
+        ],
+        "properties": {
+          "artifact_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expected_schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "observed_schema": {
+            "type": "string"
+          },
+          "status": {
+            "enum": ["passed", "manual_review", "failed"]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "file_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["artifact_id", "artifact_role", "path", "status", "reason"],
+        "properties": {
+          "artifact_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "artifact_role": {
+            "enum": ["tool", "test", "doc", "schema", "example"]
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": ["passed", "manual_review", "failed"]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "status_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifact_id",
+          "status_field",
+          "observed_value",
+          "status",
+          "reason"
+        ],
+        "properties": {
+          "artifact_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status_field": {
+            "type": "string",
+            "minLength": 1
+          },
+          "observed_value": {
+            "type": "string"
+          },
+          "status": {
+            "enum": ["passed", "manual_review", "failed"]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entry_count",
+        "passed_count",
+        "manual_review_count",
+        "failed_count"
+      ],
+      "properties": {
+        "entry_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "passed_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "manual_review_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "quest-termux-lab.peer-repeated-scorecard-fixture-manifest.v1",
+  "fixture_id": "peer-repeated-scorecard-fixture-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:01:00Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "scorecard_template_path": "examples/peer-scorecard-report.synthetic.json",
+  "regression_policy_path": "examples/peer-scorecard-regression-policy.synthetic.json",
+  "scorecard_ids": [
+    "peer-scorecard-clear-synthetic-001",
+    "peer-scorecard-clear-synthetic-002"
+  ],
+  "scorecard_observed_at": [
+    "2026-06-04T10:00:20Z",
+    "2026-06-04T10:00:50Z"
+  ],
+  "output_paths": {
+    "scorecard_reports": [
+      "examples/peer-scorecard-report.clear-001.synthetic.json",
+      "examples/peer-scorecard-report.clear-002.synthetic.json"
+    ],
+    "scorecard_history": "examples/peer-scorecard-history.clear.synthetic.json",
+    "scorecard_regression_report": "examples/peer-scorecard-regression-report.clear.synthetic.json"
+  },
+  "authority_boundary": [
+    "Repeated scorecard fixture manifests declare local public fixture outputs only.",
+    "Repeated scorecard fixture manifests do not approve live work, select endpoints, replay evidence, monitor peers, probe peers, open sockets, discover devices, send gossip, use ADB, launch apps, execute commands, or execute validation slots.",
+    "A clear repeated fixture is synthetic evidence for the public lab contract, not proof of private live readiness."
+  ]
+}

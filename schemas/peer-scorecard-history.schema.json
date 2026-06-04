@@ -1,0 +1,370 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-scorecard-history.schema.json",
+  "title": "Quest Termux Lab Peer Scorecard History",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "experiment_scope",
+    "overall_status",
+    "overall_trend",
+    "report_count",
+    "first_report_at",
+    "last_report_at",
+    "first_scorecard_id",
+    "last_scorecard_id",
+    "scorecards",
+    "artifacts",
+    "pressure_point_deltas",
+    "summary",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-scorecard-history.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "overall_status": {
+      "enum": ["synthetic_clear", "manual_review", "blocked"]
+    },
+    "overall_trend": {
+      "enum": ["stable", "improving", "worsening", "mixed", "single_sample"]
+    },
+    "report_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "first_report_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_report_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "first_scorecard_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "last_scorecard_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scorecards": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "scorecard_id",
+          "observed_at",
+          "overall_status",
+          "synthetic_clear_count",
+          "manual_review_count",
+          "blocked_count",
+          "missing_count",
+          "pressure_point_count"
+        ],
+        "properties": {
+          "scorecard_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "observed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "overall_status": {
+            "enum": ["synthetic_clear", "manual_review", "blocked"]
+          },
+          "synthetic_clear_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "manual_review_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "blocked_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "missing_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "pressure_point_count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifact_kind",
+          "sample_count",
+          "first_observed_at",
+          "last_observed_at",
+          "first_status",
+          "last_status",
+          "first_source_status",
+          "last_source_status",
+          "trend",
+          "delta",
+          "status_counts",
+          "transition_count",
+          "last_reason"
+        ],
+        "properties": {
+          "artifact_kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sample_count": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "first_observed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "last_observed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "first_status": {
+            "enum": ["synthetic_clear", "manual_review", "blocked", "missing"]
+          },
+          "last_status": {
+            "enum": ["synthetic_clear", "manual_review", "blocked", "missing"]
+          },
+          "first_source_status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "last_source_status": {
+            "type": "string",
+            "minLength": 1
+          },
+          "trend": {
+            "enum": ["stable", "improving", "worsening", "mixed", "single_sample"]
+          },
+          "delta": {
+            "enum": [
+              "observed_pressure_point",
+              "single_sample_clear",
+              "resolved",
+              "new_pressure_point",
+              "improved",
+              "regressed",
+              "persistent",
+              "unchanged_clear"
+            ]
+          },
+          "status_counts": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["blocked", "manual_review", "missing", "synthetic_clear"],
+            "properties": {
+              "blocked": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "manual_review": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "missing": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "synthetic_clear": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          },
+          "transition_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "last_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "pressure_point_deltas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifact_kind",
+          "first_status",
+          "last_status",
+          "trend",
+          "delta",
+          "last_reason"
+        ],
+        "properties": {
+          "artifact_kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "first_status": {
+            "enum": ["synthetic_clear", "manual_review", "blocked", "missing"]
+          },
+          "last_status": {
+            "enum": ["synthetic_clear", "manual_review", "blocked", "missing"]
+          },
+          "trend": {
+            "enum": ["stable", "improving", "worsening", "mixed", "single_sample"]
+          },
+          "delta": {
+            "enum": [
+              "observed_pressure_point",
+              "resolved",
+              "new_pressure_point",
+              "improved",
+              "regressed",
+              "persistent"
+            ]
+          },
+          "last_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "report_count",
+        "artifact_kind_count",
+        "first_overall_status",
+        "last_overall_status",
+        "overall_trend",
+        "last_synthetic_clear_count",
+        "last_manual_review_count",
+        "last_blocked_count",
+        "last_missing_count",
+        "last_pressure_point_count",
+        "stable_artifact_count",
+        "improving_artifact_count",
+        "worsening_artifact_count",
+        "mixed_artifact_count",
+        "single_sample_artifact_count",
+        "resolved_pressure_point_count",
+        "new_pressure_point_count",
+        "persistent_pressure_point_count"
+      ],
+      "properties": {
+        "report_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "artifact_kind_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "first_overall_status": {
+          "enum": ["synthetic_clear", "manual_review", "blocked"]
+        },
+        "last_overall_status": {
+          "enum": ["synthetic_clear", "manual_review", "blocked"]
+        },
+        "overall_trend": {
+          "enum": ["stable", "improving", "worsening", "mixed", "single_sample"]
+        },
+        "last_synthetic_clear_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "last_manual_review_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "last_blocked_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "last_missing_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "last_pressure_point_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stable_artifact_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "improving_artifact_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "worsening_artifact_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mixed_artifact_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "single_sample_artifact_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "resolved_pressure_point_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "new_pressure_point_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "persistent_pressure_point_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

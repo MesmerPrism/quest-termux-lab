@@ -1,0 +1,17 @@
+{
+  "schema": "quest-termux-lab.peer-private-import-plan-manifest.v1",
+  "import_plan_id": "peer-private-import-plan-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:04:05Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "package_report_path": "examples/peer-public-package-report.synthetic.json",
+  "redaction_report_path": "examples/peer-private-evidence-redaction-report.synthetic.json",
+  "require_package_ready": true,
+  "require_redaction_ready": true,
+  "authority_boundary": [
+    "Private import plan manifests describe public-safe sanitized derivative import readiness only.",
+    "Private import plan manifests do not read private evidence, sanitize live artifacts, approve live work, select endpoints, collect evidence, replay evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, launch apps, execute commands, or execute validation slots.",
+    "Private import plan manifests do not carry private endpoint values, raw network addresses, raw device identifiers, raw logs, pairing material, app package IDs, operator identity, or credential material."
+  ]
+}

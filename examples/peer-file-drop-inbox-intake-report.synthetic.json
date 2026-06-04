@@ -1,0 +1,44 @@
+{
+  "authority_boundary": [
+    "File-drop inbox intake reports classify explicitly declared synthetic inbox entries only.",
+    "File-drop inbox intake reports may read declared public fixture envelopes under the artifact root, but they do not scan inbox directories, copy files, approve live work, select private endpoints, monitor peers, probe peers, open sockets, discover devices, send gossip, use ADB, launch apps, or execute commands.",
+    "File-drop inbox intake reports do not carry private endpoint values, raw network addresses, raw device identifiers, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "expected_message_schema": "quest-termux-lab.peer-gossip-envelope.v1",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "intake_entries": [
+    {
+      "copy_status": "simulated_copied",
+      "delivery_id": "delivery-alpha-to-gamma-file-drop-001",
+      "envelope_path": "examples/peer-gossip-envelope.file-drop.synthetic.json",
+      "message_id": "gossip-alpha-file-drop-001",
+      "observed_message_schema": "quest-termux-lab.peer-gossip-envelope.v1",
+      "observed_observation_count": 1,
+      "observed_sender_agent_id": "quest-agent-alpha",
+      "reason": "synthetic envelope validated for declared inbox entry",
+      "relative_staging_path": "runs/peer-mesh-round/peer-round-synthetic-001/quest-agent-gamma/inbox/quest-agent-alpha__to__quest-agent-gamma__gossip-alpha-file-drop-001.peer-gossip-envelope.json",
+      "simulated_presence": "simulated_present",
+      "status": "accepted",
+      "target_agent_id": "quest-agent-gamma"
+    }
+  ],
+  "intake_id": "peer-file-drop-inbox-intake-synthetic-001",
+  "observed_at": "2026-06-04T10:00:04Z",
+  "outcomes_id": "peer-file-drop-copy-outcomes-synthetic-001",
+  "overall_status": "file_drop_inbox_intake_ready",
+  "receiver_agent_id": "quest-agent-gamma",
+  "schema": "quest-termux-lab.peer-file-drop-inbox-intake-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "staging_plan_id": "peer-file-drop-staging-synthetic-001",
+  "summary": {
+    "accepted_count": 1,
+    "duplicate_count": 0,
+    "entry_count": 1,
+    "failed_count": 0,
+    "invalid_envelope_count": 0,
+    "missing_file_count": 0,
+    "not_copied_count": 0,
+    "unreadable_file_count": 0
+  }
+}

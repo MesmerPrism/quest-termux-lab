@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-fixture-index-manifest.schema.json",
+  "title": "Quest Termux Lab Peer Fixture Index Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "index_id",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "experiment_scope",
+    "fixture_groups",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-fixture-index-manifest.v1"
+    },
+    "index_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "fixture_groups": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/fixture_group"
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "fixture_group": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "group_id",
+        "group_role",
+        "expected_group_status",
+        "artifact_refs",
+        "status_checks",
+        "reason"
+      ],
+      "properties": {
+        "group_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "group_role": {
+          "enum": [
+            "blocked_baseline",
+            "cleanup_plan",
+              "clear_preflight",
+              "clear_repeated_scorecard",
+              "file_drop_copy_dry_run",
+              "file_drop_inbox_intake",
+              "file_drop_staging",
+              "private_handoff_pending"
+            ]
+        },
+        "expected_group_status": {
+          "enum": ["ready", "manual_review", "blocked"]
+        },
+        "artifact_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/artifact_ref"
+          }
+        },
+        "status_checks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/status_check"
+          }
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "artifact_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "path", "expected_schema"],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_schema": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "status_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "status_field",
+        "accepted_values",
+        "manual_review_values",
+        "blocked_values"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status_field": {
+          "type": "string",
+          "minLength": 1
+        },
+        "accepted_values": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "manual_review_values": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "blocked_values": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

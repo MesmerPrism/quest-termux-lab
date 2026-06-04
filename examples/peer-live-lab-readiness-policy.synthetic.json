@@ -1,0 +1,28 @@
+{
+  "schema": "quest-termux-lab.peer-live-lab-readiness-policy.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:06Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "min_history_reports": 1,
+  "min_tracked_routes": 1,
+  "allowed_last_statuses": [
+    "healthy",
+    "degraded"
+  ],
+  "acceptable_trends": [
+    "stable",
+    "improving",
+    "single_sample"
+  ],
+  "require_no_unavailable_routes": true,
+  "require_no_unknown_routes": true,
+  "require_no_disabled_routes": true,
+  "require_no_worsening_routes": true,
+  "operator_approval_required": true,
+  "authority_boundary": [
+    "Readiness policy evaluates synthetic peer-mesh evidence only.",
+    "Readiness policy does not approve live work, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Readiness policy does not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

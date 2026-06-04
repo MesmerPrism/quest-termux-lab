@@ -1,0 +1,34 @@
+{
+  "schema": "quest-termux-lab.peer-scorecard-manifest.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:12Z",
+  "scorecard_id": "peer-scorecard-synthetic-001",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "required_artifact_kinds": [
+    "readiness_report",
+    "lab_bundle_report",
+    "trust_report",
+    "rehearsal_report",
+    "evidence_intake_report",
+    "route_health_report",
+    "route_history_report",
+    "cleanup_record"
+  ],
+  "optional_artifact_kinds": [],
+  "artifact_paths": {
+    "readiness_report": "examples/peer-live-lab-readiness-report.synthetic.json",
+    "lab_bundle_report": "examples/peer-lab-bundle-report.synthetic.json",
+    "trust_report": "examples/peer-trust-report.synthetic.json",
+    "rehearsal_report": "examples/peer-rehearsal-report.synthetic.json",
+    "evidence_intake_report": "examples/peer-evidence-intake-report.synthetic.json",
+    "route_health_report": "examples/peer-route-health-report.synthetic.json",
+    "route_history_report": "examples/peer-route-health-history.synthetic.json",
+    "cleanup_record": "examples/peer-cleanup-record.synthetic.json"
+  },
+  "authority_boundary": [
+    "Scorecard manifests reference synthetic peer-mesh evidence only.",
+    "Scorecard manifests do not approve live work, select endpoints, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Scorecard manifests do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

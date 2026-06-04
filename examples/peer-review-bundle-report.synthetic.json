@@ -1,0 +1,304 @@
+{
+  "authority_boundary": [
+    "Review bundle reports inspect sanitized peer-mesh artifacts only.",
+    "Review bundle reports do not execute validation slots, approve live work, select endpoints, replay evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Review bundle reports do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "bundle_id": "peer-review-bundle-synthetic-001",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "file_artifacts": [
+    {
+      "artifact_id": "peer_mesh_preparation_doc",
+      "artifact_role": "doc",
+      "path": "docs/peer-mesh-preparation.md",
+      "reason": "file artifact exists",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "readme",
+      "artifact_role": "doc",
+      "path": "README.md",
+      "reason": "file artifact exists",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "agent_notes",
+      "artifact_role": "doc",
+      "path": "AGENTS.md",
+      "reason": "file artifact exists",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "topology_tool",
+      "artifact_role": "tool",
+      "path": "tools/peer_mesh_topology.py",
+      "reason": "file artifact exists",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "topology_tests",
+      "artifact_role": "test",
+      "path": "tools/test_peer_mesh_topology.py",
+      "reason": "file artifact exists",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "topology_manifest_schema",
+      "artifact_role": "schema",
+      "path": "schemas/peer-topology-manifest.schema.json",
+      "reason": "file artifact exists",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "topology_report_schema",
+      "artifact_role": "schema",
+      "path": "schemas/peer-topology-report.schema.json",
+      "reason": "file artifact exists",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "topology_manifest_example",
+      "artifact_role": "example",
+      "path": "examples/peer-topology-manifest.synthetic.json",
+      "reason": "file artifact exists",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "lab_bundle_tool",
+      "artifact_role": "tool",
+      "path": "tools/peer_mesh_lab_bundle.py",
+      "reason": "file artifact exists",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "lab_bundle_tests",
+      "artifact_role": "test",
+      "path": "tools/test_peer_mesh_lab_bundle.py",
+      "reason": "file artifact exists",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "lab_bundle_manifest_schema",
+      "artifact_role": "schema",
+      "path": "schemas/peer-lab-bundle-manifest.schema.json",
+      "reason": "file artifact exists",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "lab_bundle_report_schema",
+      "artifact_role": "schema",
+      "path": "schemas/peer-lab-bundle-report.schema.json",
+      "reason": "file artifact exists",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "lab_bundle_manifest_example",
+      "artifact_role": "example",
+      "path": "examples/peer-lab-bundle-manifest.synthetic.json",
+      "reason": "file artifact exists",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "review_bundle_tool",
+      "artifact_role": "tool",
+      "path": "tools/peer_mesh_review_bundle.py",
+      "reason": "file artifact exists",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "review_bundle_tests",
+      "artifact_role": "test",
+      "path": "tools/test_peer_mesh_review_bundle.py",
+      "reason": "file artifact exists",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "review_bundle_manifest_schema",
+      "artifact_role": "schema",
+      "path": "schemas/peer-review-bundle-manifest.schema.json",
+      "reason": "file artifact exists",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "review_bundle_report_schema",
+      "artifact_role": "schema",
+      "path": "schemas/peer-review-bundle-report.schema.json",
+      "reason": "file artifact exists",
+      "status": "passed"
+    }
+  ],
+  "fleet_id": "synthetic-lab-fleet",
+  "json_artifacts": [
+    {
+      "artifact_id": "route_config",
+      "expected_schema": "quest-termux-lab.peer-route-config.v1",
+      "observed_schema": "quest-termux-lab.peer-route-config.v1",
+      "path": "examples/peer-route-config.synthetic.json",
+      "reason": "json artifact exists, matches schema, and identity is compatible",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "route_health_report",
+      "expected_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "observed_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "path": "examples/peer-route-health-report.synthetic.json",
+      "reason": "json artifact exists, matches schema, and identity is compatible",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "topology_report",
+      "expected_schema": "quest-termux-lab.peer-topology-report.v1",
+      "observed_schema": "quest-termux-lab.peer-topology-report.v1",
+      "path": "examples/peer-topology-report.synthetic.json",
+      "reason": "json artifact exists, matches schema, and identity is compatible",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "route_history_report",
+      "expected_schema": "quest-termux-lab.peer-route-health-history.v1",
+      "observed_schema": "quest-termux-lab.peer-route-health-history.v1",
+      "path": "examples/peer-route-health-history.synthetic.json",
+      "reason": "json artifact exists, matches schema, and identity is compatible",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "readiness_report",
+      "expected_schema": "quest-termux-lab.peer-live-lab-readiness-report.v1",
+      "observed_schema": "quest-termux-lab.peer-live-lab-readiness-report.v1",
+      "path": "examples/peer-live-lab-readiness-report.synthetic.json",
+      "reason": "json artifact exists, matches schema, and identity is compatible",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "lab_bundle_report",
+      "expected_schema": "quest-termux-lab.peer-lab-bundle-report.v1",
+      "observed_schema": "quest-termux-lab.peer-lab-bundle-report.v1",
+      "path": "examples/peer-lab-bundle-report.synthetic.json",
+      "reason": "json artifact exists, matches schema, and identity is compatible",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "trust_report",
+      "expected_schema": "quest-termux-lab.peer-trust-report.v1",
+      "observed_schema": "quest-termux-lab.peer-trust-report.v1",
+      "path": "examples/peer-trust-report.synthetic.json",
+      "reason": "json artifact exists, matches schema, and identity is compatible",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "rehearsal_report",
+      "expected_schema": "quest-termux-lab.peer-rehearsal-report.v1",
+      "observed_schema": "quest-termux-lab.peer-rehearsal-report.v1",
+      "path": "examples/peer-rehearsal-report.synthetic.json",
+      "reason": "json artifact exists, matches schema, and identity is compatible",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "evidence_intake_report",
+      "expected_schema": "quest-termux-lab.peer-evidence-intake-report.v1",
+      "observed_schema": "quest-termux-lab.peer-evidence-intake-report.v1",
+      "path": "examples/peer-evidence-intake-report.synthetic.json",
+      "reason": "json artifact exists, matches schema, and identity is compatible",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "scorecard_report",
+      "expected_schema": "quest-termux-lab.peer-scorecard-report.v1",
+      "observed_schema": "quest-termux-lab.peer-scorecard-report.v1",
+      "path": "examples/peer-scorecard-report.synthetic.json",
+      "reason": "json artifact exists, matches schema, and identity is compatible",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "scorecard_history",
+      "expected_schema": "quest-termux-lab.peer-scorecard-history.v1",
+      "observed_schema": "quest-termux-lab.peer-scorecard-history.v1",
+      "path": "examples/peer-scorecard-history.synthetic.json",
+      "reason": "json artifact exists, matches schema, and identity is compatible",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "scorecard_regression_report",
+      "expected_schema": "quest-termux-lab.peer-scorecard-regression-report.v1",
+      "observed_schema": "quest-termux-lab.peer-scorecard-regression-report.v1",
+      "path": "examples/peer-scorecard-regression-report.synthetic.json",
+      "reason": "json artifact exists, matches schema, and identity is compatible",
+      "status": "passed"
+    }
+  ],
+  "observed_at": "2026-06-04T10:00:15Z",
+  "overall_status": "review_blocked",
+  "schema": "quest-termux-lab.peer-review-bundle-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "status_checks": [
+    {
+      "artifact_id": "topology_report",
+      "observed_value": "topology_blocked",
+      "reason": "status value blocks review",
+      "status": "failed",
+      "status_field": "overall_status"
+    },
+    {
+      "artifact_id": "readiness_report",
+      "observed_value": "not_ready",
+      "reason": "status value blocks review",
+      "status": "failed",
+      "status_field": "overall_status"
+    },
+    {
+      "artifact_id": "lab_bundle_report",
+      "observed_value": "blocked",
+      "reason": "status value blocks review",
+      "status": "failed",
+      "status_field": "overall_status"
+    },
+    {
+      "artifact_id": "trust_report",
+      "observed_value": "untrusted",
+      "reason": "status value blocks review",
+      "status": "failed",
+      "status_field": "overall_status"
+    },
+    {
+      "artifact_id": "rehearsal_report",
+      "observed_value": "blocked",
+      "reason": "status value blocks review",
+      "status": "failed",
+      "status_field": "overall_status"
+    },
+    {
+      "artifact_id": "evidence_intake_report",
+      "observed_value": "rejected",
+      "reason": "status value blocks review",
+      "status": "failed",
+      "status_field": "overall_status"
+    },
+    {
+      "artifact_id": "scorecard_report",
+      "observed_value": "blocked",
+      "reason": "status value blocks review",
+      "status": "failed",
+      "status_field": "overall_status"
+    },
+    {
+      "artifact_id": "scorecard_history",
+      "observed_value": "blocked",
+      "reason": "status value blocks review",
+      "status": "failed",
+      "status_field": "overall_status"
+    },
+    {
+      "artifact_id": "scorecard_regression_report",
+      "observed_value": "regression_blocked",
+      "reason": "status value blocks review",
+      "status": "failed",
+      "status_field": "overall_status"
+    }
+  ],
+  "summary": {
+    "entry_count": 38,
+    "failed_count": 9,
+    "manual_review_count": 0,
+    "passed_count": 29
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "quest-termux-lab.peer-private-evidence-checklist-manifest.v1",
+  "checklist_id": "peer-private-evidence-checklist-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:01:02Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "handoff_report_path": "examples/peer-private-run-handoff-report.synthetic.json",
+  "require_handoff_ready": true,
+  "authority_boundary": [
+    "Private evidence checklist manifests reference sanitized handoff reports only.",
+    "Private evidence checklist manifests do not approve live work, select endpoints, collect evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, launch apps, execute commands, or execute validation slots.",
+    "Private evidence checklist manifests do not carry private endpoint values, gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

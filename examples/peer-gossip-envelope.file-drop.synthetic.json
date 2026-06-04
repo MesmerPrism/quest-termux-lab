@@ -1,0 +1,29 @@
+{
+  "schema": "quest-termux-lab.peer-gossip-envelope.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "message_id": "gossip-alpha-file-drop-001",
+  "sender_agent_id": "quest-agent-alpha",
+  "created_at": "2026-06-04T10:00:01Z",
+  "hop_ttl": 1,
+  "observations": [
+    {
+      "agent_id": "quest-agent-alpha",
+      "observed_at": "2026-06-04T10:00:00Z",
+      "heard_from_agent_id": "quest-agent-alpha",
+      "heartbeat_sequence": 13,
+      "agent_alive": true,
+      "central_reachable": true,
+      "local_adb_available": false,
+      "local_adb_shell_uid": null,
+      "battery_percent": 80,
+      "last_command_status": "completed",
+      "stale_after_seconds": 30,
+      "summary_hash": "synthetic-alpha-file-drop-summary"
+    }
+  ],
+  "authority_boundary": [
+    "Peer gossip carries status observations only.",
+    "Peer gossip does not carry commands, shell text, ADB targets, pairing material, or install/launch authority.",
+    "This fixture models a copied file-drop envelope body for receiver-side intake tests only."
+  ]
+}

@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-rehearsal-report.schema.json",
+  "title": "Quest Termux Lab Peer Rehearsal Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "rehearsal_id",
+    "experiment_scope",
+    "overall_status",
+    "checks",
+    "phases",
+    "summary",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-rehearsal-report.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "rehearsal_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "overall_status": {
+      "enum": ["rehearsal_ready", "manual_review", "blocked"]
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "check_id",
+          "status",
+          "expected",
+          "observed",
+          "reason"
+        ],
+        "properties": {
+          "check_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": ["passed", "failed", "manual_review"]
+          },
+          "expected": {
+            "type": "string",
+            "minLength": 1
+          },
+          "observed": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "phase_id",
+          "evidence_kind",
+          "status",
+          "required_before_live",
+          "reason"
+        ],
+        "properties": {
+          "phase_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_kind": {
+            "enum": [
+              "preflight_bundle_report",
+              "trust_report",
+              "private_operator_approval",
+              "private_endpoint_selection_record",
+              "gossip_receipts",
+              "route_health_after_run",
+              "route_history_after_run",
+              "cleanup_record"
+            ]
+          },
+          "status": {
+            "enum": ["ready", "manual_review", "blocked", "private_only"]
+          },
+          "required_before_live": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "check_count",
+        "passed_check_count",
+        "failed_check_count",
+        "manual_review_check_count",
+        "phase_count",
+        "ready_phase_count",
+        "blocked_phase_count",
+        "manual_review_phase_count",
+        "private_only_phase_count"
+      ],
+      "properties": {
+        "check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "passed_check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed_check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "manual_review_check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "phase_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ready_phase_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "blocked_phase_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "manual_review_phase_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "private_only_phase_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-route-health-history.schema.json",
+  "title": "Quest Termux Lab Peer Route Health History",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "report_count",
+    "first_report_at",
+    "last_report_at",
+    "routes",
+    "summary",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-route-health-history.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "report_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "first_report_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_report_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "target_agent_id",
+          "transport_mode",
+          "sample_count",
+          "first_observed_at",
+          "last_observed_at",
+          "first_status",
+          "last_status",
+          "trend",
+          "status_counts",
+          "transition_count",
+          "last_reason"
+        ],
+        "properties": {
+          "target_agent_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "transport_mode": {
+            "enum": ["file_drop_simulator", "loopback_http_simulator", "disabled"]
+          },
+          "sample_count": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "first_observed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "last_observed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "first_status": {
+            "enum": ["healthy", "degraded", "unavailable", "disabled", "unknown"]
+          },
+          "last_status": {
+            "enum": ["healthy", "degraded", "unavailable", "disabled", "unknown"]
+          },
+          "trend": {
+            "enum": ["stable", "improving", "worsening", "mixed", "single_sample"]
+          },
+          "status_counts": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "degraded",
+              "disabled",
+              "healthy",
+              "unavailable",
+              "unknown"
+            ],
+            "properties": {
+              "degraded": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "disabled": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "healthy": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "unavailable": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "unknown": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          },
+          "transition_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "last_reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tracked_route_count",
+        "last_healthy_count",
+        "last_degraded_count",
+        "last_unavailable_count",
+        "last_disabled_count",
+        "last_unknown_count",
+        "stable_count",
+        "improving_count",
+        "worsening_count",
+        "mixed_count",
+        "single_sample_count"
+      ],
+      "properties": {
+        "tracked_route_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "last_healthy_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "last_degraded_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "last_unavailable_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "last_disabled_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "last_unknown_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stable_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "improving_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "worsening_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "mixed_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "single_sample_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

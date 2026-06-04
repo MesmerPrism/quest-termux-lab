@@ -1,0 +1,123 @@
+{
+  "schema": "quest-termux-lab.peer-private-evidence-redaction-manifest.v1",
+  "redaction_id": "peer-private-evidence-redaction-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:02:03Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "checklist_report_path": "examples/peer-private-evidence-checklist-report.synthetic.json",
+  "require_checklist_ready": true,
+  "default_public_release": "sanitized_derivative_only",
+  "evidence_redaction_rules": [
+    {
+      "evidence_kind": "operator_approval_record",
+      "public_release": "private_only",
+      "public_derivative_schema": "",
+      "forbidden_value_classes": [
+        "operator_identity",
+        "local_paths",
+        "credential_material"
+      ],
+      "required_redaction_notes": [
+        "Do not publish the operator name, account label, approval venue, private notes, or local evidence location.",
+        "Only publish aggregate approval state if a later private review explicitly allows it."
+      ]
+    },
+    {
+      "evidence_kind": "endpoint_selection_record",
+      "public_release": "private_only",
+      "public_derivative_schema": "",
+      "forbidden_value_classes": [
+        "private_endpoint_values",
+        "raw_network_addresses",
+        "raw_device_identifiers",
+        "local_paths"
+      ],
+      "required_redaction_notes": [
+        "Do not publish peer endpoint values, network addresses, device labels, or local routing notes.",
+        "Only publish topology class, peer count, and readiness state after private review."
+      ]
+    },
+    {
+      "evidence_kind": "gossip_receipt",
+      "public_release": "sanitized_derivative_only",
+      "public_derivative_schema": "quest-termux-lab.peer-http-gossip-receipt.v1",
+      "forbidden_value_classes": [
+        "private_endpoint_values",
+        "raw_network_addresses",
+        "raw_device_identifiers",
+        "raw_gossip_bodies",
+        "raw_logs"
+      ],
+      "required_redaction_notes": [
+        "Publish only sanitized receipt metadata, peer aliases, status classes, sequence counts, and failure categories.",
+        "Remove any raw peer address, raw body text, route address, or device-specific identifier."
+      ]
+    },
+    {
+      "evidence_kind": "route_health_report",
+      "public_release": "sanitized_derivative_only",
+      "public_derivative_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "forbidden_value_classes": [
+        "private_endpoint_values",
+        "raw_network_addresses",
+        "raw_device_identifiers",
+        "raw_logs"
+      ],
+      "required_redaction_notes": [
+        "Publish route health categories, counters, and thresholds only.",
+        "Remove raw peer addresses, physical location hints, and device-specific identifiers."
+      ]
+    },
+    {
+      "evidence_kind": "cleanup_record",
+      "public_release": "sanitized_derivative_only",
+      "public_derivative_schema": "quest-termux-lab.peer-cleanup-record.v1",
+      "forbidden_value_classes": [
+        "local_paths",
+        "raw_logs",
+        "raw_device_identifiers",
+        "app_package_ids"
+      ],
+      "required_redaction_notes": [
+        "Publish cleanup status categories and counts only.",
+        "Remove local run locations, app identifiers, and raw device identifiers."
+      ]
+    },
+    {
+      "evidence_kind": "scorecard_report",
+      "public_release": "sanitized_derivative_only",
+      "public_derivative_schema": "quest-termux-lab.peer-scorecard-report.v1",
+      "forbidden_value_classes": [
+        "private_endpoint_values",
+        "raw_network_addresses",
+        "raw_device_identifiers",
+        "raw_logs"
+      ],
+      "required_redaction_notes": [
+        "Publish score classes, normalized counters, and failure categories only.",
+        "Remove raw endpoints, local run identifiers, and device-specific labels."
+      ]
+    },
+    {
+      "evidence_kind": "scorecard_regression_report",
+      "public_release": "sanitized_derivative_only",
+      "public_derivative_schema": "quest-termux-lab.peer-scorecard-regression-report.v1",
+      "forbidden_value_classes": [
+        "private_endpoint_values",
+        "raw_network_addresses",
+        "raw_device_identifiers",
+        "raw_logs"
+      ],
+      "required_redaction_notes": [
+        "Publish regression state and normalized deltas only.",
+        "Remove raw endpoints, local run identifiers, and device-specific labels."
+      ]
+    }
+  ],
+  "authority_boundary": [
+    "Private evidence redaction manifests declare public derivative policy for private evidence slots only.",
+    "Private evidence redaction manifests do not read private evidence, sanitize live artifacts, approve live work, select endpoints, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, launch apps, execute commands, or execute validation slots.",
+    "Private evidence redaction manifests do not carry private endpoint values, raw network addresses, raw device identifiers, raw logs, pairing material, app package IDs, operator identity, or credential material."
+  ]
+}

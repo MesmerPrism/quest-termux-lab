@@ -1,0 +1,452 @@
+{
+  "authority_boundary": [
+    "Fixture indexes summarize public-safe peer-mesh fixture lanes only.",
+    "Fixture indexes can treat deliberately blocked public baselines as expected fixture states.",
+    "Fixture indexes do not execute validation slots, approve live work, select endpoints, collect evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, launch apps, or execute commands."
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fixture_groups": [
+    {
+      "artifacts": [
+        {
+          "artifact_id": "baseline_review_bundle",
+          "expected_schema": "quest-termux-lab.peer-review-bundle-report.v1",
+          "observed_schema": "quest-termux-lab.peer-review-bundle-report.v1",
+          "path": "examples/peer-review-bundle-report.synthetic.json",
+          "reason": "artifact exists, matches schema, and identity is compatible",
+          "status": "passed"
+        },
+        {
+          "artifact_id": "baseline_scorecard_regression",
+          "expected_schema": "quest-termux-lab.peer-scorecard-regression-report.v1",
+          "observed_schema": "quest-termux-lab.peer-scorecard-regression-report.v1",
+          "path": "examples/peer-scorecard-regression-report.synthetic.json",
+          "reason": "artifact exists, matches schema, and identity is compatible",
+          "status": "passed"
+        }
+      ],
+      "expectation_status": "passed",
+      "expected_group_status": "blocked",
+      "group_id": "blocked-public-baseline",
+      "group_role": "blocked_baseline",
+      "observed_group_status": "blocked",
+      "reason": "The full public baseline is expected to remain blocked until private live-run evidence exists.",
+      "status_checks": [
+        {
+          "artifact_id": "baseline_review_bundle",
+          "observed_value": "review_blocked",
+          "reason": "status value is in blocked set",
+          "status": "passed",
+          "status_class": "blocked",
+          "status_field": "overall_status"
+        },
+        {
+          "artifact_id": "baseline_scorecard_regression",
+          "observed_value": "regression_blocked",
+          "reason": "status value is in blocked set",
+          "status": "passed",
+          "status_class": "blocked",
+          "status_field": "overall_status"
+        }
+      ],
+      "summary": {
+        "artifact_count": 2,
+        "artifact_failed_count": 0,
+        "blocked_status_count": 2,
+        "manual_review_status_count": 0,
+        "ready_status_count": 0,
+        "status_check_count": 2,
+        "status_check_failed_count": 0
+      }
+    },
+    {
+      "artifacts": [
+        {
+          "artifact_id": "repeated_scorecard_fixture",
+          "expected_schema": "quest-termux-lab.peer-repeated-scorecard-fixture-report.v1",
+          "observed_schema": "quest-termux-lab.peer-repeated-scorecard-fixture-report.v1",
+          "path": "examples/peer-repeated-scorecard-fixture-report.synthetic.json",
+          "reason": "artifact exists, matches schema, and identity is compatible",
+          "status": "passed"
+        },
+        {
+          "artifact_id": "clear_review_bundle",
+          "expected_schema": "quest-termux-lab.peer-review-bundle-report.v1",
+          "observed_schema": "quest-termux-lab.peer-review-bundle-report.v1",
+          "path": "examples/peer-review-bundle-repeated-scorecard-clear-report.synthetic.json",
+          "reason": "artifact exists, matches schema, and identity is compatible",
+          "status": "passed"
+        }
+      ],
+      "expectation_status": "passed",
+      "expected_group_status": "ready",
+      "group_id": "clear-repeated-scorecard-fixture",
+      "group_role": "clear_repeated_scorecard",
+      "observed_group_status": "ready",
+      "reason": "The generated repeated-scorecard happy path is expected to remain ready as a synthetic public fixture.",
+      "status_checks": [
+        {
+          "artifact_id": "repeated_scorecard_fixture",
+          "observed_value": "fixture_ready",
+          "reason": "status value is in ready set",
+          "status": "passed",
+          "status_class": "ready",
+          "status_field": "overall_status"
+        },
+        {
+          "artifact_id": "clear_review_bundle",
+          "observed_value": "review_ready",
+          "reason": "status value is in ready set",
+          "status": "passed",
+          "status_class": "ready",
+          "status_field": "overall_status"
+        }
+      ],
+      "summary": {
+        "artifact_count": 2,
+        "artifact_failed_count": 0,
+        "blocked_status_count": 0,
+        "manual_review_status_count": 0,
+        "ready_status_count": 2,
+        "status_check_count": 2,
+        "status_check_failed_count": 0
+      }
+    },
+    {
+      "artifacts": [
+        {
+          "artifact_id": "preflight_clear_fixture",
+          "expected_schema": "quest-termux-lab.peer-preflight-clear-fixture-report.v1",
+          "observed_schema": "quest-termux-lab.peer-preflight-clear-fixture-report.v1",
+          "path": "examples/peer-preflight-clear-fixture-report.synthetic.json",
+          "reason": "artifact exists, matches schema, and identity is compatible",
+          "status": "passed"
+        },
+        {
+          "artifact_id": "preflight_clear_review_bundle",
+          "expected_schema": "quest-termux-lab.peer-review-bundle-report.v1",
+          "observed_schema": "quest-termux-lab.peer-review-bundle-report.v1",
+          "path": "examples/peer-review-bundle-preflight-clear-report.synthetic.json",
+          "reason": "artifact exists, matches schema, and identity is compatible",
+          "status": "passed"
+        },
+        {
+          "artifact_id": "clear_readiness_report",
+          "expected_schema": "quest-termux-lab.peer-live-lab-readiness-report.v1",
+          "observed_schema": "quest-termux-lab.peer-live-lab-readiness-report.v1",
+          "path": "examples/peer-live-lab-readiness-report.clear.synthetic.json",
+          "reason": "artifact exists, matches schema, and identity is compatible",
+          "status": "passed"
+        },
+        {
+          "artifact_id": "clear_topology_report",
+          "expected_schema": "quest-termux-lab.peer-topology-report.v1",
+          "observed_schema": "quest-termux-lab.peer-topology-report.v1",
+          "path": "examples/peer-topology-report.clear.synthetic.json",
+          "reason": "artifact exists, matches schema, and identity is compatible",
+          "status": "passed"
+        },
+        {
+          "artifact_id": "clear_lab_bundle_report",
+          "expected_schema": "quest-termux-lab.peer-lab-bundle-report.v1",
+          "observed_schema": "quest-termux-lab.peer-lab-bundle-report.v1",
+          "path": "examples/peer-lab-bundle-report.clear.synthetic.json",
+          "reason": "artifact exists, matches schema, and identity is compatible",
+          "status": "passed"
+        }
+      ],
+      "expectation_status": "passed",
+      "expected_group_status": "ready",
+      "group_id": "clear-preflight-fixture",
+      "group_role": "clear_preflight",
+      "observed_group_status": "ready",
+      "reason": "The generated preflight happy path is expected to remain ready as a synthetic public fixture.",
+      "status_checks": [
+        {
+          "artifact_id": "preflight_clear_fixture",
+          "observed_value": "fixture_ready",
+          "reason": "status value is in ready set",
+          "status": "passed",
+          "status_class": "ready",
+          "status_field": "overall_status"
+        },
+        {
+          "artifact_id": "preflight_clear_review_bundle",
+          "observed_value": "review_ready",
+          "reason": "status value is in ready set",
+          "status": "passed",
+          "status_class": "ready",
+          "status_field": "overall_status"
+        },
+        {
+          "artifact_id": "clear_readiness_report",
+          "observed_value": "ready",
+          "reason": "status value is in ready set",
+          "status": "passed",
+          "status_class": "ready",
+          "status_field": "overall_status"
+        },
+        {
+          "artifact_id": "clear_topology_report",
+          "observed_value": "topology_ready",
+          "reason": "status value is in ready set",
+          "status": "passed",
+          "status_class": "ready",
+          "status_field": "overall_status"
+        },
+        {
+          "artifact_id": "clear_lab_bundle_report",
+          "observed_value": "synthetic_ready",
+          "reason": "status value is in ready set",
+          "status": "passed",
+          "status_class": "ready",
+          "status_field": "overall_status"
+        }
+      ],
+      "summary": {
+        "artifact_count": 5,
+        "artifact_failed_count": 0,
+        "blocked_status_count": 0,
+        "manual_review_status_count": 0,
+        "ready_status_count": 5,
+        "status_check_count": 5,
+        "status_check_failed_count": 0
+      }
+    },
+    {
+      "artifacts": [
+        {
+          "artifact_id": "cleanup_plan_report",
+          "expected_schema": "quest-termux-lab.peer-cleanup-plan-report.v1",
+          "observed_schema": "quest-termux-lab.peer-cleanup-plan-report.v1",
+          "path": "examples/peer-cleanup-plan-report.synthetic.json",
+          "reason": "artifact exists, matches schema, and identity is compatible",
+          "status": "passed"
+        }
+      ],
+      "expectation_status": "passed",
+      "expected_group_status": "ready",
+      "group_id": "cleanup-plan-fixture",
+      "group_role": "cleanup_plan",
+      "observed_group_status": "ready",
+      "reason": "The cleanup plan fixture is expected to remain ready as a public-safe pre-run cleanup declaration.",
+      "status_checks": [
+        {
+          "artifact_id": "cleanup_plan_report",
+          "observed_value": "cleanup_plan_ready",
+          "reason": "status value is in ready set",
+          "status": "passed",
+          "status_class": "ready",
+          "status_field": "overall_status"
+        }
+      ],
+      "summary": {
+        "artifact_count": 1,
+        "artifact_failed_count": 0,
+        "blocked_status_count": 0,
+        "manual_review_status_count": 0,
+        "ready_status_count": 1,
+        "status_check_count": 1,
+        "status_check_failed_count": 0
+      }
+    },
+    {
+      "artifacts": [
+        {
+          "artifact_id": "file_drop_staging_report",
+          "expected_schema": "quest-termux-lab.peer-file-drop-staging-report.v1",
+          "observed_schema": "quest-termux-lab.peer-file-drop-staging-report.v1",
+          "path": "examples/peer-file-drop-staging-report.synthetic.json",
+          "reason": "artifact exists, matches schema, and identity is compatible",
+          "status": "passed"
+        }
+      ],
+      "expectation_status": "passed",
+      "expected_group_status": "ready",
+      "group_id": "file-drop-staging-fixture",
+      "group_role": "file_drop_staging",
+      "observed_group_status": "ready",
+      "reason": "The file-drop staging fixture is expected to remain ready as a public-safe no-copy staging declaration.",
+      "status_checks": [
+        {
+          "artifact_id": "file_drop_staging_report",
+          "observed_value": "file_drop_staging_ready",
+          "reason": "status value is in ready set",
+          "status": "passed",
+          "status_class": "ready",
+          "status_field": "overall_status"
+        }
+      ],
+      "summary": {
+        "artifact_count": 1,
+        "artifact_failed_count": 0,
+        "blocked_status_count": 0,
+        "manual_review_status_count": 0,
+        "ready_status_count": 1,
+        "status_check_count": 1,
+        "status_check_failed_count": 0
+      }
+    },
+    {
+      "artifacts": [
+        {
+          "artifact_id": "file_drop_copy_dry_run_report",
+          "expected_schema": "quest-termux-lab.peer-file-drop-copy-dry-run-report.v1",
+          "observed_schema": "quest-termux-lab.peer-file-drop-copy-dry-run-report.v1",
+          "path": "examples/peer-file-drop-copy-dry-run-report.synthetic.json",
+          "reason": "artifact exists, matches schema, and identity is compatible",
+          "status": "passed"
+        }
+      ],
+      "expectation_status": "passed",
+      "expected_group_status": "ready",
+      "group_id": "file-drop-copy-dry-run-fixture",
+      "group_role": "file_drop_copy_dry_run",
+      "observed_group_status": "ready",
+      "reason": "The file-drop copy dry-run fixture is expected to remain ready as a public-safe synthetic copy outcome declaration.",
+      "status_checks": [
+        {
+          "artifact_id": "file_drop_copy_dry_run_report",
+          "observed_value": "file_drop_copy_dry_run_ready",
+          "reason": "status value is in ready set",
+          "status": "passed",
+          "status_class": "ready",
+          "status_field": "overall_status"
+        }
+      ],
+      "summary": {
+        "artifact_count": 1,
+        "artifact_failed_count": 0,
+        "blocked_status_count": 0,
+        "manual_review_status_count": 0,
+        "ready_status_count": 1,
+        "status_check_count": 1,
+        "status_check_failed_count": 0
+      }
+    },
+    {
+      "artifacts": [
+        {
+          "artifact_id": "file_drop_inbox_intake_report",
+          "expected_schema": "quest-termux-lab.peer-file-drop-inbox-intake-report.v1",
+          "observed_schema": "quest-termux-lab.peer-file-drop-inbox-intake-report.v1",
+          "path": "examples/peer-file-drop-inbox-intake-report.synthetic.json",
+          "reason": "artifact exists, matches schema, and identity is compatible",
+          "status": "passed"
+        }
+      ],
+      "expectation_status": "passed",
+      "expected_group_status": "ready",
+      "group_id": "file-drop-inbox-intake-fixture",
+      "group_role": "file_drop_inbox_intake",
+      "observed_group_status": "ready",
+      "reason": "The file-drop inbox intake fixture is expected to remain ready as a public-safe receiver-side synthetic envelope validation declaration.",
+      "status_checks": [
+        {
+          "artifact_id": "file_drop_inbox_intake_report",
+          "observed_value": "file_drop_inbox_intake_ready",
+          "reason": "status value is in ready set",
+          "status": "passed",
+          "status_class": "ready",
+          "status_field": "overall_status"
+        }
+      ],
+      "summary": {
+        "artifact_count": 1,
+        "artifact_failed_count": 0,
+        "blocked_status_count": 0,
+        "manual_review_status_count": 0,
+        "ready_status_count": 1,
+        "status_check_count": 1,
+        "status_check_failed_count": 0
+      }
+    },
+    {
+      "artifacts": [
+        {
+          "artifact_id": "private_run_handoff",
+          "expected_schema": "quest-termux-lab.peer-private-run-handoff-report.v1",
+          "observed_schema": "quest-termux-lab.peer-private-run-handoff-report.v1",
+          "path": "examples/peer-private-run-handoff-report.synthetic.json",
+          "reason": "artifact exists, matches schema, and identity is compatible",
+          "status": "passed"
+        },
+        {
+          "artifact_id": "private_evidence_checklist",
+          "expected_schema": "quest-termux-lab.peer-private-evidence-checklist-report.v1",
+          "observed_schema": "quest-termux-lab.peer-private-evidence-checklist-report.v1",
+          "path": "examples/peer-private-evidence-checklist-report.synthetic.json",
+          "reason": "artifact exists, matches schema, and identity is compatible",
+          "status": "passed"
+        },
+        {
+          "artifact_id": "private_evidence_redaction",
+          "expected_schema": "quest-termux-lab.peer-private-evidence-redaction-report.v1",
+          "observed_schema": "quest-termux-lab.peer-private-evidence-redaction-report.v1",
+          "path": "examples/peer-private-evidence-redaction-report.synthetic.json",
+          "reason": "artifact exists, matches schema, and identity is compatible",
+          "status": "passed"
+        }
+      ],
+      "expectation_status": "passed",
+      "expected_group_status": "blocked",
+      "group_id": "private-handoff-placeholders",
+      "group_role": "private_handoff_pending",
+      "observed_group_status": "blocked",
+      "reason": "Private-run handoff, evidence checklist, and redaction fixtures are expected to remain blocked in the public repo until private evidence exists.",
+      "status_checks": [
+        {
+          "artifact_id": "private_run_handoff",
+          "observed_value": "handoff_blocked",
+          "reason": "status value is in blocked set",
+          "status": "passed",
+          "status_class": "blocked",
+          "status_field": "overall_status"
+        },
+        {
+          "artifact_id": "private_evidence_checklist",
+          "observed_value": "checklist_blocked",
+          "reason": "status value is in blocked set",
+          "status": "passed",
+          "status_class": "blocked",
+          "status_field": "overall_status"
+        },
+        {
+          "artifact_id": "private_evidence_redaction",
+          "observed_value": "redaction_blocked",
+          "reason": "status value is in blocked set",
+          "status": "passed",
+          "status_class": "blocked",
+          "status_field": "overall_status"
+        }
+      ],
+      "summary": {
+        "artifact_count": 3,
+        "artifact_failed_count": 0,
+        "blocked_status_count": 3,
+        "manual_review_status_count": 0,
+        "ready_status_count": 0,
+        "status_check_count": 3,
+        "status_check_failed_count": 0
+      }
+    }
+  ],
+  "fleet_id": "synthetic-lab-fleet",
+  "index_id": "peer-fixture-index-synthetic-001",
+  "observed_at": "2026-06-04T10:01:04Z",
+  "overall_status": "fixture_index_ready",
+  "schema": "quest-termux-lab.peer-fixture-index-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "artifact_count": 16,
+    "artifact_failed_count": 0,
+    "blocked_group_count": 2,
+    "expectation_failed_count": 0,
+    "expectation_passed_count": 8,
+    "group_count": 8,
+    "manual_review_group_count": 0,
+    "ready_group_count": 6,
+    "status_check_count": 16,
+    "status_check_failed_count": 0
+  }
+}

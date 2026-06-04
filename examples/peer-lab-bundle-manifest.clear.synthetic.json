@@ -1,0 +1,27 @@
+{
+  "artifact_paths": {
+    "readiness_report": "examples/peer-live-lab-readiness-report.clear.synthetic.json",
+    "route_config": "examples/peer-route-config.synthetic.json",
+    "route_history": "examples/peer-route-health-history.clear.synthetic.json",
+    "topology_report": "examples/peer-topology-report.clear.synthetic.json"
+  },
+  "authority_boundary": [
+    "Lab bundle manifests reference synthetic peer-mesh evidence only.",
+    "Lab bundle manifests do not approve live work, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Lab bundle manifests do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "expected_artifact_schemas": {
+    "readiness_report": "quest-termux-lab.peer-live-lab-readiness-report.v1",
+    "route_config": "quest-termux-lab.peer-route-config.v1",
+    "route_history": "quest-termux-lab.peer-route-health-history.v1",
+    "topology_report": "quest-termux-lab.peer-topology-report.v1"
+  },
+  "experiment_id": "peer-preflight-clear-fixture-synthetic-001-lab-bundle",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "observed_at": "2026-06-04T10:01:10Z",
+  "operator_approval_recorded": false,
+  "operator_approval_required": false,
+  "schema": "quest-termux-lab.peer-lab-bundle-manifest.v1",
+  "source_agent_id": "quest-agent-alpha"
+}

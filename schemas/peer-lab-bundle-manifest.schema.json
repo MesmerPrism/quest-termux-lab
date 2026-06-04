@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-lab-bundle-manifest.schema.json",
+  "title": "Quest Termux Lab Peer Lab Bundle Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "experiment_id",
+    "experiment_scope",
+    "operator_approval_required",
+    "operator_approval_recorded",
+    "artifact_paths",
+    "expected_artifact_schemas",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-lab-bundle-manifest.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "experiment_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "operator_approval_required": {
+      "type": "boolean"
+    },
+    "operator_approval_recorded": {
+      "type": "boolean"
+    },
+    "artifact_paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "route_config",
+        "topology_report",
+        "route_history",
+        "readiness_report"
+      ],
+      "properties": {
+        "route_config": {
+          "type": "string",
+          "pattern": "^(?!.*\\.\\.)[a-zA-Z0-9_./-]+$"
+        },
+        "topology_report": {
+          "type": "string",
+          "pattern": "^(?!.*\\.\\.)[a-zA-Z0-9_./-]+$"
+        },
+        "route_history": {
+          "type": "string",
+          "pattern": "^(?!.*\\.\\.)[a-zA-Z0-9_./-]+$"
+        },
+        "readiness_report": {
+          "type": "string",
+          "pattern": "^(?!.*\\.\\.)[a-zA-Z0-9_./-]+$"
+        }
+      }
+    },
+    "expected_artifact_schemas": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "route_config",
+        "topology_report",
+        "route_history",
+        "readiness_report"
+      ],
+      "properties": {
+        "route_config": {
+          "const": "quest-termux-lab.peer-route-config.v1"
+        },
+        "topology_report": {
+          "const": "quest-termux-lab.peer-topology-report.v1"
+        },
+        "route_history": {
+          "const": "quest-termux-lab.peer-route-health-history.v1"
+        },
+        "readiness_report": {
+          "const": "quest-termux-lab.peer-live-lab-readiness-report.v1"
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

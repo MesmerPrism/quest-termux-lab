@@ -1,0 +1,44 @@
+{
+  "actions": [
+    {
+      "delivery_id": "delivery-alpha-to-gamma-file-drop-001",
+      "dispatch_decision": "ready",
+      "message_id": "gossip-alpha-file-drop-001",
+      "method": "copy_envelope",
+      "reason": "Synthetic dry-run outcome only; no file was copied.",
+      "relative_staging_path": "runs/peer-mesh-round/peer-round-synthetic-001/quest-agent-gamma/inbox/quest-agent-alpha__to__quest-agent-gamma__gossip-alpha-file-drop-001.peer-gossip-envelope.json",
+      "simulated_result": "simulated_copied",
+      "staging_filename": "quest-agent-alpha__to__quest-agent-gamma__gossip-alpha-file-drop-001.peer-gossip-envelope.json",
+      "staging_status": "planned",
+      "status": "simulated_copied",
+      "target_agent_id": "quest-agent-gamma",
+      "target_inbox_dir": "runs/peer-mesh-round/peer-round-synthetic-001/quest-agent-gamma/inbox",
+      "transport_mode": "file_drop_simulator"
+    }
+  ],
+  "authority_boundary": [
+    "File-drop copy dry runs summarize synthetic copy outcomes for planned file-drop gossip staging entries only.",
+    "File-drop copy dry runs do not copy files, create inbox directories, read gossip bodies, approve live work, select private endpoints, monitor peers, probe peers, open sockets, discover devices, send gossip, use ADB, launch apps, or execute commands.",
+    "File-drop copy dry runs do not carry private endpoint values, raw network addresses, raw device identifiers, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "expected_message_schema": "quest-termux-lab.peer-gossip-envelope.v1",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "observed_at": "2026-06-04T10:00:03Z",
+  "outcomes_id": "peer-file-drop-copy-outcomes-synthetic-001",
+  "overall_status": "file_drop_copy_dry_run_ready",
+  "schema": "quest-termux-lab.peer-file-drop-copy-dry-run-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "staging_plan_id": "peer-file-drop-staging-synthetic-001",
+  "summary": {
+    "action_count": 1,
+    "copied_count": 1,
+    "duplicate_count": 0,
+    "failed_count": 0,
+    "missing_outcome_count": 0,
+    "missing_source_count": 0,
+    "not_planned_count": 0,
+    "planned_action_count": 1,
+    "write_blocked_count": 0
+  }
+}

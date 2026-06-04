@@ -1,0 +1,664 @@
+{
+  "schema": "quest-termux-lab.peer-public-package-manifest.v1",
+  "package_index_id": "peer-public-package-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:03:04Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "required_file_refs": [
+    {
+      "file_id": "agent_notes",
+      "file_role": "doc",
+      "path": "AGENTS.md",
+      "reason": "Public package boundary and validation list must be visible."
+    },
+    {
+      "file_id": "readme",
+      "file_role": "doc",
+      "path": "README.md",
+      "reason": "Public package scope and test order must be visible."
+    },
+    {
+      "file_id": "peer_mesh_doc",
+      "file_role": "doc",
+      "path": "docs/peer-mesh-preparation.md",
+      "reason": "Peer mesh preparation docs must describe the package lane."
+    },
+    {
+      "file_id": "route_config_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-route-config.schema.json",
+      "reason": "Configured peer route schema must be present for package status."
+    },
+    {
+      "file_id": "route_config_example",
+      "file_role": "example",
+      "path": "examples/peer-route-config.synthetic.json",
+      "reason": "Synthetic route config must be present for package status."
+    },
+    {
+      "file_id": "route_health_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_route_health.py",
+      "reason": "Route-health inference tool must be present for package status."
+    },
+    {
+      "file_id": "route_health_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_route_health.py",
+      "reason": "Route-health tests must be present for package status."
+    },
+    {
+      "file_id": "route_health_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-route-health-report.schema.json",
+      "reason": "Route-health report schema must be present for package status."
+    },
+    {
+      "file_id": "route_health_report_example",
+      "file_role": "example",
+      "path": "examples/peer-route-health-report.synthetic.json",
+      "reason": "Synthetic route-health report must be present for package status."
+    },
+    {
+      "file_id": "route_history_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_route_history.py",
+      "reason": "Route-health history tool must be present for package status."
+    },
+    {
+      "file_id": "route_history_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_route_history.py",
+      "reason": "Route-health history tests must be present for package status."
+    },
+    {
+      "file_id": "route_history_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-route-health-history.schema.json",
+      "reason": "Route-health history schema must be present for package status."
+    },
+    {
+      "file_id": "route_history_example",
+      "file_role": "example",
+      "path": "examples/peer-route-health-history.synthetic.json",
+      "reason": "Synthetic route-health history must be present for package status."
+    },
+    {
+      "file_id": "live_lab_readiness_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_live_lab_readiness.py",
+      "reason": "Live-lab readiness gate must be present for package status."
+    },
+    {
+      "file_id": "live_lab_readiness_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_live_lab_readiness.py",
+      "reason": "Live-lab readiness tests must be present for package status."
+    },
+    {
+      "file_id": "live_lab_readiness_policy_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-live-lab-readiness-policy.schema.json",
+      "reason": "Live-lab readiness policy schema must be present for package status."
+    },
+    {
+      "file_id": "live_lab_readiness_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-live-lab-readiness-report.schema.json",
+      "reason": "Live-lab readiness report schema must be present for package status."
+    },
+    {
+      "file_id": "live_lab_readiness_policy_example",
+      "file_role": "example",
+      "path": "examples/peer-live-lab-readiness-policy.synthetic.json",
+      "reason": "Synthetic live-lab readiness policy must be present for package status."
+    },
+    {
+      "file_id": "live_lab_readiness_report_example",
+      "file_role": "example",
+      "path": "examples/peer-live-lab-readiness-report.synthetic.json",
+      "reason": "Synthetic live-lab readiness report must be present for package status."
+    },
+    {
+      "file_id": "topology_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_topology.py",
+      "reason": "Topology coverage tool must be present for package status."
+    },
+    {
+      "file_id": "topology_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_topology.py",
+      "reason": "Topology coverage tests must be present for package status."
+    },
+    {
+      "file_id": "topology_manifest_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-topology-manifest.schema.json",
+      "reason": "Topology manifest schema must be present for package status."
+    },
+    {
+      "file_id": "topology_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-topology-report.schema.json",
+      "reason": "Topology report schema must be present for package status."
+    },
+    {
+      "file_id": "topology_manifest_example",
+      "file_role": "example",
+      "path": "examples/peer-topology-manifest.synthetic.json",
+      "reason": "Synthetic topology manifest must be present for package status."
+    },
+    {
+      "file_id": "topology_report_example",
+      "file_role": "example",
+      "path": "examples/peer-topology-report.synthetic.json",
+      "reason": "Synthetic topology report must be present for package status."
+    },
+    {
+      "file_id": "lab_bundle_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_lab_bundle.py",
+      "reason": "Topology-aware lab bundle tool must be present for package status."
+    },
+    {
+      "file_id": "lab_bundle_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_lab_bundle.py",
+      "reason": "Topology-aware lab bundle tests must be present for package status."
+    },
+    {
+      "file_id": "lab_bundle_manifest_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-lab-bundle-manifest.schema.json",
+      "reason": "Lab bundle manifest schema must be present for package status."
+    },
+    {
+      "file_id": "lab_bundle_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-lab-bundle-report.schema.json",
+      "reason": "Lab bundle report schema must be present for package status."
+    },
+    {
+      "file_id": "lab_bundle_manifest_example",
+      "file_role": "example",
+      "path": "examples/peer-lab-bundle-manifest.synthetic.json",
+      "reason": "Synthetic topology-aware lab bundle manifest must be present for package status."
+    },
+    {
+      "file_id": "lab_bundle_report_example",
+      "file_role": "example",
+      "path": "examples/peer-lab-bundle-report.synthetic.json",
+      "reason": "Synthetic topology-aware lab bundle report must be present for package status."
+    },
+    {
+      "file_id": "preflight_clear_fixture_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_preflight_clear_fixture.py",
+      "reason": "Preflight clear fixture generator must be present for package status."
+    },
+    {
+      "file_id": "preflight_clear_fixture_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_preflight_clear_fixture.py",
+      "reason": "Preflight clear fixture tests must be present for package status."
+    },
+    {
+      "file_id": "preflight_clear_fixture_manifest_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-preflight-clear-fixture-manifest.schema.json",
+      "reason": "Preflight clear fixture manifest schema must be present for package status."
+    },
+    {
+      "file_id": "preflight_clear_fixture_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-preflight-clear-fixture-report.schema.json",
+      "reason": "Preflight clear fixture report schema must be present for package status."
+    },
+    {
+      "file_id": "preflight_clear_fixture_manifest_example",
+      "file_role": "example",
+      "path": "examples/peer-preflight-clear-fixture-manifest.synthetic.json",
+      "reason": "Synthetic preflight clear fixture manifest must be present for package status."
+    },
+    {
+      "file_id": "preflight_clear_fixture_report_example",
+      "file_role": "example",
+      "path": "examples/peer-preflight-clear-fixture-report.synthetic.json",
+      "reason": "Synthetic preflight clear fixture report must be present for package status."
+    },
+    {
+      "file_id": "preflight_clear_readiness_report",
+      "file_role": "example",
+      "path": "examples/peer-live-lab-readiness-report.clear.synthetic.json",
+      "reason": "Synthetic clear readiness report must be present for package status."
+    },
+    {
+      "file_id": "preflight_clear_topology_report",
+      "file_role": "example",
+      "path": "examples/peer-topology-report.clear.synthetic.json",
+      "reason": "Synthetic clear topology report must be present for package status."
+    },
+    {
+      "file_id": "preflight_clear_lab_bundle_report",
+      "file_role": "example",
+      "path": "examples/peer-lab-bundle-report.clear.synthetic.json",
+      "reason": "Synthetic clear lab bundle report must be present for package status."
+    },
+    {
+      "file_id": "preflight_clear_review_bundle_manifest",
+      "file_role": "example",
+      "path": "examples/peer-review-bundle-preflight-clear-manifest.synthetic.json",
+      "reason": "Synthetic preflight clear review bundle manifest must be present for package status."
+    },
+    {
+      "file_id": "preflight_clear_review_bundle_report",
+      "file_role": "example",
+      "path": "examples/peer-review-bundle-preflight-clear-report.synthetic.json",
+      "reason": "Synthetic preflight clear review bundle report must be present for package status."
+    },
+    {
+      "file_id": "cleanup_plan_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_cleanup_plan.py",
+      "reason": "Cleanup plan tool must be present for package status."
+    },
+    {
+      "file_id": "cleanup_plan_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_cleanup_plan.py",
+      "reason": "Cleanup plan tests must be present for package status."
+    },
+    {
+      "file_id": "cleanup_plan_manifest_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-cleanup-plan-manifest.schema.json",
+      "reason": "Cleanup plan manifest schema must be present for package status."
+    },
+    {
+      "file_id": "cleanup_plan_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-cleanup-plan-report.schema.json",
+      "reason": "Cleanup plan report schema must be present for package status."
+    },
+    {
+      "file_id": "cleanup_plan_manifest_example",
+      "file_role": "example",
+      "path": "examples/peer-cleanup-plan-manifest.synthetic.json",
+      "reason": "Synthetic cleanup plan manifest must be present for package status."
+    },
+    {
+      "file_id": "cleanup_plan_report_example",
+      "file_role": "example",
+      "path": "examples/peer-cleanup-plan-report.synthetic.json",
+      "reason": "Synthetic cleanup plan report must be present for package status."
+    },
+    {
+      "file_id": "file_drop_staging_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_file_drop_staging.py",
+      "reason": "File-drop staging planner must be present for package status."
+    },
+    {
+      "file_id": "file_drop_staging_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_file_drop_staging.py",
+      "reason": "File-drop staging tests must be present for package status."
+    },
+    {
+      "file_id": "file_drop_staging_manifest_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-file-drop-staging-manifest.schema.json",
+      "reason": "File-drop staging manifest schema must be present for package status."
+    },
+    {
+      "file_id": "file_drop_staging_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-file-drop-staging-report.schema.json",
+      "reason": "File-drop staging report schema must be present for package status."
+    },
+    {
+      "file_id": "file_drop_delivery_state_example",
+      "file_role": "example",
+      "path": "examples/peer-delivery-state.file-drop.synthetic.json",
+      "reason": "Synthetic file-drop delivery state must be present for package status."
+    },
+    {
+      "file_id": "file_drop_staging_manifest_example",
+      "file_role": "example",
+      "path": "examples/peer-file-drop-staging-manifest.synthetic.json",
+      "reason": "Synthetic file-drop staging manifest must be present for package status."
+    },
+    {
+      "file_id": "file_drop_staging_report_example",
+      "file_role": "example",
+      "path": "examples/peer-file-drop-staging-report.synthetic.json",
+      "reason": "Synthetic file-drop staging report must be present for package status."
+    },
+    {
+      "file_id": "file_drop_copy_dry_run_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_file_drop_copy_dry_run.py",
+      "reason": "File-drop copy dry-run tool must be present for package status."
+    },
+    {
+      "file_id": "file_drop_copy_dry_run_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_file_drop_copy_dry_run.py",
+      "reason": "File-drop copy dry-run tests must be present for package status."
+    },
+    {
+      "file_id": "file_drop_copy_outcomes_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-file-drop-copy-outcomes.schema.json",
+      "reason": "File-drop copy outcome schema must be present for package status."
+    },
+    {
+      "file_id": "file_drop_copy_dry_run_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-file-drop-copy-dry-run-report.schema.json",
+      "reason": "File-drop copy dry-run report schema must be present for package status."
+    },
+    {
+      "file_id": "file_drop_copy_outcomes_example",
+      "file_role": "example",
+      "path": "examples/peer-file-drop-copy-outcomes.synthetic.json",
+      "reason": "Synthetic file-drop copy outcomes must be present for package status."
+    },
+    {
+      "file_id": "file_drop_copy_dry_run_report_example",
+      "file_role": "example",
+      "path": "examples/peer-file-drop-copy-dry-run-report.synthetic.json",
+      "reason": "Synthetic file-drop copy dry-run report must be present for package status."
+    },
+    {
+      "file_id": "file_drop_inbox_intake_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_file_drop_inbox_intake.py",
+      "reason": "File-drop inbox intake tool must be present for package status."
+    },
+    {
+      "file_id": "file_drop_inbox_intake_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_file_drop_inbox_intake.py",
+      "reason": "File-drop inbox intake tests must be present for package status."
+    },
+    {
+      "file_id": "file_drop_inbox_intake_manifest_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-file-drop-inbox-intake-manifest.schema.json",
+      "reason": "File-drop inbox intake manifest schema must be present for package status."
+    },
+    {
+      "file_id": "file_drop_inbox_intake_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-file-drop-inbox-intake-report.schema.json",
+      "reason": "File-drop inbox intake report schema must be present for package status."
+    },
+    {
+      "file_id": "file_drop_inbox_intake_manifest_example",
+      "file_role": "example",
+      "path": "examples/peer-file-drop-inbox-intake-manifest.synthetic.json",
+      "reason": "Synthetic file-drop inbox intake manifest must be present for package status."
+    },
+    {
+      "file_id": "file_drop_inbox_intake_envelope_example",
+      "file_role": "example",
+      "path": "examples/peer-gossip-envelope.file-drop.synthetic.json",
+      "reason": "Synthetic file-drop gossip envelope fixture must be present for package status."
+    },
+    {
+      "file_id": "file_drop_inbox_intake_report_example",
+      "file_role": "example",
+      "path": "examples/peer-file-drop-inbox-intake-report.synthetic.json",
+      "reason": "Synthetic file-drop inbox intake report must be present for package status."
+    },
+    {
+      "file_id": "package_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_public_package.py",
+      "reason": "Package readiness tool must be present."
+    },
+    {
+      "file_id": "package_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_public_package.py",
+      "reason": "Package readiness tests must be present."
+    },
+    {
+      "file_id": "package_manifest_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-public-package-manifest.schema.json",
+      "reason": "Package manifest schema must be present."
+    },
+    {
+      "file_id": "package_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-public-package-report.schema.json",
+      "reason": "Package report schema must be present."
+    },
+    {
+      "file_id": "package_manifest_example",
+      "file_role": "example",
+      "path": "examples/peer-public-package-manifest.synthetic.json",
+      "reason": "Synthetic package manifest must be present."
+    },
+    {
+      "file_id": "fixture_index_manifest",
+      "file_role": "example",
+      "path": "examples/peer-fixture-index-manifest.synthetic.json",
+      "reason": "Fixture index manifest must be present for package status."
+    },
+    {
+      "file_id": "redaction_manifest",
+      "file_role": "example",
+      "path": "examples/peer-private-evidence-redaction-manifest.synthetic.json",
+      "reason": "Redaction manifest must be present for package status."
+    }
+  ],
+  "status_expectations": [
+    {
+      "expectation_id": "route_health_unknown_baseline",
+      "path": "examples/peer-route-health-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "status_field": "summary.unknown_count",
+      "expected_status_class": "blocked",
+      "ready_values": ["0"],
+      "manual_review_values": [],
+      "blocked_values": ["1"],
+      "reason": "The public route-health baseline is expected to keep the unknown route visible."
+    },
+    {
+      "expectation_id": "route_history_unknown_baseline",
+      "path": "examples/peer-route-health-history.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-route-health-history.v1",
+      "status_field": "summary.last_unknown_count",
+      "expected_status_class": "blocked",
+      "ready_values": ["0"],
+      "manual_review_values": [],
+      "blocked_values": ["1"],
+      "reason": "The public route-history baseline is expected to keep the latest unknown route visible."
+    },
+    {
+      "expectation_id": "live_lab_readiness_not_ready",
+      "path": "examples/peer-live-lab-readiness-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-live-lab-readiness-report.v1",
+      "status_field": "overall_status",
+      "expected_status_class": "blocked",
+      "ready_values": ["ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["not_ready"],
+      "reason": "The public readiness baseline is expected to stay not_ready while route evidence is incomplete."
+    },
+    {
+      "expectation_id": "topology_baseline_blocked",
+      "path": "examples/peer-topology-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-topology-report.v1",
+      "status_field": "overall_status",
+      "expected_status_class": "blocked",
+      "ready_values": ["topology_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["topology_blocked"],
+      "reason": "The public topology baseline is expected to stay blocked while one route remains unknown."
+    },
+    {
+      "expectation_id": "topology_aware_lab_bundle_blocked",
+      "path": "examples/peer-lab-bundle-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-lab-bundle-report.v1",
+      "status_field": "overall_status",
+      "expected_status_class": "blocked",
+      "ready_values": ["synthetic_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["blocked"],
+      "reason": "The lab bundle must remain blocked while topology and readiness are not ready."
+    },
+    {
+      "expectation_id": "clear_preflight_fixture_ready",
+      "path": "examples/peer-preflight-clear-fixture-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-preflight-clear-fixture-report.v1",
+      "status_field": "overall_status",
+      "expected_status_class": "ready",
+      "ready_values": ["fixture_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["fixture_blocked"],
+      "reason": "The synthetic preflight clear fixture should remain ready as the public happy path for route preflight gates."
+    },
+    {
+      "expectation_id": "fixture_index_ready",
+      "path": "examples/peer-fixture-index-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-fixture-index-report.v1",
+      "status_field": "overall_status",
+      "expected_status_class": "ready",
+      "ready_values": ["fixture_index_ready"],
+      "manual_review_values": [],
+      "blocked_values": ["fixture_index_blocked"],
+      "reason": "The public fixture landscape must match expected ready and blocked lanes."
+    },
+    {
+      "expectation_id": "blocked_baseline_review_bundle",
+      "path": "examples/peer-review-bundle-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-review-bundle-report.v1",
+      "status_field": "overall_status",
+      "expected_status_class": "blocked",
+      "ready_values": ["review_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["review_blocked"],
+      "reason": "The full public baseline is expected to stay blocked until private evidence exists."
+    },
+    {
+      "expectation_id": "clear_fixture_review_bundle",
+      "path": "examples/peer-review-bundle-repeated-scorecard-clear-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-review-bundle-report.v1",
+      "status_field": "overall_status",
+      "expected_status_class": "ready",
+      "ready_values": ["review_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["review_blocked"],
+      "reason": "The repeated-scorecard clear fixture should remain reviewable."
+    },
+    {
+      "expectation_id": "preflight_clear_review_bundle_ready",
+      "path": "examples/peer-review-bundle-preflight-clear-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-review-bundle-report.v1",
+      "status_field": "overall_status",
+      "expected_status_class": "ready",
+      "ready_values": ["review_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["review_blocked"],
+      "reason": "The preflight clear fixture should remain reviewable."
+    },
+    {
+      "expectation_id": "cleanup_plan_ready",
+      "path": "examples/peer-cleanup-plan-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-cleanup-plan-report.v1",
+      "status_field": "overall_status",
+      "expected_status_class": "ready",
+      "ready_values": ["cleanup_plan_ready"],
+      "manual_review_values": [],
+      "blocked_values": ["cleanup_plan_blocked"],
+      "reason": "The cleanup plan should remain ready as a public-safe pre-run cleanup declaration."
+    },
+    {
+      "expectation_id": "file_drop_staging_ready",
+      "path": "examples/peer-file-drop-staging-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-file-drop-staging-report.v1",
+      "status_field": "overall_status",
+      "expected_status_class": "ready",
+      "ready_values": ["file_drop_staging_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["file_drop_staging_blocked"],
+      "reason": "The file-drop staging fixture should remain ready as a public-safe no-copy staging declaration."
+    },
+    {
+      "expectation_id": "file_drop_copy_dry_run_ready",
+      "path": "examples/peer-file-drop-copy-dry-run-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-file-drop-copy-dry-run-report.v1",
+      "status_field": "overall_status",
+      "expected_status_class": "ready",
+      "ready_values": ["file_drop_copy_dry_run_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["file_drop_copy_dry_run_blocked"],
+      "reason": "The file-drop copy dry-run fixture should remain ready as a public-safe synthetic copy outcome declaration."
+    },
+    {
+      "expectation_id": "file_drop_inbox_intake_ready",
+      "path": "examples/peer-file-drop-inbox-intake-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-file-drop-inbox-intake-report.v1",
+      "status_field": "overall_status",
+      "expected_status_class": "ready",
+      "ready_values": ["file_drop_inbox_intake_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["file_drop_inbox_intake_blocked"],
+      "reason": "The file-drop inbox intake fixture should remain ready as a public-safe receiver-side synthetic envelope validation declaration."
+    },
+    {
+      "expectation_id": "private_evidence_redaction_blocked",
+      "path": "examples/peer-private-evidence-redaction-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-private-evidence-redaction-report.v1",
+      "status_field": "overall_status",
+      "expected_status_class": "blocked",
+      "ready_values": ["redaction_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["redaction_blocked"],
+      "reason": "The public redaction fixture should stay blocked while private evidence is absent."
+    }
+  ],
+  "declared_validation_slots": [
+    {
+      "validation_id": "peer_mesh_compile",
+      "observed_status": "passed",
+      "evidence_note": "Peer-mesh focused tool and test compile pass was observed for this package fixture.",
+      "reason": "Public package should be generated after peer-mesh Python sources compile."
+    },
+    {
+      "validation_id": "peer_mesh_unit_discovery",
+      "observed_status": "passed",
+      "evidence_note": "Peer-mesh unit discovery passed with 315 tests for this package fixture.",
+      "reason": "Public package should be generated after peer-mesh unit tests pass."
+    },
+    {
+      "validation_id": "public_boundary_scan",
+      "observed_status": "passed",
+      "evidence_note": "Public boundary scan returned public_boundary_ok for this package fixture.",
+      "reason": "Public package must stay sanitized."
+    },
+    {
+      "validation_id": "diff_whitespace_check",
+      "observed_status": "passed",
+      "evidence_note": "Whitespace diff check passed for this package fixture.",
+      "reason": "Public package should not carry whitespace errors."
+    },
+    {
+      "validation_id": "json_parse_check",
+      "observed_status": "passed",
+      "evidence_note": "Package, redaction, and fixture-index schemas and examples parsed as JSON.",
+      "reason": "Public package JSON artifacts must be parseable."
+    }
+  ],
+  "authority_boundary": [
+    "Peer public package manifests summarize public-safe package readiness only.",
+    "Peer public package manifests can treat deliberately blocked private evidence placeholders as expected public package state.",
+    "Peer public package manifests do not execute validation slots, approve live work, select endpoints, collect evidence, replay evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, launch apps, or execute commands."
+  ]
+}

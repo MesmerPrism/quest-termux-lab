@@ -1,0 +1,28 @@
+{
+  "schema": "quest-termux-lab.peer-trust-policy.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:09Z",
+  "policy_id": "peer-trust-synthetic-001",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "allowed_agent_ids": [
+    "quest-agent-alpha",
+    "quest-agent-beta",
+    "quest-agent-gamma"
+  ],
+  "allowed_transport_modes": [
+    "loopback_http_simulator",
+    "file_drop_simulator"
+  ],
+  "required_message_schema": "quest-termux-lab.peer-gossip-envelope.v1",
+  "max_hop_ttl": 2,
+  "min_sample_envelopes": 1,
+  "require_configured_peers_only": true,
+  "require_trusted_bundle_status": true,
+  "operator_review_required": true,
+  "authority_boundary": [
+    "Trust policy evaluates configured peer-mesh evidence only.",
+    "Trust policy does not approve live work, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Trust policy does not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

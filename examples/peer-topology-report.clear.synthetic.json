@@ -1,0 +1,103 @@
+{
+  "authority_boundary": [
+    "Peer topology reports summarize configured route coverage and synthetic route-health reachability only.",
+    "Peer topology reports do not discover peers, probe peers, open sockets, copy files, send gossip, use ADB, launch apps, execute commands, or execute validation slots.",
+    "Peer topology reports do not carry private endpoint values, raw network addresses, raw device identifiers, gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "checks": [
+    {
+      "check_id": "route_config_identity",
+      "observed": "match",
+      "reason": "route_config_identity matches topology manifest",
+      "status": "passed",
+      "threshold": "match"
+    },
+    {
+      "check_id": "route_health_identity",
+      "observed": "match",
+      "reason": "route_health_identity matches topology manifest",
+      "status": "passed",
+      "threshold": "match"
+    },
+    {
+      "check_id": "configured_route_coverage",
+      "observed": "0",
+      "reason": "expected targets have configured routes",
+      "status": "passed",
+      "threshold": "0 missing"
+    },
+    {
+      "check_id": "route_health_coverage",
+      "observed": "0",
+      "reason": "configured routes have route-health evidence",
+      "status": "passed",
+      "threshold": "0 missing"
+    },
+    {
+      "check_id": "healthy_route_threshold",
+      "observed": "2",
+      "reason": "healthy route count meets threshold",
+      "status": "passed",
+      "threshold": "2"
+    },
+    {
+      "check_id": "reachable_agent_threshold",
+      "observed": "3",
+      "reason": "reachable agent count meets threshold",
+      "status": "passed",
+      "threshold": "3"
+    },
+    {
+      "check_id": "non_ready_route_policy",
+      "observed": "0",
+      "reason": "all expected routes are reachable",
+      "status": "passed",
+      "threshold": "0"
+    }
+  ],
+  "edges": [
+    {
+      "configured": true,
+      "reachability_status": "reachable",
+      "reason": "route-health status is healthy",
+      "route_health_status": "healthy",
+      "source_agent_id": "quest-agent-alpha",
+      "target_agent_id": "quest-agent-beta",
+      "transport_mode": "loopback_http_simulator"
+    },
+    {
+      "configured": true,
+      "reachability_status": "reachable",
+      "reason": "route-health status is healthy",
+      "route_health_status": "healthy",
+      "source_agent_id": "quest-agent-alpha",
+      "target_agent_id": "quest-agent-gamma",
+      "transport_mode": "file_drop_simulator"
+    }
+  ],
+  "expected_agent_ids": [
+    "quest-agent-alpha",
+    "quest-agent-beta",
+    "quest-agent-gamma"
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "observed_at": "2026-06-04T10:01:10Z",
+  "overall_status": "topology_ready",
+  "schema": "quest-termux-lab.peer-topology-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "configured_edge_count": 2,
+    "degraded_edge_count": 0,
+    "edge_count": 2,
+    "expected_agent_count": 3,
+    "expected_target_count": 2,
+    "missing_health_count": 0,
+    "missing_route_count": 0,
+    "non_ready_edge_count": 0,
+    "reachable_agent_count": 3,
+    "reachable_edge_count": 2,
+    "unreachable_edge_count": 0
+  },
+  "topology_id": "peer-topology-synthetic-001"
+}

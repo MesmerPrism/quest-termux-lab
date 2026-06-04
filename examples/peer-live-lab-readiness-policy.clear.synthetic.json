@@ -1,0 +1,26 @@
+{
+  "acceptable_trends": [
+    "stable",
+    "single_sample"
+  ],
+  "allowed_last_statuses": [
+    "healthy"
+  ],
+  "authority_boundary": [
+    "Readiness policy evaluates synthetic peer-mesh evidence only.",
+    "Readiness policy does not approve live work, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Readiness policy does not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "min_history_reports": 2,
+  "min_tracked_routes": 2,
+  "observed_at": "2026-06-04T10:01:10Z",
+  "operator_approval_required": false,
+  "require_no_disabled_routes": true,
+  "require_no_unavailable_routes": true,
+  "require_no_unknown_routes": true,
+  "require_no_worsening_routes": true,
+  "schema": "quest-termux-lab.peer-live-lab-readiness-policy.v1",
+  "source_agent_id": "quest-agent-alpha"
+}

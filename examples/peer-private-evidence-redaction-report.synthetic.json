@@ -1,0 +1,208 @@
+{
+  "authority_boundary": [
+    "Private evidence redaction reports declare public derivative policy for private evidence slots only.",
+    "Private evidence redaction reports do not read private evidence, sanitize live artifacts, approve live work, select endpoints, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, launch apps, execute commands, or execute validation slots.",
+    "Private evidence redaction reports do not carry private endpoint values, raw network addresses, raw device identifiers, raw logs, pairing material, app package IDs, operator identity, or credential material."
+  ],
+  "checklist_id": "peer-private-evidence-checklist-synthetic-001",
+  "checklist_status": "checklist_blocked",
+  "checks": [
+    {
+      "check_id": "checklist_identity",
+      "observed": "match",
+      "reason": "checklist identity matches redaction manifest",
+      "status": "passed",
+      "threshold": "match"
+    },
+    {
+      "check_id": "checklist_status",
+      "observed": "checklist_blocked",
+      "reason": "checklist is not ready for redaction planning",
+      "status": "failed",
+      "threshold": "checklist_ready"
+    },
+    {
+      "check_id": "rule_coverage",
+      "observed": "7",
+      "reason": "redaction rules cover checklist evidence kinds",
+      "status": "passed",
+      "threshold": ">= 7"
+    },
+    {
+      "check_id": "required_private_evidence_items",
+      "observed": "5",
+      "reason": "required private evidence items are declared",
+      "status": "passed",
+      "threshold": "> 0"
+    }
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "observed_at": "2026-06-04T10:02:03Z",
+  "overall_status": "redaction_blocked",
+  "redaction_id": "peer-private-evidence-redaction-synthetic-001",
+  "redaction_items": [
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "operator_approval_record",
+      "expected_schema": "private.peer.operator-approval-record.v1",
+      "forbidden_value_classes": [
+        "operator_identity",
+        "local_paths",
+        "credential_material"
+      ],
+      "public_derivative_schema": "",
+      "public_release": "private_only",
+      "reason": "private evidence item is governed by a private-only rule",
+      "redaction_status": "private_only",
+      "required": true,
+      "required_redaction_notes": [
+        "Do not publish the operator name, account label, approval venue, private notes, or local evidence location.",
+        "Only publish aggregate approval state if a later private review explicitly allows it."
+      ],
+      "slot_id": "operator_approval"
+    },
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "endpoint_selection_record",
+      "expected_schema": "private.peer.endpoint-selection-record.v1",
+      "forbidden_value_classes": [
+        "private_endpoint_values",
+        "raw_network_addresses",
+        "raw_device_identifiers",
+        "local_paths"
+      ],
+      "public_derivative_schema": "",
+      "public_release": "private_only",
+      "reason": "private evidence item is governed by a private-only rule",
+      "redaction_status": "private_only",
+      "required": true,
+      "required_redaction_notes": [
+        "Do not publish peer endpoint values, network addresses, device labels, or local routing notes.",
+        "Only publish topology class, peer count, and readiness state after private review."
+      ],
+      "slot_id": "endpoint_selection"
+    },
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "gossip_receipt",
+      "expected_schema": "quest-termux-lab.peer-http-gossip-receipt.v1",
+      "forbidden_value_classes": [
+        "private_endpoint_values",
+        "raw_network_addresses",
+        "raw_device_identifiers",
+        "raw_gossip_bodies",
+        "raw_logs"
+      ],
+      "public_derivative_schema": "quest-termux-lab.peer-http-gossip-receipt.v1",
+      "public_release": "sanitized_derivative_only",
+      "reason": "redaction rule is declared, but checklist readiness is blocked or pending manual review",
+      "redaction_status": "blocked_until_private_evidence",
+      "required": true,
+      "required_redaction_notes": [
+        "Publish only sanitized receipt metadata, peer aliases, status classes, sequence counts, and failure categories.",
+        "Remove any raw peer address, raw body text, route address, or device-specific identifier."
+      ],
+      "slot_id": "gossip_receipts"
+    },
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "route_health_report",
+      "expected_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "forbidden_value_classes": [
+        "private_endpoint_values",
+        "raw_network_addresses",
+        "raw_device_identifiers",
+        "raw_logs"
+      ],
+      "public_derivative_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "public_release": "sanitized_derivative_only",
+      "reason": "redaction rule is declared, but checklist readiness is blocked or pending manual review",
+      "redaction_status": "blocked_until_private_evidence",
+      "required": true,
+      "required_redaction_notes": [
+        "Publish route health categories, counters, and thresholds only.",
+        "Remove raw peer addresses, physical location hints, and device-specific identifiers."
+      ],
+      "slot_id": "route_health_after_run"
+    },
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "cleanup_record",
+      "expected_schema": "quest-termux-lab.peer-cleanup-record.v1",
+      "forbidden_value_classes": [
+        "local_paths",
+        "raw_logs",
+        "raw_device_identifiers",
+        "app_package_ids"
+      ],
+      "public_derivative_schema": "quest-termux-lab.peer-cleanup-record.v1",
+      "public_release": "sanitized_derivative_only",
+      "reason": "redaction rule is declared, but checklist readiness is blocked or pending manual review",
+      "redaction_status": "blocked_until_private_evidence",
+      "required": true,
+      "required_redaction_notes": [
+        "Publish cleanup status categories and counts only.",
+        "Remove local run locations, app identifiers, and raw device identifiers."
+      ],
+      "slot_id": "cleanup_after_run"
+    },
+    {
+      "collection_status": "optional_pending_private_run",
+      "evidence_kind": "scorecard_report",
+      "expected_schema": "quest-termux-lab.peer-scorecard-report.v1",
+      "forbidden_value_classes": [
+        "private_endpoint_values",
+        "raw_network_addresses",
+        "raw_device_identifiers",
+        "raw_logs"
+      ],
+      "public_derivative_schema": "quest-termux-lab.peer-scorecard-report.v1",
+      "public_release": "sanitized_derivative_only",
+      "reason": "redaction rule is declared, but checklist readiness is blocked or pending manual review",
+      "redaction_status": "blocked_until_private_evidence",
+      "required": false,
+      "required_redaction_notes": [
+        "Publish score classes, normalized counters, and failure categories only.",
+        "Remove raw endpoints, local run identifiers, and device-specific labels."
+      ],
+      "slot_id": "scorecard_after_run"
+    },
+    {
+      "collection_status": "optional_pending_private_run",
+      "evidence_kind": "scorecard_regression_report",
+      "expected_schema": "quest-termux-lab.peer-scorecard-regression-report.v1",
+      "forbidden_value_classes": [
+        "private_endpoint_values",
+        "raw_network_addresses",
+        "raw_device_identifiers",
+        "raw_logs"
+      ],
+      "public_derivative_schema": "quest-termux-lab.peer-scorecard-regression-report.v1",
+      "public_release": "sanitized_derivative_only",
+      "reason": "redaction rule is declared, but checklist readiness is blocked or pending manual review",
+      "redaction_status": "blocked_until_private_evidence",
+      "required": false,
+      "required_redaction_notes": [
+        "Publish regression state and normalized deltas only.",
+        "Remove raw endpoints, local run identifiers, and device-specific labels."
+      ],
+      "slot_id": "regression_after_run"
+    }
+  ],
+  "schema": "quest-termux-lab.peer-private-evidence-redaction-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "blocked_redaction_item_count": 5,
+    "check_count": 4,
+    "failed_check_count": 1,
+    "manual_review_check_count": 0,
+    "missing_rule_count": 0,
+    "passed_check_count": 3,
+    "private_only_item_count": 2,
+    "ready_derivative_item_count": 0,
+    "redaction_item_count": 7,
+    "required_redaction_item_count": 5,
+    "sanitized_derivative_item_count": 5
+  }
+}

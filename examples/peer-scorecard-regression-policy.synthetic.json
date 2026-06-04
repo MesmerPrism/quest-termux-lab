@@ -1,0 +1,21 @@
+{
+  "schema": "quest-termux-lab.peer-scorecard-regression-policy.v1",
+  "policy_id": "peer-scorecard-regression-policy-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "min_report_count": 2,
+  "allow_single_sample_review": false,
+  "allow_manual_review_history": false,
+  "require_non_worsening_overall": true,
+  "max_new_pressure_point_count": 0,
+  "max_worsening_artifact_count": 0,
+  "max_persistent_pressure_point_count": 0,
+  "max_last_blocked_count": 0,
+  "max_last_missing_count": 0,
+  "authority_boundary": [
+    "Scorecard regression policies evaluate synthetic scorecard history only.",
+    "Scorecard regression policies do not approve live work, select endpoints, replay evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Scorecard regression policies do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

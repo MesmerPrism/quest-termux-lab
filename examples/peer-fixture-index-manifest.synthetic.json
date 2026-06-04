@@ -1,0 +1,287 @@
+{
+  "schema": "quest-termux-lab.peer-fixture-index-manifest.v1",
+  "index_id": "peer-fixture-index-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:01:03Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fixture_groups": [
+    {
+      "group_id": "blocked-public-baseline",
+      "group_role": "blocked_baseline",
+      "expected_group_status": "blocked",
+      "artifact_refs": [
+        {
+          "artifact_id": "baseline_review_bundle",
+          "path": "examples/peer-review-bundle-report.synthetic.json",
+          "expected_schema": "quest-termux-lab.peer-review-bundle-report.v1"
+        },
+        {
+          "artifact_id": "baseline_scorecard_regression",
+          "path": "examples/peer-scorecard-regression-report.synthetic.json",
+          "expected_schema": "quest-termux-lab.peer-scorecard-regression-report.v1"
+        }
+      ],
+      "status_checks": [
+        {
+          "artifact_id": "baseline_review_bundle",
+          "status_field": "overall_status",
+          "accepted_values": ["review_ready"],
+          "manual_review_values": ["manual_review"],
+          "blocked_values": ["review_blocked"]
+        },
+        {
+          "artifact_id": "baseline_scorecard_regression",
+          "status_field": "overall_status",
+          "accepted_values": ["regression_clear"],
+          "manual_review_values": ["manual_review"],
+          "blocked_values": ["regression_blocked"]
+        }
+      ],
+      "reason": "The full public baseline is expected to remain blocked until private live-run evidence exists."
+    },
+    {
+      "group_id": "clear-repeated-scorecard-fixture",
+      "group_role": "clear_repeated_scorecard",
+      "expected_group_status": "ready",
+      "artifact_refs": [
+        {
+          "artifact_id": "repeated_scorecard_fixture",
+          "path": "examples/peer-repeated-scorecard-fixture-report.synthetic.json",
+          "expected_schema": "quest-termux-lab.peer-repeated-scorecard-fixture-report.v1"
+        },
+        {
+          "artifact_id": "clear_review_bundle",
+          "path": "examples/peer-review-bundle-repeated-scorecard-clear-report.synthetic.json",
+          "expected_schema": "quest-termux-lab.peer-review-bundle-report.v1"
+        }
+      ],
+      "status_checks": [
+        {
+          "artifact_id": "repeated_scorecard_fixture",
+          "status_field": "overall_status",
+          "accepted_values": ["fixture_ready"],
+          "manual_review_values": ["manual_review"],
+          "blocked_values": ["fixture_blocked"]
+        },
+        {
+          "artifact_id": "clear_review_bundle",
+          "status_field": "overall_status",
+          "accepted_values": ["review_ready"],
+          "manual_review_values": ["manual_review"],
+          "blocked_values": ["review_blocked"]
+        }
+      ],
+      "reason": "The generated repeated-scorecard happy path is expected to remain ready as a synthetic public fixture."
+    },
+    {
+      "group_id": "clear-preflight-fixture",
+      "group_role": "clear_preflight",
+      "expected_group_status": "ready",
+      "artifact_refs": [
+        {
+          "artifact_id": "preflight_clear_fixture",
+          "path": "examples/peer-preflight-clear-fixture-report.synthetic.json",
+          "expected_schema": "quest-termux-lab.peer-preflight-clear-fixture-report.v1"
+        },
+        {
+          "artifact_id": "preflight_clear_review_bundle",
+          "path": "examples/peer-review-bundle-preflight-clear-report.synthetic.json",
+          "expected_schema": "quest-termux-lab.peer-review-bundle-report.v1"
+        },
+        {
+          "artifact_id": "clear_readiness_report",
+          "path": "examples/peer-live-lab-readiness-report.clear.synthetic.json",
+          "expected_schema": "quest-termux-lab.peer-live-lab-readiness-report.v1"
+        },
+        {
+          "artifact_id": "clear_topology_report",
+          "path": "examples/peer-topology-report.clear.synthetic.json",
+          "expected_schema": "quest-termux-lab.peer-topology-report.v1"
+        },
+        {
+          "artifact_id": "clear_lab_bundle_report",
+          "path": "examples/peer-lab-bundle-report.clear.synthetic.json",
+          "expected_schema": "quest-termux-lab.peer-lab-bundle-report.v1"
+        }
+      ],
+      "status_checks": [
+        {
+          "artifact_id": "preflight_clear_fixture",
+          "status_field": "overall_status",
+          "accepted_values": ["fixture_ready"],
+          "manual_review_values": ["manual_review"],
+          "blocked_values": ["fixture_blocked"]
+        },
+        {
+          "artifact_id": "preflight_clear_review_bundle",
+          "status_field": "overall_status",
+          "accepted_values": ["review_ready"],
+          "manual_review_values": ["manual_review"],
+          "blocked_values": ["review_blocked"]
+        },
+        {
+          "artifact_id": "clear_readiness_report",
+          "status_field": "overall_status",
+          "accepted_values": ["ready"],
+          "manual_review_values": ["manual_review"],
+          "blocked_values": ["not_ready"]
+        },
+        {
+          "artifact_id": "clear_topology_report",
+          "status_field": "overall_status",
+          "accepted_values": ["topology_ready"],
+          "manual_review_values": ["manual_review"],
+          "blocked_values": ["topology_blocked"]
+        },
+        {
+          "artifact_id": "clear_lab_bundle_report",
+          "status_field": "overall_status",
+          "accepted_values": ["synthetic_ready"],
+          "manual_review_values": ["manual_review"],
+          "blocked_values": ["blocked"]
+        }
+      ],
+      "reason": "The generated preflight happy path is expected to remain ready as a synthetic public fixture."
+    },
+    {
+      "group_id": "cleanup-plan-fixture",
+      "group_role": "cleanup_plan",
+      "expected_group_status": "ready",
+      "artifact_refs": [
+        {
+          "artifact_id": "cleanup_plan_report",
+          "path": "examples/peer-cleanup-plan-report.synthetic.json",
+          "expected_schema": "quest-termux-lab.peer-cleanup-plan-report.v1"
+        }
+      ],
+      "status_checks": [
+        {
+          "artifact_id": "cleanup_plan_report",
+          "status_field": "overall_status",
+          "accepted_values": ["cleanup_plan_ready"],
+          "manual_review_values": [],
+          "blocked_values": ["cleanup_plan_blocked"]
+        }
+      ],
+      "reason": "The cleanup plan fixture is expected to remain ready as a public-safe pre-run cleanup declaration."
+    },
+    {
+      "group_id": "file-drop-staging-fixture",
+      "group_role": "file_drop_staging",
+      "expected_group_status": "ready",
+      "artifact_refs": [
+        {
+          "artifact_id": "file_drop_staging_report",
+          "path": "examples/peer-file-drop-staging-report.synthetic.json",
+          "expected_schema": "quest-termux-lab.peer-file-drop-staging-report.v1"
+        }
+      ],
+      "status_checks": [
+        {
+          "artifact_id": "file_drop_staging_report",
+          "status_field": "overall_status",
+          "accepted_values": ["file_drop_staging_ready"],
+          "manual_review_values": ["manual_review"],
+          "blocked_values": ["file_drop_staging_blocked"]
+        }
+      ],
+      "reason": "The file-drop staging fixture is expected to remain ready as a public-safe no-copy staging declaration."
+    },
+    {
+      "group_id": "file-drop-copy-dry-run-fixture",
+      "group_role": "file_drop_copy_dry_run",
+      "expected_group_status": "ready",
+      "artifact_refs": [
+        {
+          "artifact_id": "file_drop_copy_dry_run_report",
+          "path": "examples/peer-file-drop-copy-dry-run-report.synthetic.json",
+          "expected_schema": "quest-termux-lab.peer-file-drop-copy-dry-run-report.v1"
+        }
+      ],
+      "status_checks": [
+        {
+          "artifact_id": "file_drop_copy_dry_run_report",
+          "status_field": "overall_status",
+          "accepted_values": ["file_drop_copy_dry_run_ready"],
+          "manual_review_values": ["manual_review"],
+          "blocked_values": ["file_drop_copy_dry_run_blocked"]
+        }
+      ],
+      "reason": "The file-drop copy dry-run fixture is expected to remain ready as a public-safe synthetic copy outcome declaration."
+    },
+    {
+      "group_id": "file-drop-inbox-intake-fixture",
+      "group_role": "file_drop_inbox_intake",
+      "expected_group_status": "ready",
+      "artifact_refs": [
+        {
+          "artifact_id": "file_drop_inbox_intake_report",
+          "path": "examples/peer-file-drop-inbox-intake-report.synthetic.json",
+          "expected_schema": "quest-termux-lab.peer-file-drop-inbox-intake-report.v1"
+        }
+      ],
+      "status_checks": [
+        {
+          "artifact_id": "file_drop_inbox_intake_report",
+          "status_field": "overall_status",
+          "accepted_values": ["file_drop_inbox_intake_ready"],
+          "manual_review_values": ["manual_review"],
+          "blocked_values": ["file_drop_inbox_intake_blocked"]
+        }
+      ],
+      "reason": "The file-drop inbox intake fixture is expected to remain ready as a public-safe receiver-side synthetic envelope validation declaration."
+    },
+    {
+      "group_id": "private-handoff-placeholders",
+      "group_role": "private_handoff_pending",
+      "expected_group_status": "blocked",
+      "artifact_refs": [
+        {
+          "artifact_id": "private_run_handoff",
+          "path": "examples/peer-private-run-handoff-report.synthetic.json",
+          "expected_schema": "quest-termux-lab.peer-private-run-handoff-report.v1"
+        },
+        {
+          "artifact_id": "private_evidence_checklist",
+          "path": "examples/peer-private-evidence-checklist-report.synthetic.json",
+          "expected_schema": "quest-termux-lab.peer-private-evidence-checklist-report.v1"
+        },
+        {
+          "artifact_id": "private_evidence_redaction",
+          "path": "examples/peer-private-evidence-redaction-report.synthetic.json",
+          "expected_schema": "quest-termux-lab.peer-private-evidence-redaction-report.v1"
+        }
+      ],
+      "status_checks": [
+        {
+          "artifact_id": "private_run_handoff",
+          "status_field": "overall_status",
+          "accepted_values": ["handoff_ready"],
+          "manual_review_values": ["manual_review"],
+          "blocked_values": ["handoff_blocked"]
+        },
+        {
+          "artifact_id": "private_evidence_checklist",
+          "status_field": "overall_status",
+          "accepted_values": ["checklist_ready"],
+          "manual_review_values": ["manual_review"],
+          "blocked_values": ["checklist_blocked"]
+        },
+        {
+          "artifact_id": "private_evidence_redaction",
+          "status_field": "overall_status",
+          "accepted_values": ["redaction_ready"],
+          "manual_review_values": ["manual_review"],
+          "blocked_values": ["redaction_blocked"]
+        }
+      ],
+      "reason": "Private-run handoff, evidence checklist, and redaction fixtures are expected to remain blocked in the public repo until private evidence exists."
+    }
+  ],
+  "authority_boundary": [
+    "Fixture index manifests summarize public-safe peer-mesh fixture lanes only.",
+    "Fixture index manifests can declare blocked public fixtures as expected states without approving live work.",
+    "Fixture index manifests do not execute validation slots, select endpoints, collect evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, launch apps, or execute commands."
+  ]
+}

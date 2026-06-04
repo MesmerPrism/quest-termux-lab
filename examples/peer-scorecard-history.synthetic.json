@@ -1,0 +1,279 @@
+{
+  "artifacts": [
+    {
+      "artifact_kind": "cleanup_record",
+      "delta": "observed_pressure_point",
+      "first_observed_at": "2026-06-04T10:00:12Z",
+      "first_source_status": "not_started",
+      "first_status": "manual_review",
+      "last_observed_at": "2026-06-04T10:00:12Z",
+      "last_reason": "cleanup record is not completed",
+      "last_source_status": "not_started",
+      "last_status": "manual_review",
+      "sample_count": 1,
+      "status_counts": {
+        "blocked": 0,
+        "manual_review": 1,
+        "missing": 0,
+        "synthetic_clear": 0
+      },
+      "transition_count": 0,
+      "trend": "single_sample"
+    },
+    {
+      "artifact_kind": "evidence_intake_report",
+      "delta": "observed_pressure_point",
+      "first_observed_at": "2026-06-04T10:00:12Z",
+      "first_source_status": "rejected",
+      "first_status": "blocked",
+      "last_observed_at": "2026-06-04T10:00:12Z",
+      "last_reason": "evidence intake is rejected",
+      "last_source_status": "rejected",
+      "last_status": "blocked",
+      "sample_count": 1,
+      "status_counts": {
+        "blocked": 1,
+        "manual_review": 0,
+        "missing": 0,
+        "synthetic_clear": 0
+      },
+      "transition_count": 0,
+      "trend": "single_sample"
+    },
+    {
+      "artifact_kind": "lab_bundle_report",
+      "delta": "observed_pressure_point",
+      "first_observed_at": "2026-06-04T10:00:12Z",
+      "first_source_status": "blocked",
+      "first_status": "blocked",
+      "last_observed_at": "2026-06-04T10:00:12Z",
+      "last_reason": "lab bundle is blocked",
+      "last_source_status": "blocked",
+      "last_status": "blocked",
+      "sample_count": 1,
+      "status_counts": {
+        "blocked": 1,
+        "manual_review": 0,
+        "missing": 0,
+        "synthetic_clear": 0
+      },
+      "transition_count": 0,
+      "trend": "single_sample"
+    },
+    {
+      "artifact_kind": "readiness_report",
+      "delta": "observed_pressure_point",
+      "first_observed_at": "2026-06-04T10:00:12Z",
+      "first_source_status": "not_ready",
+      "first_status": "blocked",
+      "last_observed_at": "2026-06-04T10:00:12Z",
+      "last_reason": "readiness report is not ready",
+      "last_source_status": "not_ready",
+      "last_status": "blocked",
+      "sample_count": 1,
+      "status_counts": {
+        "blocked": 1,
+        "manual_review": 0,
+        "missing": 0,
+        "synthetic_clear": 0
+      },
+      "transition_count": 0,
+      "trend": "single_sample"
+    },
+    {
+      "artifact_kind": "rehearsal_report",
+      "delta": "observed_pressure_point",
+      "first_observed_at": "2026-06-04T10:00:12Z",
+      "first_source_status": "blocked",
+      "first_status": "blocked",
+      "last_observed_at": "2026-06-04T10:00:12Z",
+      "last_reason": "rehearsal report is blocked",
+      "last_source_status": "blocked",
+      "last_status": "blocked",
+      "sample_count": 1,
+      "status_counts": {
+        "blocked": 1,
+        "manual_review": 0,
+        "missing": 0,
+        "synthetic_clear": 0
+      },
+      "transition_count": 0,
+      "trend": "single_sample"
+    },
+    {
+      "artifact_kind": "route_health_report",
+      "delta": "observed_pressure_point",
+      "first_observed_at": "2026-06-04T10:00:12Z",
+      "first_source_status": "unknown",
+      "first_status": "manual_review",
+      "last_observed_at": "2026-06-04T10:00:12Z",
+      "last_reason": "route-health report has unknown routes",
+      "last_source_status": "unknown",
+      "last_status": "manual_review",
+      "sample_count": 1,
+      "status_counts": {
+        "blocked": 0,
+        "manual_review": 1,
+        "missing": 0,
+        "synthetic_clear": 0
+      },
+      "transition_count": 0,
+      "trend": "single_sample"
+    },
+    {
+      "artifact_kind": "route_history_report",
+      "delta": "observed_pressure_point",
+      "first_observed_at": "2026-06-04T10:00:12Z",
+      "first_source_status": "unknown",
+      "first_status": "manual_review",
+      "last_observed_at": "2026-06-04T10:00:12Z",
+      "last_reason": "route-history report has unknown routes",
+      "last_source_status": "unknown",
+      "last_status": "manual_review",
+      "sample_count": 1,
+      "status_counts": {
+        "blocked": 0,
+        "manual_review": 1,
+        "missing": 0,
+        "synthetic_clear": 0
+      },
+      "transition_count": 0,
+      "trend": "single_sample"
+    },
+    {
+      "artifact_kind": "trust_report",
+      "delta": "observed_pressure_point",
+      "first_observed_at": "2026-06-04T10:00:12Z",
+      "first_source_status": "untrusted",
+      "first_status": "blocked",
+      "last_observed_at": "2026-06-04T10:00:12Z",
+      "last_reason": "trust report is untrusted",
+      "last_source_status": "untrusted",
+      "last_status": "blocked",
+      "sample_count": 1,
+      "status_counts": {
+        "blocked": 1,
+        "manual_review": 0,
+        "missing": 0,
+        "synthetic_clear": 0
+      },
+      "transition_count": 0,
+      "trend": "single_sample"
+    }
+  ],
+  "authority_boundary": [
+    "Scorecard history compares synthetic peer-mesh scorecard reports only.",
+    "Scorecard history does not approve live work, select endpoints, replay evidence, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Scorecard history does not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "first_report_at": "2026-06-04T10:00:12Z",
+  "first_scorecard_id": "peer-scorecard-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "last_report_at": "2026-06-04T10:00:12Z",
+  "last_scorecard_id": "peer-scorecard-synthetic-001",
+  "observed_at": "2026-06-04T10:00:13Z",
+  "overall_status": "blocked",
+  "overall_trend": "single_sample",
+  "pressure_point_deltas": [
+    {
+      "artifact_kind": "cleanup_record",
+      "delta": "observed_pressure_point",
+      "first_status": "manual_review",
+      "last_reason": "cleanup record is not completed",
+      "last_status": "manual_review",
+      "trend": "single_sample"
+    },
+    {
+      "artifact_kind": "evidence_intake_report",
+      "delta": "observed_pressure_point",
+      "first_status": "blocked",
+      "last_reason": "evidence intake is rejected",
+      "last_status": "blocked",
+      "trend": "single_sample"
+    },
+    {
+      "artifact_kind": "lab_bundle_report",
+      "delta": "observed_pressure_point",
+      "first_status": "blocked",
+      "last_reason": "lab bundle is blocked",
+      "last_status": "blocked",
+      "trend": "single_sample"
+    },
+    {
+      "artifact_kind": "readiness_report",
+      "delta": "observed_pressure_point",
+      "first_status": "blocked",
+      "last_reason": "readiness report is not ready",
+      "last_status": "blocked",
+      "trend": "single_sample"
+    },
+    {
+      "artifact_kind": "rehearsal_report",
+      "delta": "observed_pressure_point",
+      "first_status": "blocked",
+      "last_reason": "rehearsal report is blocked",
+      "last_status": "blocked",
+      "trend": "single_sample"
+    },
+    {
+      "artifact_kind": "route_health_report",
+      "delta": "observed_pressure_point",
+      "first_status": "manual_review",
+      "last_reason": "route-health report has unknown routes",
+      "last_status": "manual_review",
+      "trend": "single_sample"
+    },
+    {
+      "artifact_kind": "route_history_report",
+      "delta": "observed_pressure_point",
+      "first_status": "manual_review",
+      "last_reason": "route-history report has unknown routes",
+      "last_status": "manual_review",
+      "trend": "single_sample"
+    },
+    {
+      "artifact_kind": "trust_report",
+      "delta": "observed_pressure_point",
+      "first_status": "blocked",
+      "last_reason": "trust report is untrusted",
+      "last_status": "blocked",
+      "trend": "single_sample"
+    }
+  ],
+  "report_count": 1,
+  "schema": "quest-termux-lab.peer-scorecard-history.v1",
+  "scorecards": [
+    {
+      "blocked_count": 5,
+      "manual_review_count": 3,
+      "missing_count": 0,
+      "observed_at": "2026-06-04T10:00:12Z",
+      "overall_status": "blocked",
+      "pressure_point_count": 8,
+      "scorecard_id": "peer-scorecard-synthetic-001",
+      "synthetic_clear_count": 0
+    }
+  ],
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "artifact_kind_count": 8,
+    "first_overall_status": "blocked",
+    "improving_artifact_count": 0,
+    "last_blocked_count": 5,
+    "last_manual_review_count": 3,
+    "last_missing_count": 0,
+    "last_overall_status": "blocked",
+    "last_pressure_point_count": 8,
+    "last_synthetic_clear_count": 0,
+    "mixed_artifact_count": 0,
+    "new_pressure_point_count": 0,
+    "overall_trend": "single_sample",
+    "persistent_pressure_point_count": 8,
+    "report_count": 1,
+    "resolved_pressure_point_count": 0,
+    "single_sample_artifact_count": 8,
+    "stable_artifact_count": 0,
+    "worsening_artifact_count": 0
+  }
+}

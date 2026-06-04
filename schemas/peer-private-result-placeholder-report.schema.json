@@ -1,0 +1,211 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-private-result-placeholder-report.schema.json",
+  "title": "Quest Termux Lab Peer Private Result Placeholder Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "placeholder_id",
+    "experiment_scope",
+    "import_plan_status",
+    "overall_status",
+    "checks",
+    "placeholder_slots",
+    "summary",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-private-result-placeholder-report.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "placeholder_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "import_plan_status": {
+      "enum": ["import_ready", "manual_review", "import_blocked"]
+    },
+    "overall_status": {
+      "enum": ["result_placeholders_ready", "manual_review", "result_placeholders_blocked"]
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/check"
+      }
+    },
+    "placeholder_slots": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/placeholder_slot"
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "check_count",
+        "passed_check_count",
+        "manual_review_check_count",
+        "failed_check_count",
+        "placeholder_slot_count",
+        "private_only_slot_count",
+        "awaiting_derivative_slot_count",
+        "blocked_slot_count"
+      ],
+      "properties": {
+        "check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "passed_check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "manual_review_check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed_check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "placeholder_slot_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "private_only_slot_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "awaiting_derivative_slot_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "blocked_slot_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["check_id", "status", "observed", "threshold", "reason"],
+      "properties": {
+        "check_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": ["passed", "manual_review", "failed"]
+        },
+        "observed": {
+          "type": "string"
+        },
+        "threshold": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "placeholder_slot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "slot_id",
+        "evidence_kind",
+        "expected_schema",
+        "required",
+        "collection_status",
+        "public_release",
+        "public_derivative_schema",
+        "source_import_status",
+        "placeholder_status",
+        "public_placeholder",
+        "reason"
+      ],
+      "properties": {
+        "slot_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "collection_status": {
+          "enum": ["pending_private_run", "optional_pending_private_run"]
+        },
+        "public_release": {
+          "enum": ["sanitized_derivative_only", "private_only", ""]
+        },
+        "public_derivative_schema": {
+          "type": "string"
+        },
+        "source_import_status": {
+          "enum": [
+            "ready_for_public_derivative",
+            "blocked_until_redaction_ready",
+            "private_only",
+            "missing_derivative_schema"
+          ]
+        },
+        "placeholder_status": {
+          "enum": [
+            "private_only",
+            "awaiting_sanitized_derivative_artifact",
+            "blocked_until_import_ready",
+            "blocked_missing_derivative_schema"
+          ]
+        },
+        "public_placeholder": {
+          "const": true
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

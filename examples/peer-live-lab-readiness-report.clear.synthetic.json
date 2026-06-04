@@ -1,0 +1,84 @@
+{
+  "authority_boundary": [
+    "Live-lab readiness reports evaluate synthetic peer-mesh evidence only.",
+    "Readiness reports do not approve live work, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Readiness reports do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "checks": [
+    {
+      "check_id": "history_report_count",
+      "expected": ">= 2 route-health reports",
+      "observed": "2",
+      "reason": "route-health history sample count",
+      "status": "passed"
+    },
+    {
+      "check_id": "tracked_route_count",
+      "expected": ">= 2 tracked routes",
+      "observed": "2",
+      "reason": "tracked configured route count",
+      "status": "passed"
+    },
+    {
+      "check_id": "no_unavailable_routes",
+      "expected": "0 unavailable routes",
+      "observed": "0",
+      "reason": "latest route-health status must not be unavailable",
+      "status": "passed"
+    },
+    {
+      "check_id": "no_unknown_routes",
+      "expected": "0 unknown routes",
+      "observed": "0",
+      "reason": "every configured route needs synthetic evidence before live lab work",
+      "status": "passed"
+    },
+    {
+      "check_id": "no_disabled_routes",
+      "expected": "0 disabled routes",
+      "observed": "0",
+      "reason": "disabled routes should be removed or intentionally excluded before live lab work",
+      "status": "passed"
+    },
+    {
+      "check_id": "no_worsening_routes",
+      "expected": "0 worsening routes",
+      "observed": "0",
+      "reason": "route-health trend must not be worsening",
+      "status": "passed"
+    }
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "observed_at": "2026-06-04T10:01:10Z",
+  "overall_status": "ready",
+  "routes": [
+    {
+      "last_status": "healthy",
+      "readiness_status": "ready",
+      "reason": "route satisfies synthetic readiness policy",
+      "sample_count": 2,
+      "target_agent_id": "quest-agent-beta",
+      "trend": "stable"
+    },
+    {
+      "last_status": "healthy",
+      "readiness_status": "ready",
+      "reason": "route satisfies synthetic readiness policy",
+      "sample_count": 2,
+      "target_agent_id": "quest-agent-gamma",
+      "trend": "stable"
+    }
+  ],
+  "schema": "quest-termux-lab.peer-live-lab-readiness-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "check_count": 6,
+    "failed_check_count": 0,
+    "manual_review_check_count": 0,
+    "not_ready_route_count": 0,
+    "passed_check_count": 6,
+    "ready_route_count": 2,
+    "route_count": 2
+  }
+}

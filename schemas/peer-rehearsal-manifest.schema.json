@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-rehearsal-manifest.schema.json",
+  "title": "Quest Termux Lab Peer Rehearsal Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "rehearsal_id",
+    "experiment_scope",
+    "required_lab_bundle_statuses",
+    "required_trust_statuses",
+    "operator_review_required",
+    "operator_review_recorded",
+    "planned_phases",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-rehearsal-manifest.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "rehearsal_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "required_lab_bundle_statuses": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": ["synthetic_ready", "manual_review", "blocked"]
+      }
+    },
+    "required_trust_statuses": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": ["trusted", "manual_review", "untrusted"]
+      }
+    },
+    "operator_review_required": {
+      "type": "boolean"
+    },
+    "operator_review_recorded": {
+      "type": "boolean"
+    },
+    "planned_phases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "phase_id",
+          "evidence_kind",
+          "required_before_live"
+        ],
+        "properties": {
+          "phase_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_kind": {
+            "enum": [
+              "preflight_bundle_report",
+              "trust_report",
+              "private_operator_approval",
+              "private_endpoint_selection_record",
+              "gossip_receipts",
+              "route_health_after_run",
+              "route_history_after_run",
+              "cleanup_record"
+            ]
+          },
+          "required_before_live": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

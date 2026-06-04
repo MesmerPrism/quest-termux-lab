@@ -44,6 +44,67 @@ python -m py_compile tools/peer_mesh_delivery.py tools/test_peer_mesh_delivery.p
 python -m unittest tools.test_peer_mesh_delivery
 python -m py_compile tools/peer_mesh_dispatch_plan.py tools/test_peer_mesh_dispatch_plan.py
 python -m unittest tools.test_peer_mesh_dispatch_plan
+python -m py_compile tools/peer_mesh_file_drop_staging.py tools/test_peer_mesh_file_drop_staging.py
+python -m unittest tools.test_peer_mesh_file_drop_staging
+python tools/peer_mesh_file_drop_staging.py --manifest examples/peer-file-drop-staging-manifest.synthetic.json --artifact-root . --output examples/peer-file-drop-staging-report.synthetic.json
+python -m py_compile tools/peer_mesh_file_drop_copy_dry_run.py tools/test_peer_mesh_file_drop_copy_dry_run.py
+python -m unittest tools.test_peer_mesh_file_drop_copy_dry_run
+python tools/peer_mesh_file_drop_copy_dry_run.py --staging-report examples/peer-file-drop-staging-report.synthetic.json --outcomes examples/peer-file-drop-copy-outcomes.synthetic.json --output examples/peer-file-drop-copy-dry-run-report.synthetic.json
+python -m py_compile tools/peer_mesh_file_drop_inbox_intake.py tools/test_peer_mesh_file_drop_inbox_intake.py
+python -m unittest tools.test_peer_mesh_file_drop_inbox_intake
+python tools/peer_mesh_file_drop_inbox_intake.py --copy-report examples/peer-file-drop-copy-dry-run-report.synthetic.json --manifest examples/peer-file-drop-inbox-intake-manifest.synthetic.json --artifact-root . --output examples/peer-file-drop-inbox-intake-report.synthetic.json
+python -m py_compile tools/peer_mesh_send_dry_run.py tools/test_peer_mesh_send_dry_run.py
+python -m unittest tools.test_peer_mesh_send_dry_run
+python -m py_compile tools/peer_mesh_retry_plan.py tools/test_peer_mesh_retry_plan.py
+python -m unittest tools.test_peer_mesh_retry_plan
+python -m py_compile tools/peer_mesh_route_health.py tools/test_peer_mesh_route_health.py
+python -m unittest tools.test_peer_mesh_route_health
+python -m py_compile tools/peer_mesh_topology.py tools/test_peer_mesh_topology.py
+python -m unittest tools.test_peer_mesh_topology
+python -m py_compile tools/peer_mesh_route_history.py tools/test_peer_mesh_route_history.py
+python -m unittest tools.test_peer_mesh_route_history
+python -m py_compile tools/peer_mesh_live_lab_readiness.py tools/test_peer_mesh_live_lab_readiness.py
+python -m unittest tools.test_peer_mesh_live_lab_readiness
+python -m py_compile tools/peer_mesh_lab_bundle.py tools/test_peer_mesh_lab_bundle.py
+python -m unittest tools.test_peer_mesh_lab_bundle
+python -m py_compile tools/peer_mesh_trust_gate.py tools/test_peer_mesh_trust_gate.py
+python -m unittest tools.test_peer_mesh_trust_gate
+python -m py_compile tools/peer_mesh_rehearsal.py tools/test_peer_mesh_rehearsal.py
+python -m unittest tools.test_peer_mesh_rehearsal
+python -m py_compile tools/peer_mesh_evidence_intake.py tools/test_peer_mesh_evidence_intake.py
+python -m unittest tools.test_peer_mesh_evidence_intake
+python -m py_compile tools/peer_mesh_cleanup_plan.py tools/test_peer_mesh_cleanup_plan.py
+python -m unittest tools.test_peer_mesh_cleanup_plan
+python tools/peer_mesh_cleanup_plan.py --manifest examples/peer-cleanup-plan-manifest.synthetic.json --output examples/peer-cleanup-plan-report.synthetic.json
+python -m py_compile tools/peer_mesh_scorecard.py tools/test_peer_mesh_scorecard.py
+python -m unittest tools.test_peer_mesh_scorecard
+python -m py_compile tools/peer_mesh_scorecard_history.py tools/test_peer_mesh_scorecard_history.py
+python -m unittest tools.test_peer_mesh_scorecard_history
+python -m py_compile tools/peer_mesh_scorecard_regression.py tools/test_peer_mesh_scorecard_regression.py
+python -m unittest tools.test_peer_mesh_scorecard_regression
+python -m py_compile tools/peer_mesh_repeated_scorecard_fixture.py tools/test_peer_mesh_repeated_scorecard_fixture.py
+python -m unittest tools.test_peer_mesh_repeated_scorecard_fixture
+python -m py_compile tools/peer_mesh_preflight_clear_fixture.py tools/test_peer_mesh_preflight_clear_fixture.py
+python -m unittest tools.test_peer_mesh_preflight_clear_fixture
+python -m py_compile tools/peer_mesh_review_bundle.py tools/test_peer_mesh_review_bundle.py
+python -m unittest tools.test_peer_mesh_review_bundle
+python tools/peer_mesh_review_bundle.py --manifest examples/peer-review-bundle-preflight-clear-manifest.synthetic.json --artifact-root . --output examples/peer-review-bundle-preflight-clear-report.synthetic.json
+python -m py_compile tools/peer_mesh_private_run_handoff.py tools/test_peer_mesh_private_run_handoff.py
+python -m unittest tools.test_peer_mesh_private_run_handoff
+python -m py_compile tools/peer_mesh_private_evidence_checklist.py tools/test_peer_mesh_private_evidence_checklist.py
+python -m unittest tools.test_peer_mesh_private_evidence_checklist
+python -m py_compile tools/peer_mesh_private_evidence_redaction.py tools/test_peer_mesh_private_evidence_redaction.py
+python -m unittest tools.test_peer_mesh_private_evidence_redaction
+python -m py_compile tools/peer_mesh_fixture_index.py tools/test_peer_mesh_fixture_index.py
+python -m unittest tools.test_peer_mesh_fixture_index
+python -m py_compile tools/peer_mesh_public_package.py tools/test_peer_mesh_public_package.py
+python -m unittest tools.test_peer_mesh_public_package
+python -m py_compile tools/peer_mesh_private_import_plan.py tools/test_peer_mesh_private_import_plan.py
+python -m unittest tools.test_peer_mesh_private_import_plan
+python -m py_compile tools/peer_mesh_private_result_placeholder.py tools/test_peer_mesh_private_result_placeholder.py
+python -m unittest tools.test_peer_mesh_private_result_placeholder
+python -m py_compile tools/peer_mesh_private_result_acceptance.py tools/test_peer_mesh_private_result_acceptance.py
+python -m unittest tools.test_peer_mesh_private_result_acceptance
 powershell -NoProfile -Command "[scriptblock]::Create((Get-Content -Raw tools/capture_x11_surface_metrics.ps1)) | Out-Null"
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/build_android_vnc_panel_viewer.ps1 -Unsigned
 bash -n scripts/build-minimal-android-apk-on-device.sh scripts/wifi-adb-keepawake-watchdog.sh scripts/quest-x11-wide-prefs.sh scripts/start-quest-x11-wide.sh

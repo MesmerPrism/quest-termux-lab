@@ -1,0 +1,67 @@
+{
+  "schema": "quest-termux-lab.peer-route-health-history.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:05Z",
+  "report_count": 1,
+  "first_report_at": "2026-06-04T10:00:05Z",
+  "last_report_at": "2026-06-04T10:00:05Z",
+  "routes": [
+    {
+      "target_agent_id": "quest-agent-beta",
+      "transport_mode": "loopback_http_simulator",
+      "sample_count": 1,
+      "first_observed_at": "2026-06-04T10:00:05Z",
+      "last_observed_at": "2026-06-04T10:00:05Z",
+      "first_status": "healthy",
+      "last_status": "healthy",
+      "trend": "single_sample",
+      "status_counts": {
+        "degraded": 0,
+        "disabled": 0,
+        "healthy": 1,
+        "unavailable": 0,
+        "unknown": 0
+      },
+      "transition_count": 0,
+      "last_reason": "synthetic delivery accepted"
+    },
+    {
+      "target_agent_id": "quest-agent-gamma",
+      "transport_mode": "file_drop_simulator",
+      "sample_count": 1,
+      "first_observed_at": "2026-06-04T10:00:05Z",
+      "last_observed_at": "2026-06-04T10:00:05Z",
+      "first_status": "unknown",
+      "last_status": "unknown",
+      "trend": "single_sample",
+      "status_counts": {
+        "degraded": 0,
+        "disabled": 0,
+        "healthy": 0,
+        "unavailable": 0,
+        "unknown": 1
+      },
+      "transition_count": 0,
+      "last_reason": "no send or retry evidence for route"
+    }
+  ],
+  "summary": {
+    "tracked_route_count": 2,
+    "last_healthy_count": 1,
+    "last_degraded_count": 0,
+    "last_unavailable_count": 0,
+    "last_disabled_count": 0,
+    "last_unknown_count": 1,
+    "stable_count": 0,
+    "improving_count": 0,
+    "worsening_count": 0,
+    "mixed_count": 0,
+    "single_sample_count": 2
+  },
+  "authority_boundary": [
+    "Route-health history aggregates synthetic route-health reports only.",
+    "Route-health history does not probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Route-health history does not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

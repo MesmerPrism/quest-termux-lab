@@ -1,0 +1,63 @@
+{
+  "schema": "quest-termux-lab.peer-rehearsal-manifest.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:10Z",
+  "rehearsal_id": "peer-rehearsal-synthetic-001",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "required_lab_bundle_statuses": [
+    "synthetic_ready"
+  ],
+  "required_trust_statuses": [
+    "trusted"
+  ],
+  "operator_review_required": true,
+  "operator_review_recorded": false,
+  "planned_phases": [
+    {
+      "phase_id": "phase-01-preflight-bundle",
+      "evidence_kind": "preflight_bundle_report",
+      "required_before_live": true
+    },
+    {
+      "phase_id": "phase-02-trust-gate",
+      "evidence_kind": "trust_report",
+      "required_before_live": true
+    },
+    {
+      "phase_id": "phase-03-operator-review",
+      "evidence_kind": "private_operator_approval",
+      "required_before_live": true
+    },
+    {
+      "phase_id": "phase-04-private-endpoint-selection",
+      "evidence_kind": "private_endpoint_selection_record",
+      "required_before_live": true
+    },
+    {
+      "phase_id": "phase-05-gossip-receipts",
+      "evidence_kind": "gossip_receipts",
+      "required_before_live": true
+    },
+    {
+      "phase_id": "phase-06-route-health-after-run",
+      "evidence_kind": "route_health_after_run",
+      "required_before_live": true
+    },
+    {
+      "phase_id": "phase-07-route-history-after-run",
+      "evidence_kind": "route_history_after_run",
+      "required_before_live": false
+    },
+    {
+      "phase_id": "phase-08-cleanup",
+      "evidence_kind": "cleanup_record",
+      "required_before_live": true
+    }
+  ],
+  "authority_boundary": [
+    "Rehearsal manifests describe synthetic preflight and private evidence requirements only.",
+    "Rehearsal manifests do not approve live work, select endpoints, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Rehearsal manifests do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

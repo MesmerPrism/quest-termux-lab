@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-private-evidence-redaction-manifest.schema.json",
+  "title": "Quest Termux Lab Peer Private Evidence Redaction Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "redaction_id",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "experiment_scope",
+    "checklist_report_path",
+    "require_checklist_ready",
+    "default_public_release",
+    "evidence_redaction_rules",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-private-evidence-redaction-manifest.v1"
+    },
+    "redaction_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "checklist_report_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "require_checklist_ready": {
+      "type": "boolean"
+    },
+    "default_public_release": {
+      "enum": ["sanitized_derivative_only", "private_only"]
+    },
+    "evidence_redaction_rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/redaction_rule"
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "redaction_rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_kind",
+        "public_release",
+        "public_derivative_schema",
+        "forbidden_value_classes",
+        "required_redaction_notes"
+      ],
+      "properties": {
+        "evidence_kind": {
+          "enum": [
+            "operator_approval_record",
+            "endpoint_selection_record",
+            "gossip_receipt",
+            "route_health_report",
+            "route_history_report",
+            "cleanup_record",
+            "scorecard_report",
+            "scorecard_history",
+            "scorecard_regression_report",
+            "review_bundle_report"
+          ]
+        },
+        "public_release": {
+          "enum": ["sanitized_derivative_only", "private_only"]
+        },
+        "public_derivative_schema": {
+          "type": "string"
+        },
+        "forbidden_value_classes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "app_package_ids",
+              "credential_material",
+              "local_paths",
+              "operator_identity",
+              "pairing_material",
+              "private_endpoint_values",
+              "raw_device_identifiers",
+              "raw_gossip_bodies",
+              "raw_logs",
+              "raw_network_addresses"
+            ]
+          }
+        },
+        "required_redaction_notes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

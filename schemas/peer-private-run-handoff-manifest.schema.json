@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-private-run-handoff-manifest.schema.json",
+  "title": "Quest Termux Lab Peer Private Run Handoff Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "handoff_id",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "experiment_scope",
+    "review_bundle_report_path",
+    "require_review_ready",
+    "required_private_evidence_slots",
+    "optional_private_evidence_slots",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-private-run-handoff-manifest.v1"
+    },
+    "handoff_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "review_bundle_report_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "require_review_ready": {
+      "type": "boolean"
+    },
+    "required_private_evidence_slots": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/evidence_slot"
+      }
+    },
+    "optional_private_evidence_slots": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence_slot"
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "evidence_slot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slot_id", "evidence_kind", "expected_schema", "reason"],
+      "properties": {
+        "slot_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_kind": {
+          "enum": [
+            "operator_approval_record",
+            "endpoint_selection_record",
+            "gossip_receipt",
+            "route_health_report",
+            "route_history_report",
+            "cleanup_record",
+            "scorecard_report",
+            "scorecard_history",
+            "scorecard_regression_report",
+            "review_bundle_report"
+          ]
+        },
+        "expected_schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

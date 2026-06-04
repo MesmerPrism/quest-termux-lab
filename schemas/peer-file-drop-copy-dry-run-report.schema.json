@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-file-drop-copy-dry-run-report.schema.json",
+  "title": "Quest Termux Lab Peer File-Drop Copy Dry Run Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "staging_plan_id",
+    "outcomes_id",
+    "experiment_scope",
+    "expected_message_schema",
+    "actions",
+    "summary",
+    "overall_status",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-file-drop-copy-dry-run-report.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "staging_plan_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "outcomes_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "expected_message_schema": {
+      "const": "quest-termux-lab.peer-gossip-envelope.v1"
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/copy_action"
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action_count",
+        "planned_action_count",
+        "copied_count",
+        "duplicate_count",
+        "missing_source_count",
+        "write_blocked_count",
+        "not_planned_count",
+        "missing_outcome_count",
+        "failed_count"
+      ],
+      "properties": {
+        "action_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "planned_action_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "copied_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "duplicate_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_source_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "write_blocked_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "not_planned_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_outcome_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "overall_status": {
+      "enum": [
+        "file_drop_copy_dry_run_ready",
+        "manual_review",
+        "file_drop_copy_dry_run_blocked"
+      ]
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "copy_action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "delivery_id",
+        "target_agent_id",
+        "message_id",
+        "staging_status",
+        "dispatch_decision",
+        "transport_mode",
+        "method",
+        "target_inbox_dir",
+        "staging_filename",
+        "relative_staging_path",
+        "simulated_result",
+        "status",
+        "reason"
+      ],
+      "properties": {
+        "delivery_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target_agent_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "staging_status": {
+          "enum": ["planned", "skipped_non_file_drop", "skipped_not_ready"]
+        },
+        "dispatch_decision": {
+          "enum": ["ready", "skipped_terminal", "expired", "missing_route", "route_disabled"]
+        },
+        "transport_mode": {
+          "enum": ["file_drop_simulator", "loopback_http_simulator", "none", "disabled"]
+        },
+        "method": {
+          "enum": ["copy_envelope", "post_gossip", "none"]
+        },
+        "target_inbox_dir": {
+          "type": ["string", "null"]
+        },
+        "staging_filename": {
+          "type": ["string", "null"]
+        },
+        "relative_staging_path": {
+          "type": ["string", "null"]
+        },
+        "simulated_result": {
+          "enum": [
+            "simulated_copied",
+            "simulated_duplicate",
+            "simulated_missing_source",
+            "simulated_write_blocked",
+            "simulated_missing_outcome",
+            "not_planned"
+          ]
+        },
+        "status": {
+          "enum": [
+            "simulated_copied",
+            "simulated_duplicate",
+            "simulated_missing_source",
+            "simulated_write_blocked",
+            "missing_outcome",
+            "not_planned"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

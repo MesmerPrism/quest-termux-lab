@@ -1,0 +1,16 @@
+{
+  "schema": "quest-termux-lab.peer-private-result-acceptance-manifest.v1",
+  "acceptance_id": "peer-private-result-acceptance-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:06:07Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "placeholder_report_path": "examples/peer-private-result-placeholder-report.synthetic.json",
+  "require_placeholders_ready": true,
+  "require_derivative_slots": true,
+  "authority_boundary": [
+    "Private result acceptance manifests declare sanitized derivative result acceptance readiness only.",
+    "Private result acceptance manifests do not read private evidence, import artifacts, sanitize live artifacts, approve live work, select endpoints, collect evidence, replay evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, launch apps, execute commands, or execute validation slots.",
+    "Private result acceptance manifests do not carry private endpoint values, raw network addresses, raw device identifiers, raw logs, pairing material, app package IDs, operator identity, or credential material."
+  ]
+}

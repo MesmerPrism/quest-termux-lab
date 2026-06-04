@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-lab-bundle-report.schema.json",
+  "title": "Quest Termux Lab Peer Lab Bundle Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "experiment_id",
+    "experiment_scope",
+    "overall_status",
+    "topology_status",
+    "readiness_status",
+    "operator_approval_required",
+    "operator_approval_recorded",
+    "artifact_checks",
+    "summary",
+    "next_private_steps",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-lab-bundle-report.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "experiment_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "overall_status": {
+      "enum": ["synthetic_ready", "manual_review", "blocked"]
+    },
+    "readiness_status": {
+      "enum": ["ready", "manual_review", "not_ready", "invalid"]
+    },
+    "topology_status": {
+      "enum": ["topology_ready", "manual_review", "topology_blocked", "invalid"]
+    },
+    "operator_approval_required": {
+      "type": "boolean"
+    },
+    "operator_approval_recorded": {
+      "type": "boolean"
+    },
+    "artifact_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifact_id",
+          "expected_schema",
+          "observed_schema",
+          "status",
+          "reason"
+        ],
+        "properties": {
+          "artifact_id": {
+            "enum": ["route_config", "topology_report", "route_history", "readiness_report"]
+          },
+          "expected_schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "observed_schema": {
+            "type": "string"
+          },
+          "status": {
+            "enum": ["passed", "failed"]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_check_count",
+        "passed_artifact_check_count",
+        "failed_artifact_check_count",
+        "configured_route_count",
+        "topology_reachable_agent_count",
+        "topology_non_ready_edge_count",
+        "ready_route_count",
+        "not_ready_route_count"
+      ],
+      "properties": {
+        "artifact_check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "passed_artifact_check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed_artifact_check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "configured_route_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "topology_reachable_agent_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "topology_non_ready_edge_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ready_route_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "not_ready_route_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "next_private_steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

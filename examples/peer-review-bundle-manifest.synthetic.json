@@ -1,0 +1,227 @@
+{
+  "schema": "quest-termux-lab.peer-review-bundle-manifest.v1",
+  "bundle_id": "peer-review-bundle-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:15Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "json_artifacts": [
+    {
+      "artifact_id": "route_config",
+      "path": "examples/peer-route-config.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-route-config.v1"
+    },
+    {
+      "artifact_id": "route_health_report",
+      "path": "examples/peer-route-health-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-route-health-report.v1"
+    },
+    {
+      "artifact_id": "topology_report",
+      "path": "examples/peer-topology-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-topology-report.v1"
+    },
+    {
+      "artifact_id": "route_history_report",
+      "path": "examples/peer-route-health-history.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-route-health-history.v1"
+    },
+    {
+      "artifact_id": "readiness_report",
+      "path": "examples/peer-live-lab-readiness-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-live-lab-readiness-report.v1"
+    },
+    {
+      "artifact_id": "lab_bundle_report",
+      "path": "examples/peer-lab-bundle-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-lab-bundle-report.v1"
+    },
+    {
+      "artifact_id": "trust_report",
+      "path": "examples/peer-trust-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-trust-report.v1"
+    },
+    {
+      "artifact_id": "rehearsal_report",
+      "path": "examples/peer-rehearsal-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-rehearsal-report.v1"
+    },
+    {
+      "artifact_id": "evidence_intake_report",
+      "path": "examples/peer-evidence-intake-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-evidence-intake-report.v1"
+    },
+    {
+      "artifact_id": "scorecard_report",
+      "path": "examples/peer-scorecard-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-scorecard-report.v1"
+    },
+    {
+      "artifact_id": "scorecard_history",
+      "path": "examples/peer-scorecard-history.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-scorecard-history.v1"
+    },
+    {
+      "artifact_id": "scorecard_regression_report",
+      "path": "examples/peer-scorecard-regression-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-scorecard-regression-report.v1"
+    }
+  ],
+  "file_artifacts": [
+    {
+      "artifact_id": "peer_mesh_preparation_doc",
+      "path": "docs/peer-mesh-preparation.md",
+      "artifact_role": "doc"
+    },
+    {
+      "artifact_id": "readme",
+      "path": "README.md",
+      "artifact_role": "doc"
+    },
+    {
+      "artifact_id": "agent_notes",
+      "path": "AGENTS.md",
+      "artifact_role": "doc"
+    },
+    {
+      "artifact_id": "topology_tool",
+      "path": "tools/peer_mesh_topology.py",
+      "artifact_role": "tool"
+    },
+    {
+      "artifact_id": "topology_tests",
+      "path": "tools/test_peer_mesh_topology.py",
+      "artifact_role": "test"
+    },
+    {
+      "artifact_id": "topology_manifest_schema",
+      "path": "schemas/peer-topology-manifest.schema.json",
+      "artifact_role": "schema"
+    },
+    {
+      "artifact_id": "topology_report_schema",
+      "path": "schemas/peer-topology-report.schema.json",
+      "artifact_role": "schema"
+    },
+    {
+      "artifact_id": "topology_manifest_example",
+      "path": "examples/peer-topology-manifest.synthetic.json",
+      "artifact_role": "example"
+    },
+    {
+      "artifact_id": "lab_bundle_tool",
+      "path": "tools/peer_mesh_lab_bundle.py",
+      "artifact_role": "tool"
+    },
+    {
+      "artifact_id": "lab_bundle_tests",
+      "path": "tools/test_peer_mesh_lab_bundle.py",
+      "artifact_role": "test"
+    },
+    {
+      "artifact_id": "lab_bundle_manifest_schema",
+      "path": "schemas/peer-lab-bundle-manifest.schema.json",
+      "artifact_role": "schema"
+    },
+    {
+      "artifact_id": "lab_bundle_report_schema",
+      "path": "schemas/peer-lab-bundle-report.schema.json",
+      "artifact_role": "schema"
+    },
+    {
+      "artifact_id": "lab_bundle_manifest_example",
+      "path": "examples/peer-lab-bundle-manifest.synthetic.json",
+      "artifact_role": "example"
+    },
+    {
+      "artifact_id": "review_bundle_tool",
+      "path": "tools/peer_mesh_review_bundle.py",
+      "artifact_role": "tool"
+    },
+    {
+      "artifact_id": "review_bundle_tests",
+      "path": "tools/test_peer_mesh_review_bundle.py",
+      "artifact_role": "test"
+    },
+    {
+      "artifact_id": "review_bundle_manifest_schema",
+      "path": "schemas/peer-review-bundle-manifest.schema.json",
+      "artifact_role": "schema"
+    },
+    {
+      "artifact_id": "review_bundle_report_schema",
+      "path": "schemas/peer-review-bundle-report.schema.json",
+      "artifact_role": "schema"
+    }
+  ],
+  "status_checks": [
+    {
+      "artifact_id": "topology_report",
+      "status_field": "overall_status",
+      "accepted_values": ["topology_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["topology_blocked"]
+    },
+    {
+      "artifact_id": "readiness_report",
+      "status_field": "overall_status",
+      "accepted_values": ["ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["not_ready"]
+    },
+    {
+      "artifact_id": "lab_bundle_report",
+      "status_field": "overall_status",
+      "accepted_values": ["synthetic_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["blocked"]
+    },
+    {
+      "artifact_id": "trust_report",
+      "status_field": "overall_status",
+      "accepted_values": ["trusted"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["untrusted"]
+    },
+    {
+      "artifact_id": "rehearsal_report",
+      "status_field": "overall_status",
+      "accepted_values": ["rehearsal_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["blocked"]
+    },
+    {
+      "artifact_id": "evidence_intake_report",
+      "status_field": "overall_status",
+      "accepted_values": ["accepted"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["rejected"]
+    },
+    {
+      "artifact_id": "scorecard_report",
+      "status_field": "overall_status",
+      "accepted_values": ["synthetic_clear"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["blocked"]
+    },
+    {
+      "artifact_id": "scorecard_history",
+      "status_field": "overall_status",
+      "accepted_values": ["synthetic_clear"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["blocked"]
+    },
+    {
+      "artifact_id": "scorecard_regression_report",
+      "status_field": "overall_status",
+      "accepted_values": ["regression_clear"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["regression_blocked"]
+    }
+  ],
+  "authority_boundary": [
+    "Review bundle manifests reference sanitized peer-mesh artifacts only.",
+    "Review bundle manifests do not execute validation slots, approve live work, select endpoints, replay evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Review bundle manifests do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "authority_boundary": [
+    "Cleanup plan reports declare public-safe peer-mesh cleanup requirements only.",
+    "Cleanup plan reports do not execute cleanup, approve live work, select endpoints, inspect devices, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, launch apps, or execute commands.",
+    "Cleanup plan reports do not carry private endpoint values, raw network addresses, raw device identifiers, gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "cleanup_plan_id": "peer-cleanup-plan-synthetic-001",
+  "cleanup_steps": [
+    {
+      "cleanup_kind": "operator_review",
+      "expected_evidence_kind": "cleanup_record",
+      "reason": "The private run should have an explicit operator cleanup review slot before live transport.",
+      "required": true,
+      "status": "planned",
+      "step_id": "cleanup-01-operator-review",
+      "timing": "pre_run"
+    },
+    {
+      "cleanup_kind": "confirm_peer_transport_stopped",
+      "expected_evidence_kind": "cleanup_record",
+      "reason": "The private run should record that configured peer transport was stopped or never started.",
+      "required": true,
+      "status": "planned",
+      "step_id": "cleanup-02-transport-stopped",
+      "timing": "post_run"
+    },
+    {
+      "cleanup_kind": "clear_ephemeral_inbox",
+      "expected_evidence_kind": "cleanup_record",
+      "reason": "The private run should record cleanup of ephemeral peer inbox state.",
+      "required": true,
+      "status": "planned",
+      "step_id": "cleanup-03-clear-inbox",
+      "timing": "post_run"
+    },
+    {
+      "cleanup_kind": "clear_ephemeral_outbox",
+      "expected_evidence_kind": "cleanup_record",
+      "reason": "The private run should record cleanup of ephemeral peer outbox state.",
+      "required": true,
+      "status": "planned",
+      "step_id": "cleanup-04-clear-outbox",
+      "timing": "post_run"
+    },
+    {
+      "cleanup_kind": "preserve_sanitized_summary",
+      "expected_evidence_kind": "evidence_intake_report",
+      "reason": "A sanitized summary can be preserved after private review without carrying endpoint values.",
+      "required": false,
+      "status": "planned",
+      "step_id": "cleanup-05-preserve-summary",
+      "timing": "post_evidence"
+    },
+    {
+      "cleanup_kind": "record_post_run_route_health",
+      "expected_evidence_kind": "route_health_report",
+      "reason": "A post-run route-health derivative can show whether routes returned to expected synthetic state.",
+      "required": false,
+      "status": "planned",
+      "step_id": "cleanup-06-post-route-health",
+      "timing": "post_evidence"
+    },
+    {
+      "cleanup_kind": "record_route_history",
+      "expected_evidence_kind": "route_history_report",
+      "reason": "A route-history derivative can make cleanup repeatability reviewable.",
+      "required": false,
+      "status": "planned",
+      "step_id": "cleanup-07-route-history",
+      "timing": "post_evidence"
+    },
+    {
+      "cleanup_kind": "record_cleanup_record",
+      "expected_evidence_kind": "cleanup_record",
+      "reason": "A cleanup record is required before private run evidence can be accepted.",
+      "required": true,
+      "status": "planned",
+      "step_id": "cleanup-08-record",
+      "timing": "final_review"
+    }
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "observed_at": "2026-06-04T10:01:20Z",
+  "overall_status": "cleanup_plan_ready",
+  "required_cleanup_kinds": [
+    "clear_ephemeral_inbox",
+    "clear_ephemeral_outbox",
+    "confirm_peer_transport_stopped",
+    "operator_review",
+    "record_cleanup_record"
+  ],
+  "schema": "quest-termux-lab.peer-cleanup-plan-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "evidence_kind_count": 4,
+    "missing_required_cleanup_kind_count": 0,
+    "missing_step_count": 0,
+    "observed_required_cleanup_kind_count": 5,
+    "planned_step_count": 8,
+    "required_cleanup_kind_count": 5,
+    "step_count": 8
+  }
+}

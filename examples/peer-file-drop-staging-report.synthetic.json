@@ -1,0 +1,49 @@
+{
+  "authority_boundary": [
+    "File-drop staging reports plan relative inbox filenames for ready file-drop gossip dispatches only.",
+    "File-drop staging reports do not copy files, read gossip bodies, approve live work, select private endpoints, monitor peers, probe peers, open sockets, discover devices, send gossip, use ADB, launch apps, or execute commands.",
+    "File-drop staging reports do not carry private endpoint values, raw network addresses, raw device identifiers, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "delivery_state_path": "examples/peer-delivery-state.file-drop.synthetic.json",
+  "dispatch_summary": {
+    "dispatch_count": 1,
+    "expired_count": 0,
+    "missing_route_count": 0,
+    "ready_count": 1,
+    "route_disabled_count": 0,
+    "skipped_terminal_count": 0
+  },
+  "expected_message_schema": "quest-termux-lab.peer-gossip-envelope.v1",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "observed_at": "2026-06-04T10:00:02Z",
+  "overall_status": "file_drop_staging_ready",
+  "route_config_path": "examples/peer-route-config.synthetic.json",
+  "schema": "quest-termux-lab.peer-file-drop-staging-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "staging_entries": [
+    {
+      "delivery_id": "delivery-alpha-to-gamma-file-drop-001",
+      "dispatch_decision": "ready",
+      "message_id": "gossip-alpha-file-drop-001",
+      "message_schema": "quest-termux-lab.peer-gossip-envelope.v1",
+      "method": "copy_envelope",
+      "reason": "ready file-drop dispatch has a deterministic relative staging path",
+      "relative_staging_path": "runs/peer-mesh-round/peer-round-synthetic-001/quest-agent-gamma/inbox/quest-agent-alpha__to__quest-agent-gamma__gossip-alpha-file-drop-001.peer-gossip-envelope.json",
+      "staging_filename": "quest-agent-alpha__to__quest-agent-gamma__gossip-alpha-file-drop-001.peer-gossip-envelope.json",
+      "status": "planned",
+      "target_agent_id": "quest-agent-gamma",
+      "target_inbox_dir": "runs/peer-mesh-round/peer-round-synthetic-001/quest-agent-gamma/inbox",
+      "transport_mode": "file_drop_simulator"
+    }
+  ],
+  "staging_plan_id": "peer-file-drop-staging-synthetic-001",
+  "summary": {
+    "dispatch_count": 1,
+    "entry_count": 1,
+    "planned_count": 1,
+    "ready_dispatch_count": 1,
+    "skipped_non_file_drop_count": 0,
+    "skipped_not_ready_count": 0
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "acceptance_id": "peer-private-result-acceptance-synthetic-001",
+  "acceptance_items": [
+    {
+      "acceptance_status": "private_only",
+      "evidence_kind": "operator_approval_record",
+      "expected_schema": "private.peer.operator-approval-record.v1",
+      "public_derivative_schema": "",
+      "public_release": "private_only",
+      "reason": "private-only evidence remains outside public acceptance",
+      "required": true,
+      "slot_id": "operator_approval",
+      "source_placeholder_status": "private_only"
+    },
+    {
+      "acceptance_status": "private_only",
+      "evidence_kind": "endpoint_selection_record",
+      "expected_schema": "private.peer.endpoint-selection-record.v1",
+      "public_derivative_schema": "",
+      "public_release": "private_only",
+      "reason": "private-only evidence remains outside public acceptance",
+      "required": true,
+      "slot_id": "endpoint_selection",
+      "source_placeholder_status": "private_only"
+    },
+    {
+      "acceptance_status": "blocked_until_placeholders_ready",
+      "evidence_kind": "gossip_receipt",
+      "expected_schema": "quest-termux-lab.peer-http-gossip-receipt.v1",
+      "public_derivative_schema": "quest-termux-lab.peer-http-gossip-receipt.v1",
+      "public_release": "sanitized_derivative_only",
+      "reason": "sanitized derivative result slot is blocked until result placeholders are ready",
+      "required": true,
+      "slot_id": "gossip_receipts",
+      "source_placeholder_status": "blocked_until_import_ready"
+    },
+    {
+      "acceptance_status": "blocked_until_placeholders_ready",
+      "evidence_kind": "route_health_report",
+      "expected_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "public_derivative_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "public_release": "sanitized_derivative_only",
+      "reason": "sanitized derivative result slot is blocked until result placeholders are ready",
+      "required": true,
+      "slot_id": "route_health_after_run",
+      "source_placeholder_status": "blocked_until_import_ready"
+    },
+    {
+      "acceptance_status": "blocked_until_placeholders_ready",
+      "evidence_kind": "cleanup_record",
+      "expected_schema": "quest-termux-lab.peer-cleanup-record.v1",
+      "public_derivative_schema": "quest-termux-lab.peer-cleanup-record.v1",
+      "public_release": "sanitized_derivative_only",
+      "reason": "sanitized derivative result slot is blocked until result placeholders are ready",
+      "required": true,
+      "slot_id": "cleanup_after_run",
+      "source_placeholder_status": "blocked_until_import_ready"
+    },
+    {
+      "acceptance_status": "blocked_until_placeholders_ready",
+      "evidence_kind": "scorecard_report",
+      "expected_schema": "quest-termux-lab.peer-scorecard-report.v1",
+      "public_derivative_schema": "quest-termux-lab.peer-scorecard-report.v1",
+      "public_release": "sanitized_derivative_only",
+      "reason": "sanitized derivative result slot is blocked until result placeholders are ready",
+      "required": false,
+      "slot_id": "scorecard_after_run",
+      "source_placeholder_status": "blocked_until_import_ready"
+    },
+    {
+      "acceptance_status": "blocked_until_placeholders_ready",
+      "evidence_kind": "scorecard_regression_report",
+      "expected_schema": "quest-termux-lab.peer-scorecard-regression-report.v1",
+      "public_derivative_schema": "quest-termux-lab.peer-scorecard-regression-report.v1",
+      "public_release": "sanitized_derivative_only",
+      "reason": "sanitized derivative result slot is blocked until result placeholders are ready",
+      "required": false,
+      "slot_id": "regression_after_run",
+      "source_placeholder_status": "blocked_until_import_ready"
+    }
+  ],
+  "authority_boundary": [
+    "Private result acceptance reports declare whether future sanitized derivative result slots could be accepted after private review.",
+    "Private result acceptance reports do not read private evidence, import artifacts, sanitize live artifacts, approve live work, select endpoints, collect evidence, replay evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, launch apps, execute commands, or execute validation slots.",
+    "Private result acceptance reports do not carry private endpoint values, raw network addresses, raw device identifiers, raw logs, pairing material, app package IDs, operator identity, or credential material."
+  ],
+  "checks": [
+    {
+      "check_id": "placeholder_identity",
+      "observed": "match",
+      "reason": "placeholder report identity matches acceptance manifest",
+      "status": "passed",
+      "threshold": "match"
+    },
+    {
+      "check_id": "placeholder_status",
+      "observed": "result_placeholders_blocked",
+      "reason": "result placeholders are not ready for sanitized result acceptance",
+      "status": "failed",
+      "threshold": "result_placeholders_ready"
+    },
+    {
+      "check_id": "derivative_slots",
+      "observed": "5",
+      "reason": "sanitized derivative result slots are declared",
+      "status": "passed",
+      "threshold": "> 0"
+    }
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "observed_at": "2026-06-04T10:06:07Z",
+  "overall_status": "acceptance_blocked",
+  "placeholder_id": "peer-private-result-placeholder-synthetic-001",
+  "placeholder_status": "result_placeholders_blocked",
+  "schema": "quest-termux-lab.peer-private-result-acceptance-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "acceptance_item_count": 7,
+    "blocked_item_count": 5,
+    "blocked_missing_derivative_schema_count": 0,
+    "blocked_until_placeholders_ready_count": 5,
+    "check_count": 3,
+    "failed_check_count": 1,
+    "manual_review_check_count": 0,
+    "passed_check_count": 2,
+    "private_only_item_count": 2,
+    "ready_to_accept_item_count": 0
+  }
+}

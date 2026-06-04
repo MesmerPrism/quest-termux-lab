@@ -1,0 +1,74 @@
+{
+  "schema": "quest-termux-lab.peer-send-dry-run-report.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:05Z",
+  "dispatch_summary": {
+    "dispatch_count": 1,
+    "ready_count": 1,
+    "skipped_terminal_count": 0,
+    "expired_count": 0,
+    "missing_route_count": 0,
+    "route_disabled_count": 0
+  },
+  "actions": [
+    {
+      "delivery_id": "delivery-alpha-to-beta-001",
+      "target_agent_id": "quest-agent-beta",
+      "message_id": "gossip-alpha-001",
+      "dispatch_decision": "ready",
+      "simulated_outcome": "accepted",
+      "transport_mode": "loopback_http_simulator",
+      "method": "post_gossip",
+      "delivery_state_after": "accepted",
+      "reason": null
+    }
+  ],
+  "summary": {
+    "action_count": 1,
+    "accepted_count": 1,
+    "duplicate_count": 0,
+    "rejected_count": 0,
+    "no_response_count": 0,
+    "not_sent_count": 0
+  },
+  "updated_delivery_state": {
+    "schema": "quest-termux-lab.peer-delivery-state.v1",
+    "fleet_id": "synthetic-lab-fleet",
+    "source_agent_id": "quest-agent-alpha",
+    "observed_at": "2026-06-04T10:00:05Z",
+    "deliveries": [
+      {
+        "delivery_id": "delivery-alpha-to-beta-001",
+        "target_agent_id": "quest-agent-beta",
+        "message_id": "gossip-alpha-001",
+        "state": "accepted",
+        "created_at": "2026-06-04T10:00:00Z",
+        "expires_at": "2026-06-04T10:05:00Z",
+        "attempt_count": 1,
+        "last_attempt_at": "2026-06-04T10:00:05Z",
+        "last_receipt_status": "accepted",
+        "last_error": null
+      }
+    ],
+    "summary": {
+      "delivery_count": 1,
+      "pending_count": 0,
+      "accepted_count": 1,
+      "duplicate_count": 0,
+      "rejected_count": 0,
+      "expired_count": 0,
+      "terminal_count": 1
+    },
+    "authority_boundary": [
+      "Delivery state tracks gossip delivery progress only.",
+      "Delivery state does not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests.",
+      "Central direct ADB remains the recovery and privileged truth-check route."
+    ]
+  },
+  "authority_boundary": [
+    "Send dry runs simulate configured-peer gossip delivery only.",
+    "Send dry runs do not open sockets, copy files, discover peers, send gossip, use ADB, or launch apps.",
+    "Send dry runs do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "authority_boundary": [
+    "Scorecard regression evaluates synthetic scorecard history only.",
+    "Scorecard regression does not approve live work, select endpoints, replay evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Scorecard regression does not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "checks": [
+    {
+      "check_id": "report_count",
+      "observed": "2",
+      "reason": "history has enough scorecard reports",
+      "status": "passed",
+      "threshold": ">= 2"
+    },
+    {
+      "check_id": "overall_trend",
+      "observed": "stable",
+      "reason": "overall scorecard trend is acceptable",
+      "status": "passed",
+      "threshold": "not worsening"
+    },
+    {
+      "check_id": "history_status",
+      "observed": "synthetic_clear",
+      "reason": "history is synthetically clear",
+      "status": "passed",
+      "threshold": "synthetic_clear"
+    },
+    {
+      "check_id": "new_pressure_points",
+      "observed": "0",
+      "reason": "new pressure points are within policy",
+      "status": "passed",
+      "threshold": "<= 0"
+    },
+    {
+      "check_id": "worsening_artifacts",
+      "observed": "0",
+      "reason": "worsening artifacts are within policy",
+      "status": "passed",
+      "threshold": "<= 0"
+    },
+    {
+      "check_id": "persistent_pressure_points",
+      "observed": "0",
+      "reason": "persistent pressure points are within policy",
+      "status": "passed",
+      "threshold": "<= 0"
+    },
+    {
+      "check_id": "last_blocked_artifacts",
+      "observed": "0",
+      "reason": "latest blocked artifact count is within policy",
+      "status": "passed",
+      "threshold": "<= 0"
+    },
+    {
+      "check_id": "last_missing_artifacts",
+      "observed": "0",
+      "reason": "latest missing artifact count is within policy",
+      "status": "passed",
+      "threshold": "<= 0"
+    }
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "history_status": "synthetic_clear",
+  "history_trend": "stable",
+  "observed_at": "2026-06-04T10:01:00Z",
+  "overall_status": "regression_clear",
+  "policy_id": "peer-scorecard-regression-policy-synthetic-001",
+  "schema": "quest-termux-lab.peer-scorecard-regression-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "check_count": 8,
+    "failed_check_count": 0,
+    "manual_review_check_count": 0,
+    "passed_check_count": 8
+  }
+}

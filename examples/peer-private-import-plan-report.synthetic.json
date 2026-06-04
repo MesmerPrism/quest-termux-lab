@@ -1,0 +1,143 @@
+{
+  "authority_boundary": [
+    "Private import plan reports describe public-safe sanitized derivative import readiness only.",
+    "Private import plan reports do not read private evidence, sanitize live artifacts, approve live work, select endpoints, collect evidence, replay evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, launch apps, execute commands, or execute validation slots.",
+    "Private import plan reports do not carry private endpoint values, raw network addresses, raw device identifiers, raw logs, pairing material, app package IDs, operator identity, or credential material."
+  ],
+  "checks": [
+    {
+      "check_id": "package_identity",
+      "observed": "match",
+      "reason": "package_identity matches import plan manifest",
+      "status": "passed",
+      "threshold": "match"
+    },
+    {
+      "check_id": "redaction_identity",
+      "observed": "match",
+      "reason": "redaction_identity matches import plan manifest",
+      "status": "passed",
+      "threshold": "match"
+    },
+    {
+      "check_id": "package_status",
+      "observed": "package_ready",
+      "reason": "public package is ready for import planning",
+      "status": "passed",
+      "threshold": "package_ready"
+    },
+    {
+      "check_id": "redaction_status",
+      "observed": "redaction_blocked",
+      "reason": "redaction plan is not ready for sanitized derivative import",
+      "status": "failed",
+      "threshold": "redaction_ready"
+    },
+    {
+      "check_id": "sanitized_derivative_slots",
+      "observed": "5",
+      "reason": "sanitized derivative slots are declared",
+      "status": "passed",
+      "threshold": "> 0"
+    }
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "import_items": [
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "operator_approval_record",
+      "expected_schema": "private.peer.operator-approval-record.v1",
+      "import_status": "private_only",
+      "public_derivative_schema": "",
+      "public_release": "private_only",
+      "reason": "item remains private-only and is not imported into public artifacts",
+      "required": true,
+      "slot_id": "operator_approval"
+    },
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "endpoint_selection_record",
+      "expected_schema": "private.peer.endpoint-selection-record.v1",
+      "import_status": "private_only",
+      "public_derivative_schema": "",
+      "public_release": "private_only",
+      "reason": "item remains private-only and is not imported into public artifacts",
+      "required": true,
+      "slot_id": "endpoint_selection"
+    },
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "gossip_receipt",
+      "expected_schema": "quest-termux-lab.peer-http-gossip-receipt.v1",
+      "import_status": "blocked_until_redaction_ready",
+      "public_derivative_schema": "quest-termux-lab.peer-http-gossip-receipt.v1",
+      "public_release": "sanitized_derivative_only",
+      "reason": "item waits for redaction readiness and private sanitized derivative evidence",
+      "required": true,
+      "slot_id": "gossip_receipts"
+    },
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "route_health_report",
+      "expected_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "import_status": "blocked_until_redaction_ready",
+      "public_derivative_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "public_release": "sanitized_derivative_only",
+      "reason": "item waits for redaction readiness and private sanitized derivative evidence",
+      "required": true,
+      "slot_id": "route_health_after_run"
+    },
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "cleanup_record",
+      "expected_schema": "quest-termux-lab.peer-cleanup-record.v1",
+      "import_status": "blocked_until_redaction_ready",
+      "public_derivative_schema": "quest-termux-lab.peer-cleanup-record.v1",
+      "public_release": "sanitized_derivative_only",
+      "reason": "item waits for redaction readiness and private sanitized derivative evidence",
+      "required": true,
+      "slot_id": "cleanup_after_run"
+    },
+    {
+      "collection_status": "optional_pending_private_run",
+      "evidence_kind": "scorecard_report",
+      "expected_schema": "quest-termux-lab.peer-scorecard-report.v1",
+      "import_status": "blocked_until_redaction_ready",
+      "public_derivative_schema": "quest-termux-lab.peer-scorecard-report.v1",
+      "public_release": "sanitized_derivative_only",
+      "reason": "item waits for redaction readiness and private sanitized derivative evidence",
+      "required": false,
+      "slot_id": "scorecard_after_run"
+    },
+    {
+      "collection_status": "optional_pending_private_run",
+      "evidence_kind": "scorecard_regression_report",
+      "expected_schema": "quest-termux-lab.peer-scorecard-regression-report.v1",
+      "import_status": "blocked_until_redaction_ready",
+      "public_derivative_schema": "quest-termux-lab.peer-scorecard-regression-report.v1",
+      "public_release": "sanitized_derivative_only",
+      "reason": "item waits for redaction readiness and private sanitized derivative evidence",
+      "required": false,
+      "slot_id": "regression_after_run"
+    }
+  ],
+  "import_plan_id": "peer-private-import-plan-synthetic-001",
+  "observed_at": "2026-06-04T10:04:05Z",
+  "overall_status": "import_blocked",
+  "package_status": "package_ready",
+  "redaction_status": "redaction_blocked",
+  "schema": "quest-termux-lab.peer-private-import-plan-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "blocked_derivative_item_count": 5,
+    "check_count": 5,
+    "failed_check_count": 1,
+    "import_item_count": 7,
+    "manual_review_check_count": 0,
+    "missing_derivative_schema_count": 0,
+    "passed_check_count": 4,
+    "private_only_item_count": 2,
+    "ready_derivative_item_count": 0
+  }
+}

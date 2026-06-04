@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-retry-plan.schema.json",
+  "title": "Quest Termux Lab Peer Retry Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "policy",
+    "retries",
+    "summary",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-retry-plan.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_attempts",
+        "min_retry_delay_seconds",
+        "max_retry_delay_seconds",
+        "backoff_multiplier"
+      ],
+      "properties": {
+        "max_attempts": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "min_retry_delay_seconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_retry_delay_seconds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "backoff_multiplier": {
+          "type": "number",
+          "minimum": 1
+        }
+      }
+    },
+    "retries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "delivery_id",
+          "target_agent_id",
+          "message_id",
+          "delivery_state",
+          "attempt_count",
+          "decision",
+          "next_attempt_at",
+          "backoff_delay_seconds",
+          "expires_at",
+          "last_error",
+          "reason"
+        ],
+        "properties": {
+          "delivery_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target_agent_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "message_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "delivery_state": {
+            "enum": ["pending", "accepted", "duplicate", "rejected", "expired"]
+          },
+          "attempt_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "decision": {
+            "enum": [
+              "due_now",
+              "waiting_backoff",
+              "max_attempts_reached",
+              "non_retryable_error",
+              "expired",
+              "terminal"
+            ]
+          },
+          "next_attempt_at": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "backoff_delay_seconds": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "last_error": {
+            "type": ["string", "null"]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "retry_count",
+        "due_now_count",
+        "waiting_backoff_count",
+        "max_attempts_reached_count",
+        "non_retryable_error_count",
+        "expired_count",
+        "terminal_count"
+      ],
+      "properties": {
+        "retry_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "due_now_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "waiting_backoff_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_attempts_reached_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "non_retryable_error_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "expired_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "terminal_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

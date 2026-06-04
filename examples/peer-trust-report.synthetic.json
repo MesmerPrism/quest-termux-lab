@@ -1,0 +1,114 @@
+{
+  "authority_boundary": [
+    "Trust reports evaluate configured peer-mesh evidence only.",
+    "Trust reports do not approve live work, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Trust reports do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "checks": [
+    {
+      "check_id": "route_config_valid",
+      "expected": "valid peer-route-config.v1",
+      "observed": "valid",
+      "reason": "route config matches policy identity",
+      "status": "passed"
+    },
+    {
+      "check_id": "lab_bundle_valid",
+      "expected": "valid peer-lab-bundle-report.v1",
+      "observed": "valid",
+      "reason": "lab bundle matches policy identity",
+      "status": "passed"
+    },
+    {
+      "check_id": "lab_bundle_status",
+      "expected": "synthetic_ready",
+      "observed": "blocked",
+      "reason": "bundle preflight is blocked or invalid",
+      "status": "failed"
+    },
+    {
+      "check_id": "message_schema",
+      "expected": "quest-termux-lab.peer-gossip-envelope.v1",
+      "observed": "quest-termux-lab.peer-gossip-envelope.v1",
+      "reason": "route config allows gossip schema only",
+      "status": "passed"
+    },
+    {
+      "check_id": "configured_peers_allowed",
+      "expected": "all configured targets in allowed_agent_ids",
+      "observed": "2",
+      "reason": "configured peers are explicitly allowed",
+      "status": "passed"
+    },
+    {
+      "check_id": "transport_modes_allowed",
+      "expected": "all configured transports allowed",
+      "observed": "2",
+      "reason": "configured transport modes are allowed",
+      "status": "passed"
+    },
+    {
+      "check_id": "sample_envelope_count",
+      "expected": ">= 1 samples",
+      "observed": "1",
+      "reason": "enough synthetic gossip samples were provided",
+      "status": "passed"
+    },
+    {
+      "check_id": "sample_envelopes_trusted",
+      "expected": "sample envelopes within trust policy",
+      "observed": "1",
+      "reason": "sample envelopes satisfy agent and TTL policy",
+      "status": "passed"
+    },
+    {
+      "check_id": "operator_review",
+      "expected": "private operator review before live LAN peer experiment",
+      "observed": "not represented in public synthetic evidence",
+      "reason": "this public report cannot grant live-device or LAN approval",
+      "status": "manual_review"
+    }
+  ],
+  "configured_peers": [
+    {
+      "reason": "configured route satisfies trust policy",
+      "target_agent_id": "quest-agent-beta",
+      "transport_mode": "loopback_http_simulator",
+      "trust_status": "trusted"
+    },
+    {
+      "reason": "configured route satisfies trust policy",
+      "target_agent_id": "quest-agent-gamma",
+      "transport_mode": "file_drop_simulator",
+      "trust_status": "trusted"
+    }
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "observed_at": "2026-06-04T10:00:09Z",
+  "overall_status": "untrusted",
+  "policy_id": "peer-trust-synthetic-001",
+  "sample_envelopes": [
+    {
+      "hop_ttl": 2,
+      "message_id": "gossip-alpha-001",
+      "reason": "sample envelope satisfies trust policy",
+      "sender_agent_id": "quest-agent-alpha",
+      "trust_status": "trusted"
+    }
+  ],
+  "schema": "quest-termux-lab.peer-trust-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "check_count": 9,
+    "configured_peer_count": 2,
+    "failed_check_count": 1,
+    "manual_review_check_count": 1,
+    "passed_check_count": 7,
+    "sample_envelope_count": 1,
+    "trusted_peer_count": 2,
+    "trusted_sample_envelope_count": 1,
+    "untrusted_peer_count": 0,
+    "untrusted_sample_envelope_count": 0
+  }
+}

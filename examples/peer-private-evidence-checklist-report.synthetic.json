@@ -1,0 +1,112 @@
+{
+  "authority_boundary": [
+    "Private evidence checklists declare pending private evidence items only.",
+    "Private evidence checklists do not approve live work, select endpoints, collect evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, launch apps, execute commands, or execute validation slots.",
+    "Private evidence checklists do not carry private endpoint values, gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "checklist_id": "peer-private-evidence-checklist-synthetic-001",
+  "checks": [
+    {
+      "check_id": "handoff_identity",
+      "observed": "match",
+      "reason": "handoff identity matches checklist manifest",
+      "status": "passed",
+      "threshold": "match"
+    },
+    {
+      "check_id": "handoff_status",
+      "observed": "handoff_blocked",
+      "reason": "handoff is not ready for private evidence collection",
+      "status": "failed",
+      "threshold": "handoff_ready"
+    },
+    {
+      "check_id": "required_private_evidence_slots",
+      "observed": "5",
+      "reason": "required private evidence slots are declared",
+      "status": "passed",
+      "threshold": "> 0"
+    }
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "handoff_status": "handoff_blocked",
+  "observed_at": "2026-06-04T10:00:17Z",
+  "overall_status": "checklist_blocked",
+  "private_evidence_items": [
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "operator_approval_record",
+      "expected_schema": "private.peer.operator-approval-record.v1",
+      "public_placeholder": true,
+      "reason": "A private live run needs an explicit operator approval record outside this public repository.",
+      "required": true,
+      "slot_id": "operator_approval"
+    },
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "endpoint_selection_record",
+      "expected_schema": "private.peer.endpoint-selection-record.v1",
+      "public_placeholder": true,
+      "reason": "Private peer endpoints must be selected and recorded outside this public repository.",
+      "required": true,
+      "slot_id": "endpoint_selection"
+    },
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "gossip_receipt",
+      "expected_schema": "quest-termux-lab.peer-http-gossip-receipt.v1",
+      "public_placeholder": true,
+      "reason": "A private run needs sanitized gossip receipt evidence before post-run intake.",
+      "required": true,
+      "slot_id": "gossip_receipts"
+    },
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "route_health_report",
+      "expected_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "public_placeholder": true,
+      "reason": "A private run needs post-run route-health evidence before repeatability scoring.",
+      "required": true,
+      "slot_id": "route_health_after_run"
+    },
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "cleanup_record",
+      "expected_schema": "quest-termux-lab.peer-cleanup-record.v1",
+      "public_placeholder": true,
+      "reason": "A private run needs cleanup evidence before artifacts are accepted.",
+      "required": true,
+      "slot_id": "cleanup_after_run"
+    },
+    {
+      "collection_status": "optional_pending_private_run",
+      "evidence_kind": "scorecard_report",
+      "expected_schema": "quest-termux-lab.peer-scorecard-report.v1",
+      "public_placeholder": true,
+      "reason": "A private run can produce a follow-up scorecard for history comparison.",
+      "required": false,
+      "slot_id": "scorecard_after_run"
+    },
+    {
+      "collection_status": "optional_pending_private_run",
+      "evidence_kind": "scorecard_regression_report",
+      "expected_schema": "quest-termux-lab.peer-scorecard-regression-report.v1",
+      "public_placeholder": true,
+      "reason": "A private run can produce a follow-up regression report after repeated scorecards exist.",
+      "required": false,
+      "slot_id": "regression_after_run"
+    }
+  ],
+  "schema": "quest-termux-lab.peer-private-evidence-checklist-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "check_count": 3,
+    "failed_check_count": 1,
+    "manual_review_check_count": 0,
+    "optional_private_evidence_item_count": 2,
+    "passed_check_count": 2,
+    "private_evidence_item_count": 7,
+    "required_private_evidence_item_count": 5
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-route-health-report.schema.json",
+  "title": "Quest Termux Lab Peer Route Health Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "routes",
+    "summary",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-route-health-report.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "target_agent_id",
+          "transport_mode",
+          "status",
+          "latest_simulated_outcome",
+          "retry_decision",
+          "retry_next_attempt_at",
+          "message_id",
+          "last_error",
+          "reason"
+        ],
+        "properties": {
+          "target_agent_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "transport_mode": {
+            "enum": ["file_drop_simulator", "loopback_http_simulator", "disabled"]
+          },
+          "status": {
+            "enum": ["healthy", "degraded", "unavailable", "disabled", "unknown"]
+          },
+          "latest_simulated_outcome": {
+            "type": ["string", "null"],
+            "enum": ["accepted", "duplicate", "rejected", "no_response", "not_sent", null]
+          },
+          "retry_decision": {
+            "type": ["string", "null"],
+            "enum": [
+              "due_now",
+              "waiting_backoff",
+              "max_attempts_reached",
+              "non_retryable_error",
+              "expired",
+              "terminal",
+              null
+            ]
+          },
+          "retry_next_attempt_at": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "message_id": {
+            "type": ["string", "null"]
+          },
+          "last_error": {
+            "type": ["string", "null"]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "route_count",
+        "healthy_count",
+        "degraded_count",
+        "unavailable_count",
+        "disabled_count",
+        "unknown_count",
+        "unconfigured_action_count",
+        "unconfigured_retry_count"
+      ],
+      "properties": {
+        "route_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "healthy_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "degraded_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unavailable_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "disabled_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unknown_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unconfigured_action_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unconfigured_retry_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

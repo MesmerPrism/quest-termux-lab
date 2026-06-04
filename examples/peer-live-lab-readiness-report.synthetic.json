@@ -1,0 +1,91 @@
+{
+  "schema": "quest-termux-lab.peer-live-lab-readiness-report.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:06Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "overall_status": "not_ready",
+  "checks": [
+    {
+      "check_id": "history_report_count",
+      "status": "passed",
+      "expected": ">= 1 route-health reports",
+      "observed": "1",
+      "reason": "route-health history sample count"
+    },
+    {
+      "check_id": "tracked_route_count",
+      "status": "passed",
+      "expected": ">= 1 tracked routes",
+      "observed": "2",
+      "reason": "tracked configured route count"
+    },
+    {
+      "check_id": "no_unavailable_routes",
+      "status": "passed",
+      "expected": "0 unavailable routes",
+      "observed": "0",
+      "reason": "latest route-health status must not be unavailable"
+    },
+    {
+      "check_id": "no_unknown_routes",
+      "status": "failed",
+      "expected": "0 unknown routes",
+      "observed": "1",
+      "reason": "every configured route needs synthetic evidence before live lab work"
+    },
+    {
+      "check_id": "no_disabled_routes",
+      "status": "passed",
+      "expected": "0 disabled routes",
+      "observed": "0",
+      "reason": "disabled routes should be removed or intentionally excluded before live lab work"
+    },
+    {
+      "check_id": "no_worsening_routes",
+      "status": "passed",
+      "expected": "0 worsening routes",
+      "observed": "0",
+      "reason": "route-health trend must not be worsening"
+    },
+    {
+      "check_id": "operator_approval",
+      "status": "manual_review",
+      "expected": "explicit operator approval before live LAN peer experiment",
+      "observed": "not represented in public synthetic evidence",
+      "reason": "this public report cannot grant live-device or LAN approval"
+    }
+  ],
+  "routes": [
+    {
+      "target_agent_id": "quest-agent-beta",
+      "last_status": "healthy",
+      "trend": "single_sample",
+      "sample_count": 1,
+      "readiness_status": "ready",
+      "reason": "route satisfies synthetic readiness policy"
+    },
+    {
+      "target_agent_id": "quest-agent-gamma",
+      "last_status": "unknown",
+      "trend": "single_sample",
+      "sample_count": 1,
+      "readiness_status": "not_ready",
+      "reason": "last status unknown is not allowed"
+    }
+  ],
+  "summary": {
+    "check_count": 7,
+    "passed_check_count": 5,
+    "failed_check_count": 1,
+    "manual_review_check_count": 1,
+    "route_count": 2,
+    "ready_route_count": 1,
+    "not_ready_route_count": 1
+  },
+  "authority_boundary": [
+    "Live-lab readiness reports evaluate synthetic peer-mesh evidence only.",
+    "Readiness reports do not approve live work, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Readiness reports do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

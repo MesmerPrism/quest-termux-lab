@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-cleanup-plan-manifest.schema.json",
+  "title": "Quest Termux Lab Peer Cleanup Plan Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "cleanup_plan_id",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "experiment_scope",
+    "cleanup_steps",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-cleanup-plan-manifest.v1"
+    },
+    "cleanup_plan_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "cleanup_steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/cleanup_step"
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "cleanup_step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_id",
+        "cleanup_kind",
+        "timing",
+        "required",
+        "expected_evidence_kind",
+        "reason"
+      ],
+      "properties": {
+        "step_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cleanup_kind": {
+          "enum": [
+            "operator_review",
+            "confirm_peer_transport_stopped",
+            "clear_ephemeral_inbox",
+            "clear_ephemeral_outbox",
+            "preserve_sanitized_summary",
+            "record_post_run_route_health",
+            "record_route_history",
+            "record_cleanup_record"
+          ]
+        },
+        "timing": {
+          "enum": ["pre_run", "post_run", "post_evidence", "final_review"]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "expected_evidence_kind": {
+          "enum": [
+            "none",
+            "cleanup_record",
+            "route_health_report",
+            "route_history_report",
+            "evidence_intake_report",
+            "scorecard_report"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

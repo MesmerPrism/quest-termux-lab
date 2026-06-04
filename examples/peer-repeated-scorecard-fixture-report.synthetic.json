@@ -1,0 +1,60 @@
+{
+  "authority_boundary": [
+    "Repeated scorecard fixtures generate public-safe synthetic scorecard, history, and regression documents only.",
+    "Repeated scorecard fixtures do not approve live work, select endpoints, replay evidence, monitor peers, probe peers, open sockets, discover devices, send gossip, use ADB, launch apps, execute commands, or execute validation slots.",
+    "A fixture_ready result means only that the synthetic repeated-scorecard path is internally stable under the declared public policy."
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fixture_id": "peer-repeated-scorecard-fixture-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "generated_artifacts": [
+    {
+      "artifact_kind": "scorecard_report",
+      "path": "examples/peer-scorecard-report.clear-001.synthetic.json",
+      "reason": "synthetic clear scorecard peer-scorecard-clear-synthetic-001 generated",
+      "schema": "quest-termux-lab.peer-scorecard-report.v1",
+      "status": "written"
+    },
+    {
+      "artifact_kind": "scorecard_report",
+      "path": "examples/peer-scorecard-report.clear-002.synthetic.json",
+      "reason": "synthetic clear scorecard peer-scorecard-clear-synthetic-002 generated",
+      "schema": "quest-termux-lab.peer-scorecard-report.v1",
+      "status": "written"
+    },
+    {
+      "artifact_kind": "scorecard_history",
+      "path": "examples/peer-scorecard-history.clear.synthetic.json",
+      "reason": "synthetic scorecard history generated with 2 reports",
+      "schema": "quest-termux-lab.peer-scorecard-history.v1",
+      "status": "written"
+    },
+    {
+      "artifact_kind": "scorecard_regression_report",
+      "path": "examples/peer-scorecard-regression-report.clear.synthetic.json",
+      "reason": "synthetic scorecard regression generated with status regression_clear",
+      "schema": "quest-termux-lab.peer-scorecard-regression-report.v1",
+      "status": "written"
+    }
+  ],
+  "history_status": "synthetic_clear",
+  "history_trend": "stable",
+  "observed_at": "2026-06-04T10:01:00Z",
+  "overall_status": "fixture_ready",
+  "regression_status": "regression_clear",
+  "schema": "quest-termux-lab.peer-repeated-scorecard-fixture-report.v1",
+  "scorecard_ids": [
+    "peer-scorecard-clear-synthetic-001",
+    "peer-scorecard-clear-synthetic-002"
+  ],
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "generated_artifact_count": 4,
+    "history_pressure_point_count": 0,
+    "history_report_count": 2,
+    "regression_check_count": 8,
+    "regression_failed_check_count": 0,
+    "scorecard_count": 2,
+    "synthetic_clear_scorecard_count": 2
+  }
+}

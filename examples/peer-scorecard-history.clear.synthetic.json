@@ -1,0 +1,224 @@
+{
+  "artifacts": [
+    {
+      "artifact_kind": "cleanup_record",
+      "delta": "unchanged_clear",
+      "first_observed_at": "2026-06-04T10:00:20Z",
+      "first_source_status": "completed",
+      "first_status": "synthetic_clear",
+      "last_observed_at": "2026-06-04T10:00:50Z",
+      "last_reason": "cleanup record is synthetically completed",
+      "last_source_status": "completed",
+      "last_status": "synthetic_clear",
+      "sample_count": 2,
+      "status_counts": {
+        "blocked": 0,
+        "manual_review": 0,
+        "missing": 0,
+        "synthetic_clear": 2
+      },
+      "transition_count": 0,
+      "trend": "stable"
+    },
+    {
+      "artifact_kind": "evidence_intake_report",
+      "delta": "unchanged_clear",
+      "first_observed_at": "2026-06-04T10:00:20Z",
+      "first_source_status": "accepted",
+      "first_status": "synthetic_clear",
+      "last_observed_at": "2026-06-04T10:00:50Z",
+      "last_reason": "evidence intake is synthetically accepted",
+      "last_source_status": "accepted",
+      "last_status": "synthetic_clear",
+      "sample_count": 2,
+      "status_counts": {
+        "blocked": 0,
+        "manual_review": 0,
+        "missing": 0,
+        "synthetic_clear": 2
+      },
+      "transition_count": 0,
+      "trend": "stable"
+    },
+    {
+      "artifact_kind": "lab_bundle_report",
+      "delta": "unchanged_clear",
+      "first_observed_at": "2026-06-04T10:00:20Z",
+      "first_source_status": "synthetic_ready",
+      "first_status": "synthetic_clear",
+      "last_observed_at": "2026-06-04T10:00:50Z",
+      "last_reason": "lab bundle is synthetically ready",
+      "last_source_status": "synthetic_ready",
+      "last_status": "synthetic_clear",
+      "sample_count": 2,
+      "status_counts": {
+        "blocked": 0,
+        "manual_review": 0,
+        "missing": 0,
+        "synthetic_clear": 2
+      },
+      "transition_count": 0,
+      "trend": "stable"
+    },
+    {
+      "artifact_kind": "readiness_report",
+      "delta": "unchanged_clear",
+      "first_observed_at": "2026-06-04T10:00:20Z",
+      "first_source_status": "ready",
+      "first_status": "synthetic_clear",
+      "last_observed_at": "2026-06-04T10:00:50Z",
+      "last_reason": "readiness report is synthetically ready",
+      "last_source_status": "ready",
+      "last_status": "synthetic_clear",
+      "sample_count": 2,
+      "status_counts": {
+        "blocked": 0,
+        "manual_review": 0,
+        "missing": 0,
+        "synthetic_clear": 2
+      },
+      "transition_count": 0,
+      "trend": "stable"
+    },
+    {
+      "artifact_kind": "rehearsal_report",
+      "delta": "unchanged_clear",
+      "first_observed_at": "2026-06-04T10:00:20Z",
+      "first_source_status": "rehearsal_ready",
+      "first_status": "synthetic_clear",
+      "last_observed_at": "2026-06-04T10:00:50Z",
+      "last_reason": "rehearsal report is synthetically ready",
+      "last_source_status": "rehearsal_ready",
+      "last_status": "synthetic_clear",
+      "sample_count": 2,
+      "status_counts": {
+        "blocked": 0,
+        "manual_review": 0,
+        "missing": 0,
+        "synthetic_clear": 2
+      },
+      "transition_count": 0,
+      "trend": "stable"
+    },
+    {
+      "artifact_kind": "route_health_report",
+      "delta": "unchanged_clear",
+      "first_observed_at": "2026-06-04T10:00:20Z",
+      "first_source_status": "clear",
+      "first_status": "synthetic_clear",
+      "last_observed_at": "2026-06-04T10:00:50Z",
+      "last_reason": "route-health report is synthetically clear",
+      "last_source_status": "clear",
+      "last_status": "synthetic_clear",
+      "sample_count": 2,
+      "status_counts": {
+        "blocked": 0,
+        "manual_review": 0,
+        "missing": 0,
+        "synthetic_clear": 2
+      },
+      "transition_count": 0,
+      "trend": "stable"
+    },
+    {
+      "artifact_kind": "route_history_report",
+      "delta": "unchanged_clear",
+      "first_observed_at": "2026-06-04T10:00:20Z",
+      "first_source_status": "clear",
+      "first_status": "synthetic_clear",
+      "last_observed_at": "2026-06-04T10:00:50Z",
+      "last_reason": "route-history report is synthetically clear",
+      "last_source_status": "clear",
+      "last_status": "synthetic_clear",
+      "sample_count": 2,
+      "status_counts": {
+        "blocked": 0,
+        "manual_review": 0,
+        "missing": 0,
+        "synthetic_clear": 2
+      },
+      "transition_count": 0,
+      "trend": "stable"
+    },
+    {
+      "artifact_kind": "trust_report",
+      "delta": "unchanged_clear",
+      "first_observed_at": "2026-06-04T10:00:20Z",
+      "first_source_status": "trusted",
+      "first_status": "synthetic_clear",
+      "last_observed_at": "2026-06-04T10:00:50Z",
+      "last_reason": "trust report is synthetically trusted",
+      "last_source_status": "trusted",
+      "last_status": "synthetic_clear",
+      "sample_count": 2,
+      "status_counts": {
+        "blocked": 0,
+        "manual_review": 0,
+        "missing": 0,
+        "synthetic_clear": 2
+      },
+      "transition_count": 0,
+      "trend": "stable"
+    }
+  ],
+  "authority_boundary": [
+    "Scorecard history compares synthetic peer-mesh scorecard reports only.",
+    "Scorecard history does not approve live work, select endpoints, replay evidence, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Scorecard history does not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "first_report_at": "2026-06-04T10:00:20Z",
+  "first_scorecard_id": "peer-scorecard-clear-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "last_report_at": "2026-06-04T10:00:50Z",
+  "last_scorecard_id": "peer-scorecard-clear-synthetic-002",
+  "observed_at": "2026-06-04T10:01:00Z",
+  "overall_status": "synthetic_clear",
+  "overall_trend": "stable",
+  "pressure_point_deltas": [],
+  "report_count": 2,
+  "schema": "quest-termux-lab.peer-scorecard-history.v1",
+  "scorecards": [
+    {
+      "blocked_count": 0,
+      "manual_review_count": 0,
+      "missing_count": 0,
+      "observed_at": "2026-06-04T10:00:20Z",
+      "overall_status": "synthetic_clear",
+      "pressure_point_count": 0,
+      "scorecard_id": "peer-scorecard-clear-synthetic-001",
+      "synthetic_clear_count": 8
+    },
+    {
+      "blocked_count": 0,
+      "manual_review_count": 0,
+      "missing_count": 0,
+      "observed_at": "2026-06-04T10:00:50Z",
+      "overall_status": "synthetic_clear",
+      "pressure_point_count": 0,
+      "scorecard_id": "peer-scorecard-clear-synthetic-002",
+      "synthetic_clear_count": 8
+    }
+  ],
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "artifact_kind_count": 8,
+    "first_overall_status": "synthetic_clear",
+    "improving_artifact_count": 0,
+    "last_blocked_count": 0,
+    "last_manual_review_count": 0,
+    "last_missing_count": 0,
+    "last_overall_status": "synthetic_clear",
+    "last_pressure_point_count": 0,
+    "last_synthetic_clear_count": 8,
+    "mixed_artifact_count": 0,
+    "new_pressure_point_count": 0,
+    "overall_trend": "stable",
+    "persistent_pressure_point_count": 0,
+    "report_count": 2,
+    "resolved_pressure_point_count": 0,
+    "single_sample_artifact_count": 0,
+    "stable_artifact_count": 8,
+    "worsening_artifact_count": 0
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "artifact_checks": [
+    {
+      "artifact_id": "route_config",
+      "expected_schema": "quest-termux-lab.peer-route-config.v1",
+      "observed_schema": "quest-termux-lab.peer-route-config.v1",
+      "reason": "artifact matches manifest and schema",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "topology_report",
+      "expected_schema": "quest-termux-lab.peer-topology-report.v1",
+      "observed_schema": "quest-termux-lab.peer-topology-report.v1",
+      "reason": "artifact matches manifest and schema",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "route_history",
+      "expected_schema": "quest-termux-lab.peer-route-health-history.v1",
+      "observed_schema": "quest-termux-lab.peer-route-health-history.v1",
+      "reason": "artifact matches manifest and schema",
+      "status": "passed"
+    },
+    {
+      "artifact_id": "readiness_report",
+      "expected_schema": "quest-termux-lab.peer-live-lab-readiness-report.v1",
+      "observed_schema": "quest-termux-lab.peer-live-lab-readiness-report.v1",
+      "reason": "artifact matches manifest and schema",
+      "status": "passed"
+    }
+  ],
+  "authority_boundary": [
+    "Lab bundle reports package synthetic peer-mesh evidence only.",
+    "Lab bundle reports do not approve live work, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Lab bundle reports do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "experiment_id": "peer-preflight-clear-fixture-synthetic-001-lab-bundle",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "next_private_steps": [
+    "Treat this as synthetic readiness only, not live approval.",
+    "Move private LAN endpoint selection and live transport evidence into the private workflow.",
+    "Capture first live evidence as gossip-only peer observations, receipts, route health, and cleanup records."
+  ],
+  "observed_at": "2026-06-04T10:01:10Z",
+  "operator_approval_recorded": false,
+  "operator_approval_required": false,
+  "overall_status": "synthetic_ready",
+  "readiness_status": "ready",
+  "schema": "quest-termux-lab.peer-lab-bundle-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "artifact_check_count": 4,
+    "configured_route_count": 2,
+    "failed_artifact_check_count": 0,
+    "not_ready_route_count": 0,
+    "passed_artifact_check_count": 4,
+    "ready_route_count": 2,
+    "topology_non_ready_edge_count": 0,
+    "topology_reachable_agent_count": 3
+  },
+  "topology_status": "topology_ready"
+}

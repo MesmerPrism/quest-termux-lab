@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-scorecard-regression-report.schema.json",
+  "title": "Quest Termux Lab Peer Scorecard Regression Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "experiment_scope",
+    "policy_id",
+    "history_status",
+    "history_trend",
+    "overall_status",
+    "checks",
+    "summary",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-scorecard-regression-report.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "policy_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "history_status": {
+      "enum": ["synthetic_clear", "manual_review", "blocked"]
+    },
+    "history_trend": {
+      "enum": ["stable", "improving", "worsening", "mixed", "single_sample"]
+    },
+    "overall_status": {
+      "enum": ["regression_clear", "manual_review", "regression_blocked"]
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "check_id",
+          "status",
+          "observed",
+          "threshold",
+          "reason"
+        ],
+        "properties": {
+          "check_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": ["passed", "manual_review", "failed"]
+          },
+          "observed": {
+            "type": "string"
+          },
+          "threshold": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "check_count",
+        "passed_check_count",
+        "manual_review_check_count",
+        "failed_check_count"
+      ],
+      "properties": {
+        "check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "passed_check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "manual_review_check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed_check_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

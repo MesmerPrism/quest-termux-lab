@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-send-dry-run-report.schema.json",
+  "title": "Quest Termux Lab Peer Send Dry Run Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "dispatch_summary",
+    "actions",
+    "summary",
+    "updated_delivery_state",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-send-dry-run-report.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "dispatch_summary": {
+      "type": "object"
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "delivery_id",
+          "target_agent_id",
+          "message_id",
+          "dispatch_decision",
+          "simulated_outcome",
+          "transport_mode",
+          "method",
+          "delivery_state_after",
+          "reason"
+        ],
+        "properties": {
+          "delivery_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target_agent_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "message_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "dispatch_decision": {
+            "enum": ["ready", "skipped_terminal", "expired", "missing_route", "route_disabled"]
+          },
+          "simulated_outcome": {
+            "enum": ["accepted", "duplicate", "rejected", "no_response", "not_sent"]
+          },
+          "transport_mode": {
+            "enum": ["file_drop_simulator", "loopback_http_simulator", "none", "disabled"]
+          },
+          "method": {
+            "enum": ["copy_envelope", "post_gossip", "none"]
+          },
+          "delivery_state_after": {
+            "enum": ["pending", "accepted", "duplicate", "rejected", "expired"]
+          },
+          "reason": {
+            "type": ["string", "null"]
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action_count",
+        "accepted_count",
+        "duplicate_count",
+        "rejected_count",
+        "no_response_count",
+        "not_sent_count"
+      ],
+      "properties": {
+        "action_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "accepted_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "duplicate_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rejected_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "no_response_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "not_sent_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "updated_delivery_state": {
+      "$ref": "peer-delivery-state.schema.json"
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

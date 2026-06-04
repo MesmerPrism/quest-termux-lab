@@ -1,0 +1,31 @@
+{
+  "schema": "quest-termux-lab.peer-evidence-intake-manifest.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:11Z",
+  "intake_id": "peer-evidence-intake-synthetic-001",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "require_rehearsal_ready": true,
+  "required_artifact_kinds": [
+    "rehearsal_report",
+    "trust_report",
+    "gossip_receipt",
+    "route_health_report",
+    "route_history_report",
+    "cleanup_record"
+  ],
+  "optional_artifact_kinds": [],
+  "artifact_paths": {
+    "rehearsal_report": "examples/peer-rehearsal-report.synthetic.json",
+    "trust_report": "examples/peer-trust-report.synthetic.json",
+    "gossip_receipt": "examples/peer-http-gossip-receipt.synthetic.json",
+    "route_health_report": "examples/peer-route-health-report.synthetic.json",
+    "route_history_report": "examples/peer-route-health-history.synthetic.json",
+    "cleanup_record": "examples/peer-cleanup-record.synthetic.json"
+  },
+  "authority_boundary": [
+    "Evidence intake manifests reference synthetic peer-mesh artifacts only.",
+    "Evidence intake manifests do not approve live work, select endpoints, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Evidence intake manifests do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

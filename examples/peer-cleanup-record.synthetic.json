@@ -1,0 +1,13 @@
+{
+  "schema": "quest-termux-lab.peer-cleanup-record.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:11Z",
+  "cleanup_status": "not_started",
+  "private_live_work_performed": false,
+  "authority_boundary": [
+    "Cleanup records summarize cleanup evidence only.",
+    "Cleanup records do not approve live work, select endpoints, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Cleanup records do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

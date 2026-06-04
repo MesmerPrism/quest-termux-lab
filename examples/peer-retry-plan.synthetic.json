@@ -1,0 +1,41 @@
+{
+  "schema": "quest-termux-lab.peer-retry-plan.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:01Z",
+  "policy": {
+    "max_attempts": 3,
+    "min_retry_delay_seconds": 10,
+    "max_retry_delay_seconds": 60,
+    "backoff_multiplier": 2
+  },
+  "retries": [
+    {
+      "delivery_id": "delivery-alpha-to-beta-001",
+      "target_agent_id": "quest-agent-beta",
+      "message_id": "gossip-alpha-001",
+      "delivery_state": "pending",
+      "attempt_count": 0,
+      "decision": "due_now",
+      "next_attempt_at": "2026-06-04T10:00:01Z",
+      "backoff_delay_seconds": 0,
+      "expires_at": "2026-06-04T10:05:00Z",
+      "last_error": null,
+      "reason": "no previous attempt"
+    }
+  ],
+  "summary": {
+    "retry_count": 1,
+    "due_now_count": 1,
+    "waiting_backoff_count": 0,
+    "max_attempts_reached_count": 0,
+    "non_retryable_error_count": 0,
+    "expired_count": 0,
+    "terminal_count": 0
+  },
+  "authority_boundary": [
+    "Retry plans schedule gossip delivery attempts only.",
+    "Retry plans do not open sockets, copy files, discover peers, send gossip, use ADB, or launch apps.",
+    "Retry plans do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

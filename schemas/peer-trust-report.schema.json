@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-trust-report.schema.json",
+  "title": "Quest Termux Lab Peer Trust Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "policy_id",
+    "experiment_scope",
+    "overall_status",
+    "checks",
+    "configured_peers",
+    "sample_envelopes",
+    "summary",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-trust-report.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "policy_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "overall_status": {
+      "enum": ["trusted", "manual_review", "untrusted"]
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "check_id",
+          "status",
+          "expected",
+          "observed",
+          "reason"
+        ],
+        "properties": {
+          "check_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": ["passed", "failed", "manual_review"]
+          },
+          "expected": {
+            "type": "string",
+            "minLength": 1
+          },
+          "observed": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "configured_peers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "target_agent_id",
+          "transport_mode",
+          "trust_status",
+          "reason"
+        ],
+        "properties": {
+          "target_agent_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "transport_mode": {
+            "type": "string",
+            "minLength": 1
+          },
+          "trust_status": {
+            "enum": ["trusted", "untrusted"]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "sample_envelopes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "message_id",
+          "sender_agent_id",
+          "hop_ttl",
+          "trust_status",
+          "reason"
+        ],
+        "properties": {
+          "message_id": {
+            "type": "string"
+          },
+          "sender_agent_id": {
+            "type": "string"
+          },
+          "hop_ttl": {
+            "type": ["integer", "null"],
+            "minimum": 0
+          },
+          "trust_status": {
+            "enum": ["trusted", "untrusted"]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "check_count",
+        "passed_check_count",
+        "failed_check_count",
+        "manual_review_check_count",
+        "configured_peer_count",
+        "trusted_peer_count",
+        "untrusted_peer_count",
+        "sample_envelope_count",
+        "trusted_sample_envelope_count",
+        "untrusted_sample_envelope_count"
+      ],
+      "properties": {
+        "check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "passed_check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed_check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "manual_review_check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "configured_peer_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trusted_peer_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "untrusted_peer_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sample_envelope_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trusted_sample_envelope_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "untrusted_sample_envelope_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

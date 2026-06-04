@@ -1,0 +1,67 @@
+{
+  "authority_boundary": [
+    "Route-health history aggregates synthetic route-health reports only.",
+    "Route-health history does not probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Route-health history does not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "first_report_at": "2026-06-04T10:00:30Z",
+  "fleet_id": "synthetic-lab-fleet",
+  "last_report_at": "2026-06-04T10:01:00Z",
+  "observed_at": "2026-06-04T10:01:10Z",
+  "report_count": 2,
+  "routes": [
+    {
+      "first_observed_at": "2026-06-04T10:00:30Z",
+      "first_status": "healthy",
+      "last_observed_at": "2026-06-04T10:01:00Z",
+      "last_reason": "synthetic delivery accepted",
+      "last_status": "healthy",
+      "sample_count": 2,
+      "status_counts": {
+        "degraded": 0,
+        "disabled": 0,
+        "healthy": 2,
+        "unavailable": 0,
+        "unknown": 0
+      },
+      "target_agent_id": "quest-agent-beta",
+      "transition_count": 0,
+      "transport_mode": "loopback_http_simulator",
+      "trend": "stable"
+    },
+    {
+      "first_observed_at": "2026-06-04T10:00:30Z",
+      "first_status": "healthy",
+      "last_observed_at": "2026-06-04T10:01:00Z",
+      "last_reason": "synthetic delivery accepted",
+      "last_status": "healthy",
+      "sample_count": 2,
+      "status_counts": {
+        "degraded": 0,
+        "disabled": 0,
+        "healthy": 2,
+        "unavailable": 0,
+        "unknown": 0
+      },
+      "target_agent_id": "quest-agent-gamma",
+      "transition_count": 0,
+      "transport_mode": "file_drop_simulator",
+      "trend": "stable"
+    }
+  ],
+  "schema": "quest-termux-lab.peer-route-health-history.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "improving_count": 0,
+    "last_degraded_count": 0,
+    "last_disabled_count": 0,
+    "last_healthy_count": 2,
+    "last_unavailable_count": 0,
+    "last_unknown_count": 0,
+    "mixed_count": 0,
+    "single_sample_count": 0,
+    "stable_count": 2,
+    "tracked_route_count": 2,
+    "worsening_count": 0
+  }
+}

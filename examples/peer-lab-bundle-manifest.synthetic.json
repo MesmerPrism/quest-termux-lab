@@ -1,0 +1,27 @@
+{
+  "schema": "quest-termux-lab.peer-lab-bundle-manifest.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:08Z",
+  "experiment_id": "peer-lab-synthetic-001",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "operator_approval_required": true,
+  "operator_approval_recorded": false,
+  "artifact_paths": {
+    "route_config": "examples/peer-route-config.synthetic.json",
+    "topology_report": "examples/peer-topology-report.synthetic.json",
+    "route_history": "examples/peer-route-health-history.synthetic.json",
+    "readiness_report": "examples/peer-live-lab-readiness-report.synthetic.json"
+  },
+  "expected_artifact_schemas": {
+    "route_config": "quest-termux-lab.peer-route-config.v1",
+    "topology_report": "quest-termux-lab.peer-topology-report.v1",
+    "route_history": "quest-termux-lab.peer-route-health-history.v1",
+    "readiness_report": "quest-termux-lab.peer-live-lab-readiness-report.v1"
+  },
+  "authority_boundary": [
+    "Lab bundle manifests reference synthetic peer-mesh evidence only.",
+    "Lab bundle manifests do not approve live work, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Lab bundle manifests do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

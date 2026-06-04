@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-evidence-intake-report.schema.json",
+  "title": "Quest Termux Lab Peer Evidence Intake Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "intake_id",
+    "experiment_scope",
+    "overall_status",
+    "artifacts",
+    "summary",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-evidence-intake-report.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "intake_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "overall_status": {
+      "enum": ["accepted", "manual_review", "rejected"]
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifact_kind",
+          "status",
+          "expected_schema",
+          "observed_schema",
+          "reason"
+        ],
+        "properties": {
+          "artifact_kind": {
+            "enum": [
+              "rehearsal_report",
+              "trust_report",
+              "gossip_receipt",
+              "route_health_report",
+              "route_history_report",
+              "cleanup_record"
+            ]
+          },
+          "status": {
+            "enum": ["accepted", "missing", "rejected", "manual_review"]
+          },
+          "expected_schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "observed_schema": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_count",
+        "accepted_artifact_count",
+        "missing_artifact_count",
+        "rejected_artifact_count",
+        "manual_review_artifact_count"
+      ],
+      "properties": {
+        "artifact_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "accepted_artifact_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_artifact_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rejected_artifact_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "manual_review_artifact_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

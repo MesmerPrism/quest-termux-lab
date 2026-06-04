@@ -1,0 +1,167 @@
+{
+  "schema": "quest-termux-lab.peer-review-bundle-manifest.v1",
+  "bundle_id": "peer-review-bundle-repeated-scorecard-clear-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:01:01Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "json_artifacts": [
+    {
+      "artifact_id": "repeated_scorecard_fixture_manifest",
+      "path": "examples/peer-repeated-scorecard-fixture-manifest.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-repeated-scorecard-fixture-manifest.v1"
+    },
+    {
+      "artifact_id": "repeated_scorecard_fixture_report",
+      "path": "examples/peer-repeated-scorecard-fixture-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-repeated-scorecard-fixture-report.v1"
+    },
+    {
+      "artifact_id": "clear_scorecard_report_001",
+      "path": "examples/peer-scorecard-report.clear-001.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-scorecard-report.v1"
+    },
+    {
+      "artifact_id": "clear_scorecard_report_002",
+      "path": "examples/peer-scorecard-report.clear-002.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-scorecard-report.v1"
+    },
+    {
+      "artifact_id": "clear_scorecard_history",
+      "path": "examples/peer-scorecard-history.clear.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-scorecard-history.v1"
+    },
+    {
+      "artifact_id": "clear_scorecard_regression_report",
+      "path": "examples/peer-scorecard-regression-report.clear.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-scorecard-regression-report.v1"
+    }
+  ],
+  "file_artifacts": [
+    {
+      "artifact_id": "peer_mesh_preparation_doc",
+      "path": "docs/peer-mesh-preparation.md",
+      "artifact_role": "doc"
+    },
+    {
+      "artifact_id": "readme",
+      "path": "README.md",
+      "artifact_role": "doc"
+    },
+    {
+      "artifact_id": "agent_notes",
+      "path": "AGENTS.md",
+      "artifact_role": "doc"
+    },
+    {
+      "artifact_id": "repeated_scorecard_fixture_tool",
+      "path": "tools/peer_mesh_repeated_scorecard_fixture.py",
+      "artifact_role": "tool"
+    },
+    {
+      "artifact_id": "repeated_scorecard_fixture_tests",
+      "path": "tools/test_peer_mesh_repeated_scorecard_fixture.py",
+      "artifact_role": "test"
+    },
+    {
+      "artifact_id": "review_bundle_tool",
+      "path": "tools/peer_mesh_review_bundle.py",
+      "artifact_role": "tool"
+    },
+    {
+      "artifact_id": "review_bundle_tests",
+      "path": "tools/test_peer_mesh_review_bundle.py",
+      "artifact_role": "test"
+    },
+    {
+      "artifact_id": "repeated_scorecard_fixture_manifest_schema",
+      "path": "schemas/peer-repeated-scorecard-fixture-manifest.schema.json",
+      "artifact_role": "schema"
+    },
+    {
+      "artifact_id": "repeated_scorecard_fixture_report_schema",
+      "path": "schemas/peer-repeated-scorecard-fixture-report.schema.json",
+      "artifact_role": "schema"
+    },
+    {
+      "artifact_id": "review_bundle_manifest_schema",
+      "path": "schemas/peer-review-bundle-manifest.schema.json",
+      "artifact_role": "schema"
+    },
+    {
+      "artifact_id": "review_bundle_report_schema",
+      "path": "schemas/peer-review-bundle-report.schema.json",
+      "artifact_role": "schema"
+    }
+  ],
+  "status_checks": [
+    {
+      "artifact_id": "repeated_scorecard_fixture_report",
+      "status_field": "overall_status",
+      "accepted_values": ["fixture_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["fixture_blocked"]
+    },
+    {
+      "artifact_id": "repeated_scorecard_fixture_report",
+      "status_field": "history_status",
+      "accepted_values": ["synthetic_clear"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["blocked"]
+    },
+    {
+      "artifact_id": "repeated_scorecard_fixture_report",
+      "status_field": "history_trend",
+      "accepted_values": ["stable"],
+      "manual_review_values": ["single_sample", "mixed"],
+      "blocked_values": ["worsening"]
+    },
+    {
+      "artifact_id": "repeated_scorecard_fixture_report",
+      "status_field": "regression_status",
+      "accepted_values": ["regression_clear"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["regression_blocked"]
+    },
+    {
+      "artifact_id": "clear_scorecard_report_001",
+      "status_field": "overall_status",
+      "accepted_values": ["synthetic_clear"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["blocked"]
+    },
+    {
+      "artifact_id": "clear_scorecard_report_002",
+      "status_field": "overall_status",
+      "accepted_values": ["synthetic_clear"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["blocked"]
+    },
+    {
+      "artifact_id": "clear_scorecard_history",
+      "status_field": "overall_status",
+      "accepted_values": ["synthetic_clear"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["blocked"]
+    },
+    {
+      "artifact_id": "clear_scorecard_history",
+      "status_field": "overall_trend",
+      "accepted_values": ["stable"],
+      "manual_review_values": ["single_sample", "mixed"],
+      "blocked_values": ["worsening"]
+    },
+    {
+      "artifact_id": "clear_scorecard_regression_report",
+      "status_field": "overall_status",
+      "accepted_values": ["regression_clear"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["regression_blocked"]
+    }
+  ],
+  "authority_boundary": [
+    "This review bundle manifest references the repeated-scorecard clear fixture only.",
+    "This review bundle manifest keeps the blocked public baseline separate from the generated happy-path fixture.",
+    "This review bundle manifest does not execute validation slots, approve live work, select endpoints, replay evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps."
+  ]
+}

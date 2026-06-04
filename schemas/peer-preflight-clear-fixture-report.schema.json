@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-preflight-clear-fixture-report.schema.json",
+  "title": "Quest Termux Lab Peer Preflight Clear Fixture Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "fixture_id",
+    "experiment_scope",
+    "route_health_status",
+    "route_history_status",
+    "readiness_status",
+    "topology_status",
+    "lab_bundle_status",
+    "overall_status",
+    "generated_artifacts",
+    "summary",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-preflight-clear-fixture-report.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "fixture_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "route_health_status": {
+      "enum": ["clear", "blocked"]
+    },
+    "route_history_status": {
+      "enum": ["clear", "blocked"]
+    },
+    "readiness_status": {
+      "enum": ["ready", "manual_review", "not_ready"]
+    },
+    "topology_status": {
+      "enum": ["topology_ready", "manual_review", "topology_blocked"]
+    },
+    "lab_bundle_status": {
+      "enum": ["synthetic_ready", "manual_review", "blocked"]
+    },
+    "overall_status": {
+      "enum": ["fixture_ready", "manual_review", "fixture_blocked"]
+    },
+    "generated_artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["artifact_kind", "path", "schema", "status", "reason"],
+        "properties": {
+          "artifact_kind": {
+            "enum": [
+              "route_health_report",
+              "route_health_history",
+              "readiness_policy",
+              "readiness_report",
+              "topology_report",
+              "lab_bundle_manifest",
+              "lab_bundle_report"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": ["prepared", "written"]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "generated_artifact_count",
+        "route_health_report_count",
+        "latest_healthy_route_count",
+        "latest_unknown_route_count",
+        "tracked_route_count",
+        "stable_route_count",
+        "readiness_ready_route_count",
+        "topology_reachable_agent_count",
+        "topology_non_ready_edge_count",
+        "lab_bundle_ready_route_count"
+      ],
+      "properties": {
+        "generated_artifact_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "route_health_report_count": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "latest_healthy_route_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "latest_unknown_route_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tracked_route_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stable_route_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "readiness_ready_route_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "topology_reachable_agent_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "topology_non_ready_edge_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "lab_bundle_ready_route_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

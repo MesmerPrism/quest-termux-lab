@@ -1,0 +1,16 @@
+{
+  "schema": "quest-termux-lab.peer-file-drop-staging-manifest.v1",
+  "staging_plan_id": "peer-file-drop-staging-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:02Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "route_config_path": "examples/peer-route-config.synthetic.json",
+  "delivery_state_path": "examples/peer-delivery-state.file-drop.synthetic.json",
+  "expected_message_schema": "quest-termux-lab.peer-gossip-envelope.v1",
+  "authority_boundary": [
+    "File-drop staging manifests point at public-safe route and delivery-state artifacts only.",
+    "File-drop staging manifests do not select private endpoints, copy files, read gossip bodies, open sockets, discover devices, send gossip, use ADB, launch apps, or execute commands.",
+    "File-drop staging manifests do not carry private endpoint values, raw network addresses, raw device identifiers, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

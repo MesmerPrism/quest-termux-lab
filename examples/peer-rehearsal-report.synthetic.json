@@ -1,0 +1,120 @@
+{
+  "authority_boundary": [
+    "Rehearsal reports package synthetic preflight evidence and private evidence requirements only.",
+    "Rehearsal reports do not approve live work, select endpoints, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Rehearsal reports do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "checks": [
+    {
+      "check_id": "lab_bundle_valid",
+      "expected": "valid lab bundle report",
+      "observed": "valid",
+      "reason": "lab bundle matches rehearsal identity",
+      "status": "passed"
+    },
+    {
+      "check_id": "trust_report_valid",
+      "expected": "valid trust report",
+      "observed": "valid",
+      "reason": "trust report matches rehearsal identity",
+      "status": "passed"
+    },
+    {
+      "check_id": "lab_bundle_status",
+      "expected": "synthetic_ready",
+      "observed": "blocked",
+      "reason": "lab bundle status is not acceptable for rehearsal",
+      "status": "failed"
+    },
+    {
+      "check_id": "trust_status",
+      "expected": "trusted",
+      "observed": "untrusted",
+      "reason": "trust status is not acceptable for rehearsal",
+      "status": "failed"
+    },
+    {
+      "check_id": "operator_review",
+      "expected": "operator review recorded in private workflow",
+      "observed": "not represented in public synthetic evidence",
+      "reason": "public rehearsal reports cannot grant live-device or LAN approval",
+      "status": "manual_review"
+    }
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "observed_at": "2026-06-04T10:00:10Z",
+  "overall_status": "blocked",
+  "phases": [
+    {
+      "evidence_kind": "preflight_bundle_report",
+      "phase_id": "phase-01-preflight-bundle",
+      "reason": "lab bundle status is blocked",
+      "required_before_live": true,
+      "status": "blocked"
+    },
+    {
+      "evidence_kind": "trust_report",
+      "phase_id": "phase-02-trust-gate",
+      "reason": "trust status is untrusted",
+      "required_before_live": true,
+      "status": "blocked"
+    },
+    {
+      "evidence_kind": "private_operator_approval",
+      "phase_id": "phase-03-operator-review",
+      "reason": "operator review is required and not represented in public synthetic evidence",
+      "required_before_live": true,
+      "status": "manual_review"
+    },
+    {
+      "evidence_kind": "private_endpoint_selection_record",
+      "phase_id": "phase-04-private-endpoint-selection",
+      "reason": "evidence belongs to a future private live-run workflow, not this public repo",
+      "required_before_live": true,
+      "status": "private_only"
+    },
+    {
+      "evidence_kind": "gossip_receipts",
+      "phase_id": "phase-05-gossip-receipts",
+      "reason": "evidence belongs to a future private live-run workflow, not this public repo",
+      "required_before_live": true,
+      "status": "private_only"
+    },
+    {
+      "evidence_kind": "route_health_after_run",
+      "phase_id": "phase-06-route-health-after-run",
+      "reason": "evidence belongs to a future private live-run workflow, not this public repo",
+      "required_before_live": true,
+      "status": "private_only"
+    },
+    {
+      "evidence_kind": "route_history_after_run",
+      "phase_id": "phase-07-route-history-after-run",
+      "reason": "evidence belongs to a future private live-run workflow, not this public repo",
+      "required_before_live": false,
+      "status": "private_only"
+    },
+    {
+      "evidence_kind": "cleanup_record",
+      "phase_id": "phase-08-cleanup",
+      "reason": "evidence belongs to a future private live-run workflow, not this public repo",
+      "required_before_live": true,
+      "status": "private_only"
+    }
+  ],
+  "rehearsal_id": "peer-rehearsal-synthetic-001",
+  "schema": "quest-termux-lab.peer-rehearsal-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "blocked_phase_count": 2,
+    "check_count": 5,
+    "failed_check_count": 2,
+    "manual_review_check_count": 1,
+    "manual_review_phase_count": 1,
+    "passed_check_count": 2,
+    "phase_count": 8,
+    "private_only_phase_count": 5,
+    "ready_phase_count": 0
+  }
+}

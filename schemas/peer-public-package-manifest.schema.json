@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-public-package-manifest.schema.json",
+  "title": "Quest Termux Lab Peer Public Package Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "package_index_id",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "experiment_scope",
+    "required_file_refs",
+    "status_expectations",
+    "declared_validation_slots",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-public-package-manifest.v1"
+    },
+    "package_index_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "required_file_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/file_ref"
+      }
+    },
+    "status_expectations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/status_expectation"
+      }
+    },
+    "declared_validation_slots": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/declared_validation_slot"
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "file_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file_id", "file_role", "path", "reason"],
+      "properties": {
+        "file_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "file_role": {
+          "enum": ["doc", "tool", "test", "schema", "example"]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "status_expectation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expectation_id",
+        "path",
+        "expected_schema",
+        "status_field",
+        "expected_status_class",
+        "ready_values",
+        "manual_review_values",
+        "blocked_values",
+        "reason"
+      ],
+      "properties": {
+        "expectation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status_field": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_status_class": {
+          "enum": ["ready", "manual_review", "blocked"]
+        },
+        "ready_values": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "manual_review_values": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "blocked_values": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "declared_validation_slot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["validation_id", "observed_status", "evidence_note", "reason"],
+      "properties": {
+        "validation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observed_status": {
+          "enum": ["passed", "manual_review", "failed", "not_run"]
+        },
+        "evidence_note": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

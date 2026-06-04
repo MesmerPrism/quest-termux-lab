@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-live-lab-readiness-policy.schema.json",
+  "title": "Quest Termux Lab Peer Live Lab Readiness Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "experiment_scope",
+    "min_history_reports",
+    "min_tracked_routes",
+    "allowed_last_statuses",
+    "acceptable_trends",
+    "require_no_unavailable_routes",
+    "require_no_unknown_routes",
+    "require_no_disabled_routes",
+    "require_no_worsening_routes",
+    "operator_approval_required",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-live-lab-readiness-policy.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "min_history_reports": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "min_tracked_routes": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "allowed_last_statuses": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": ["healthy", "degraded", "unavailable", "disabled", "unknown"]
+      }
+    },
+    "acceptable_trends": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": ["stable", "improving", "worsening", "mixed", "single_sample"]
+      }
+    },
+    "require_no_unavailable_routes": {
+      "type": "boolean"
+    },
+    "require_no_unknown_routes": {
+      "type": "boolean"
+    },
+    "require_no_disabled_routes": {
+      "type": "boolean"
+    },
+    "require_no_worsening_routes": {
+      "type": "boolean"
+    },
+    "operator_approval_required": {
+      "type": "boolean"
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "schema": "quest-termux-lab.peer-route-health-report.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:05Z",
+  "routes": [
+    {
+      "target_agent_id": "quest-agent-beta",
+      "transport_mode": "loopback_http_simulator",
+      "status": "healthy",
+      "latest_simulated_outcome": "accepted",
+      "retry_decision": "due_now",
+      "retry_next_attempt_at": "2026-06-04T10:00:01Z",
+      "message_id": "gossip-alpha-001",
+      "last_error": null,
+      "reason": "synthetic delivery accepted"
+    },
+    {
+      "target_agent_id": "quest-agent-gamma",
+      "transport_mode": "file_drop_simulator",
+      "status": "unknown",
+      "latest_simulated_outcome": null,
+      "retry_decision": null,
+      "retry_next_attempt_at": null,
+      "message_id": null,
+      "last_error": null,
+      "reason": "no send or retry evidence for route"
+    }
+  ],
+  "summary": {
+    "route_count": 2,
+    "healthy_count": 1,
+    "degraded_count": 0,
+    "unavailable_count": 0,
+    "disabled_count": 0,
+    "unknown_count": 1,
+    "unconfigured_action_count": 0,
+    "unconfigured_retry_count": 0
+  },
+  "authority_boundary": [
+    "Route-health reports infer configured gossip route status from synthetic dry-run evidence only.",
+    "Route-health reports do not probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Route-health reports do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

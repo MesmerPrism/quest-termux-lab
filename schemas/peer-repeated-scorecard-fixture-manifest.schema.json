@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-repeated-scorecard-fixture-manifest.schema.json",
+  "title": "Quest Termux Lab Peer Repeated Scorecard Fixture Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fixture_id",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "experiment_scope",
+    "scorecard_template_path",
+    "regression_policy_path",
+    "scorecard_ids",
+    "scorecard_observed_at",
+    "output_paths",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-repeated-scorecard-fixture-manifest.v1"
+    },
+    "fixture_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "scorecard_template_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "regression_policy_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scorecard_ids": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "scorecard_observed_at": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "string",
+        "format": "date-time"
+      }
+    },
+    "output_paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scorecard_reports",
+        "scorecard_history",
+        "scorecard_regression_report"
+      ],
+      "properties": {
+        "scorecard_reports": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "scorecard_history": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scorecard_regression_report": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

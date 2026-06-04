@@ -1,0 +1,24 @@
+{
+  "schema": "quest-termux-lab.peer-topology-manifest.v1",
+  "topology_id": "peer-topology-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:06Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "expected_agent_ids": [
+    "quest-agent-alpha",
+    "quest-agent-beta",
+    "quest-agent-gamma"
+  ],
+  "route_config_path": "examples/peer-route-config.synthetic.json",
+  "route_health_report_path": "examples/peer-route-health-report.synthetic.json",
+  "require_all_expected_routes": true,
+  "require_no_unhealthy_routes": true,
+  "min_healthy_route_count": 2,
+  "min_reachable_agent_count": 3,
+  "authority_boundary": [
+    "Peer topology manifests declare expected public-safe route coverage for configured peer gossip only.",
+    "Peer topology manifests do not discover peers, probe peers, open sockets, copy files, send gossip, use ADB, launch apps, execute commands, or execute validation slots.",
+    "Peer topology manifests do not carry private endpoint values, raw network addresses, raw device identifiers, gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

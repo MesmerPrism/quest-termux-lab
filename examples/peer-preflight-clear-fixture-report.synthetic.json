@@ -1,0 +1,89 @@
+{
+  "authority_boundary": [
+    "Preflight clear fixtures generate public-safe synthetic route preflight documents only.",
+    "Preflight clear fixtures do not approve live work, select endpoints, probe peers, open sockets, copy files outside declared fixture outputs, discover devices, send gossip, use ADB, launch apps, execute commands, or execute validation slots.",
+    "A fixture_ready result means only that the synthetic preflight gates compose under declared fixture inputs; it is not live fleet readiness."
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fixture_id": "peer-preflight-clear-fixture-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "generated_artifacts": [
+    {
+      "artifact_kind": "route_health_report",
+      "path": "examples/peer-route-health-report.clear-001.synthetic.json",
+      "reason": "synthetic clear route-health report 1 generated",
+      "schema": "quest-termux-lab.peer-route-health-report.v1",
+      "status": "written"
+    },
+    {
+      "artifact_kind": "route_health_report",
+      "path": "examples/peer-route-health-report.clear-002.synthetic.json",
+      "reason": "synthetic clear route-health report 2 generated",
+      "schema": "quest-termux-lab.peer-route-health-report.v1",
+      "status": "written"
+    },
+    {
+      "artifact_kind": "route_health_history",
+      "path": "examples/peer-route-health-history.clear.synthetic.json",
+      "reason": "synthetic clear route-health history generated",
+      "schema": "quest-termux-lab.peer-route-health-history.v1",
+      "status": "written"
+    },
+    {
+      "artifact_kind": "readiness_policy",
+      "path": "examples/peer-live-lab-readiness-policy.clear.synthetic.json",
+      "reason": "synthetic no-manual-gate readiness policy generated",
+      "schema": "quest-termux-lab.peer-live-lab-readiness-policy.v1",
+      "status": "written"
+    },
+    {
+      "artifact_kind": "readiness_report",
+      "path": "examples/peer-live-lab-readiness-report.clear.synthetic.json",
+      "reason": "synthetic readiness report generated with status ready",
+      "schema": "quest-termux-lab.peer-live-lab-readiness-report.v1",
+      "status": "written"
+    },
+    {
+      "artifact_kind": "topology_report",
+      "path": "examples/peer-topology-report.clear.synthetic.json",
+      "reason": "synthetic topology report generated with status topology_ready",
+      "schema": "quest-termux-lab.peer-topology-report.v1",
+      "status": "written"
+    },
+    {
+      "artifact_kind": "lab_bundle_manifest",
+      "path": "examples/peer-lab-bundle-manifest.clear.synthetic.json",
+      "reason": "synthetic no-manual-gate lab bundle manifest generated",
+      "schema": "quest-termux-lab.peer-lab-bundle-manifest.v1",
+      "status": "written"
+    },
+    {
+      "artifact_kind": "lab_bundle_report",
+      "path": "examples/peer-lab-bundle-report.clear.synthetic.json",
+      "reason": "synthetic lab bundle report generated with status synthetic_ready",
+      "schema": "quest-termux-lab.peer-lab-bundle-report.v1",
+      "status": "written"
+    }
+  ],
+  "lab_bundle_status": "synthetic_ready",
+  "observed_at": "2026-06-04T10:01:10Z",
+  "overall_status": "fixture_ready",
+  "readiness_status": "ready",
+  "route_health_status": "clear",
+  "route_history_status": "clear",
+  "schema": "quest-termux-lab.peer-preflight-clear-fixture-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "generated_artifact_count": 8,
+    "lab_bundle_ready_route_count": 2,
+    "latest_healthy_route_count": 2,
+    "latest_unknown_route_count": 0,
+    "readiness_ready_route_count": 2,
+    "route_health_report_count": 2,
+    "stable_route_count": 2,
+    "topology_non_ready_edge_count": 0,
+    "topology_reachable_agent_count": 3,
+    "tracked_route_count": 2
+  },
+  "topology_status": "topology_ready"
+}

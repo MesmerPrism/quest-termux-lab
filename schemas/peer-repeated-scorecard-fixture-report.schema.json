@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-repeated-scorecard-fixture-report.schema.json",
+  "title": "Quest Termux Lab Peer Repeated Scorecard Fixture Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "fixture_id",
+    "experiment_scope",
+    "scorecard_ids",
+    "history_status",
+    "history_trend",
+    "regression_status",
+    "overall_status",
+    "generated_artifacts",
+    "summary",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-repeated-scorecard-fixture-report.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "fixture_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "scorecard_ids": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "history_status": {
+      "enum": ["synthetic_clear", "manual_review", "blocked"]
+    },
+    "history_trend": {
+      "enum": ["stable", "improving", "worsening", "mixed", "single_sample"]
+    },
+    "regression_status": {
+      "enum": ["regression_clear", "manual_review", "regression_blocked"]
+    },
+    "overall_status": {
+      "enum": ["fixture_ready", "manual_review", "fixture_blocked"]
+    },
+    "generated_artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["artifact_kind", "path", "schema", "status", "reason"],
+        "properties": {
+          "artifact_kind": {
+            "enum": [
+              "scorecard_report",
+              "scorecard_history",
+              "scorecard_regression_report"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": ["prepared", "written"]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scorecard_count",
+        "generated_artifact_count",
+        "synthetic_clear_scorecard_count",
+        "history_report_count",
+        "history_pressure_point_count",
+        "regression_check_count",
+        "regression_failed_check_count"
+      ],
+      "properties": {
+        "scorecard_count": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "generated_artifact_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "synthetic_clear_scorecard_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "history_report_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "history_pressure_point_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "regression_check_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "regression_failed_check_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

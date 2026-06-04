@@ -1,0 +1,21 @@
+{
+  "schema": "quest-termux-lab.peer-file-drop-copy-outcomes.v1",
+  "outcomes_id": "peer-file-drop-copy-outcomes-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:03Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "outcomes": [
+    {
+      "delivery_id": "delivery-alpha-to-gamma-file-drop-001",
+      "target_agent_id": "quest-agent-gamma",
+      "message_id": "gossip-alpha-file-drop-001",
+      "simulated_result": "simulated_copied",
+      "reason": "Synthetic dry-run outcome only; no file was copied."
+    }
+  ],
+  "authority_boundary": [
+    "File-drop copy outcomes are synthetic inputs for public-safe dry runs only.",
+    "File-drop copy outcomes do not prove file existence, create inbox directories, copy files, read gossip bodies, open sockets, select private endpoints, discover devices, send gossip, use ADB, launch apps, or execute commands."
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-file-drop-inbox-intake-report.schema.json",
+  "title": "Quest Termux Lab Peer File-Drop Inbox Intake Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "receiver_agent_id",
+    "observed_at",
+    "intake_id",
+    "staging_plan_id",
+    "outcomes_id",
+    "experiment_scope",
+    "expected_message_schema",
+    "intake_entries",
+    "summary",
+    "overall_status",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-file-drop-inbox-intake-report.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "receiver_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "intake_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "staging_plan_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "outcomes_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "expected_message_schema": {
+      "const": "quest-termux-lab.peer-gossip-envelope.v1"
+    },
+    "intake_entries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/intake_entry"
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entry_count",
+        "accepted_count",
+        "duplicate_count",
+        "missing_file_count",
+        "unreadable_file_count",
+        "invalid_envelope_count",
+        "not_copied_count",
+        "failed_count"
+      ],
+      "properties": {
+        "entry_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "accepted_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "duplicate_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_file_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unreadable_file_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "invalid_envelope_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "not_copied_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "overall_status": {
+      "enum": [
+        "file_drop_inbox_intake_ready",
+        "manual_review",
+        "file_drop_inbox_intake_blocked"
+      ]
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "intake_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "delivery_id",
+        "target_agent_id",
+        "message_id",
+        "relative_staging_path",
+        "copy_status",
+        "simulated_presence",
+        "envelope_path",
+        "observed_message_schema",
+        "observed_sender_agent_id",
+        "observed_observation_count",
+        "status",
+        "reason"
+      ],
+      "properties": {
+        "delivery_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target_agent_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relative_staging_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "copy_status": {
+          "enum": [
+            "simulated_copied",
+            "simulated_duplicate",
+            "simulated_missing_source",
+            "simulated_write_blocked",
+            "missing_outcome",
+            "not_planned",
+            "missing_copy_action"
+          ]
+        },
+        "simulated_presence": {
+          "enum": [
+            "simulated_present",
+            "simulated_duplicate_file",
+            "simulated_missing_file",
+            "simulated_unreadable_file",
+            "simulated_invalid_envelope"
+          ]
+        },
+        "envelope_path": {
+          "type": ["string", "null"]
+        },
+        "observed_message_schema": {
+          "type": "string"
+        },
+        "observed_sender_agent_id": {
+          "type": "string"
+        },
+        "observed_observation_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "status": {
+          "enum": [
+            "accepted",
+            "duplicate_ignored",
+            "missing_file",
+            "unreadable_file",
+            "invalid_envelope",
+            "not_copied"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": "quest-termux-lab.peer-preflight-clear-fixture-manifest.v1",
+  "fixture_id": "peer-preflight-clear-fixture-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:01:10Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "route_config_path": "examples/peer-route-config.synthetic.json",
+  "topology_manifest_path": "examples/peer-topology-manifest.synthetic.json",
+  "readiness_policy_template_path": "examples/peer-live-lab-readiness-policy.synthetic.json",
+  "lab_bundle_manifest_template_path": "examples/peer-lab-bundle-manifest.synthetic.json",
+  "route_health_observed_at": [
+    "2026-06-04T10:00:30Z",
+    "2026-06-04T10:01:00Z"
+  ],
+  "output_paths": {
+    "route_health_reports": [
+      "examples/peer-route-health-report.clear-001.synthetic.json",
+      "examples/peer-route-health-report.clear-002.synthetic.json"
+    ],
+    "route_health_history": "examples/peer-route-health-history.clear.synthetic.json",
+    "readiness_policy": "examples/peer-live-lab-readiness-policy.clear.synthetic.json",
+    "readiness_report": "examples/peer-live-lab-readiness-report.clear.synthetic.json",
+    "topology_report": "examples/peer-topology-report.clear.synthetic.json",
+    "lab_bundle_manifest": "examples/peer-lab-bundle-manifest.clear.synthetic.json",
+    "lab_bundle_report": "examples/peer-lab-bundle-report.clear.synthetic.json"
+  },
+  "authority_boundary": [
+    "Preflight clear fixture manifests declare local public fixture outputs only.",
+    "Preflight clear fixture manifests do not approve live work, select endpoints, probe peers, open sockets, copy files outside declared fixture outputs, discover devices, send gossip, use ADB, launch apps, execute commands, or execute validation slots.",
+    "A clear preflight fixture is synthetic evidence for the public lab contract, not proof of private live readiness."
+  ]
+}

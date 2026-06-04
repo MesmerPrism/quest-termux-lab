@@ -1,0 +1,97 @@
+{
+  "artifacts": [
+    {
+      "artifact_kind": "readiness_report",
+      "expected_schema": "quest-termux-lab.peer-live-lab-readiness-report.v1",
+      "observed_schema": "quest-termux-lab.peer-live-lab-readiness-report.v1",
+      "reason": "readiness report is synthetically ready",
+      "required": true,
+      "source_status": "ready",
+      "status": "synthetic_clear"
+    },
+    {
+      "artifact_kind": "lab_bundle_report",
+      "expected_schema": "quest-termux-lab.peer-lab-bundle-report.v1",
+      "observed_schema": "quest-termux-lab.peer-lab-bundle-report.v1",
+      "reason": "lab bundle is synthetically ready",
+      "required": true,
+      "source_status": "synthetic_ready",
+      "status": "synthetic_clear"
+    },
+    {
+      "artifact_kind": "trust_report",
+      "expected_schema": "quest-termux-lab.peer-trust-report.v1",
+      "observed_schema": "quest-termux-lab.peer-trust-report.v1",
+      "reason": "trust report is synthetically trusted",
+      "required": true,
+      "source_status": "trusted",
+      "status": "synthetic_clear"
+    },
+    {
+      "artifact_kind": "rehearsal_report",
+      "expected_schema": "quest-termux-lab.peer-rehearsal-report.v1",
+      "observed_schema": "quest-termux-lab.peer-rehearsal-report.v1",
+      "reason": "rehearsal report is synthetically ready",
+      "required": true,
+      "source_status": "rehearsal_ready",
+      "status": "synthetic_clear"
+    },
+    {
+      "artifact_kind": "evidence_intake_report",
+      "expected_schema": "quest-termux-lab.peer-evidence-intake-report.v1",
+      "observed_schema": "quest-termux-lab.peer-evidence-intake-report.v1",
+      "reason": "evidence intake is synthetically accepted",
+      "required": true,
+      "source_status": "accepted",
+      "status": "synthetic_clear"
+    },
+    {
+      "artifact_kind": "route_health_report",
+      "expected_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "observed_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "reason": "route-health report is synthetically clear",
+      "required": true,
+      "source_status": "clear",
+      "status": "synthetic_clear"
+    },
+    {
+      "artifact_kind": "route_history_report",
+      "expected_schema": "quest-termux-lab.peer-route-health-history.v1",
+      "observed_schema": "quest-termux-lab.peer-route-health-history.v1",
+      "reason": "route-history report is synthetically clear",
+      "required": true,
+      "source_status": "clear",
+      "status": "synthetic_clear"
+    },
+    {
+      "artifact_kind": "cleanup_record",
+      "expected_schema": "quest-termux-lab.peer-cleanup-record.v1",
+      "observed_schema": "quest-termux-lab.peer-cleanup-record.v1",
+      "reason": "cleanup record is synthetically completed",
+      "required": true,
+      "source_status": "completed",
+      "status": "synthetic_clear"
+    }
+  ],
+  "authority_boundary": [
+    "Generated clear scorecards are synthetic fixture documents only.",
+    "Generated clear scorecards do not approve live work, select endpoints, replay evidence, monitor peers, probe peers, open sockets, discover devices, send gossip, use ADB, launch apps, execute commands, or execute validation slots.",
+    "Generated clear scorecards do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, launch requests, or private endpoint values."
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "observed_at": "2026-06-04T10:00:20Z",
+  "overall_status": "synthetic_clear",
+  "pressure_points": [],
+  "schema": "quest-termux-lab.peer-scorecard-report.v1",
+  "scorecard_id": "peer-scorecard-clear-synthetic-001",
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "artifact_count": 8,
+    "blocked_count": 0,
+    "manual_review_count": 0,
+    "missing_count": 0,
+    "required_artifact_count": 8,
+    "synthetic_clear_count": 8
+  }
+}

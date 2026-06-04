@@ -1,0 +1,772 @@
+{
+  "authority_boundary": [
+    "Peer public package reports summarize public-safe package readiness only.",
+    "Peer public package reports can treat deliberately blocked private evidence placeholders as expected public package state.",
+    "Peer public package reports do not execute validation slots, approve live work, select endpoints, collect evidence, replay evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, launch apps, or execute commands."
+  ],
+  "declared_validation_slots": [
+    {
+      "evidence_note": "Peer-mesh focused tool and test compile pass was observed for this package fixture.",
+      "observed_status": "passed",
+      "reason": "declared validation slot passed",
+      "status": "passed",
+      "validation_id": "peer_mesh_compile"
+    },
+    {
+      "evidence_note": "Peer-mesh unit discovery passed with 315 tests for this package fixture.",
+      "observed_status": "passed",
+      "reason": "declared validation slot passed",
+      "status": "passed",
+      "validation_id": "peer_mesh_unit_discovery"
+    },
+    {
+      "evidence_note": "Public boundary scan returned public_boundary_ok for this package fixture.",
+      "observed_status": "passed",
+      "reason": "declared validation slot passed",
+      "status": "passed",
+      "validation_id": "public_boundary_scan"
+    },
+    {
+      "evidence_note": "Whitespace diff check passed for this package fixture.",
+      "observed_status": "passed",
+      "reason": "declared validation slot passed",
+      "status": "passed",
+      "validation_id": "diff_whitespace_check"
+    },
+    {
+      "evidence_note": "Package, redaction, and fixture-index schemas and examples parsed as JSON.",
+      "observed_status": "passed",
+      "reason": "declared validation slot passed",
+      "status": "passed",
+      "validation_id": "json_parse_check"
+    }
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "observed_at": "2026-06-04T10:03:05Z",
+  "overall_status": "package_ready",
+  "package_index_id": "peer-public-package-synthetic-001",
+  "required_files": [
+    {
+      "file_id": "agent_notes",
+      "file_role": "doc",
+      "path": "AGENTS.md",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "readme",
+      "file_role": "doc",
+      "path": "README.md",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "peer_mesh_doc",
+      "file_role": "doc",
+      "path": "docs/peer-mesh-preparation.md",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "route_config_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-route-config.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "route_config_example",
+      "file_role": "example",
+      "path": "examples/peer-route-config.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "route_health_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_route_health.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "route_health_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_route_health.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "route_health_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-route-health-report.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "route_health_report_example",
+      "file_role": "example",
+      "path": "examples/peer-route-health-report.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "route_history_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_route_history.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "route_history_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_route_history.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "route_history_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-route-health-history.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "route_history_example",
+      "file_role": "example",
+      "path": "examples/peer-route-health-history.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "live_lab_readiness_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_live_lab_readiness.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "live_lab_readiness_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_live_lab_readiness.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "live_lab_readiness_policy_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-live-lab-readiness-policy.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "live_lab_readiness_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-live-lab-readiness-report.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "live_lab_readiness_policy_example",
+      "file_role": "example",
+      "path": "examples/peer-live-lab-readiness-policy.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "live_lab_readiness_report_example",
+      "file_role": "example",
+      "path": "examples/peer-live-lab-readiness-report.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "topology_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_topology.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "topology_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_topology.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "topology_manifest_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-topology-manifest.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "topology_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-topology-report.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "topology_manifest_example",
+      "file_role": "example",
+      "path": "examples/peer-topology-manifest.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "topology_report_example",
+      "file_role": "example",
+      "path": "examples/peer-topology-report.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "lab_bundle_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_lab_bundle.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "lab_bundle_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_lab_bundle.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "lab_bundle_manifest_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-lab-bundle-manifest.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "lab_bundle_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-lab-bundle-report.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "lab_bundle_manifest_example",
+      "file_role": "example",
+      "path": "examples/peer-lab-bundle-manifest.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "lab_bundle_report_example",
+      "file_role": "example",
+      "path": "examples/peer-lab-bundle-report.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "preflight_clear_fixture_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_preflight_clear_fixture.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "preflight_clear_fixture_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_preflight_clear_fixture.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "preflight_clear_fixture_manifest_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-preflight-clear-fixture-manifest.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "preflight_clear_fixture_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-preflight-clear-fixture-report.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "preflight_clear_fixture_manifest_example",
+      "file_role": "example",
+      "path": "examples/peer-preflight-clear-fixture-manifest.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "preflight_clear_fixture_report_example",
+      "file_role": "example",
+      "path": "examples/peer-preflight-clear-fixture-report.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "preflight_clear_readiness_report",
+      "file_role": "example",
+      "path": "examples/peer-live-lab-readiness-report.clear.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "preflight_clear_topology_report",
+      "file_role": "example",
+      "path": "examples/peer-topology-report.clear.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "preflight_clear_lab_bundle_report",
+      "file_role": "example",
+      "path": "examples/peer-lab-bundle-report.clear.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "preflight_clear_review_bundle_manifest",
+      "file_role": "example",
+      "path": "examples/peer-review-bundle-preflight-clear-manifest.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "preflight_clear_review_bundle_report",
+      "file_role": "example",
+      "path": "examples/peer-review-bundle-preflight-clear-report.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "cleanup_plan_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_cleanup_plan.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "cleanup_plan_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_cleanup_plan.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "cleanup_plan_manifest_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-cleanup-plan-manifest.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "cleanup_plan_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-cleanup-plan-report.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "cleanup_plan_manifest_example",
+      "file_role": "example",
+      "path": "examples/peer-cleanup-plan-manifest.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "cleanup_plan_report_example",
+      "file_role": "example",
+      "path": "examples/peer-cleanup-plan-report.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_staging_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_file_drop_staging.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_staging_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_file_drop_staging.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_staging_manifest_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-file-drop-staging-manifest.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_staging_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-file-drop-staging-report.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_delivery_state_example",
+      "file_role": "example",
+      "path": "examples/peer-delivery-state.file-drop.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_staging_manifest_example",
+      "file_role": "example",
+      "path": "examples/peer-file-drop-staging-manifest.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_staging_report_example",
+      "file_role": "example",
+      "path": "examples/peer-file-drop-staging-report.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_copy_dry_run_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_file_drop_copy_dry_run.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_copy_dry_run_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_file_drop_copy_dry_run.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_copy_outcomes_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-file-drop-copy-outcomes.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_copy_dry_run_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-file-drop-copy-dry-run-report.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_copy_outcomes_example",
+      "file_role": "example",
+      "path": "examples/peer-file-drop-copy-outcomes.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_copy_dry_run_report_example",
+      "file_role": "example",
+      "path": "examples/peer-file-drop-copy-dry-run-report.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_inbox_intake_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_file_drop_inbox_intake.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_inbox_intake_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_file_drop_inbox_intake.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_inbox_intake_manifest_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-file-drop-inbox-intake-manifest.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_inbox_intake_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-file-drop-inbox-intake-report.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_inbox_intake_manifest_example",
+      "file_role": "example",
+      "path": "examples/peer-file-drop-inbox-intake-manifest.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_inbox_intake_envelope_example",
+      "file_role": "example",
+      "path": "examples/peer-gossip-envelope.file-drop.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "file_drop_inbox_intake_report_example",
+      "file_role": "example",
+      "path": "examples/peer-file-drop-inbox-intake-report.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "package_tool",
+      "file_role": "tool",
+      "path": "tools/peer_mesh_public_package.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "package_tests",
+      "file_role": "test",
+      "path": "tools/test_peer_mesh_public_package.py",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "package_manifest_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-public-package-manifest.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "package_report_schema",
+      "file_role": "schema",
+      "path": "schemas/peer-public-package-report.schema.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "package_manifest_example",
+      "file_role": "example",
+      "path": "examples/peer-public-package-manifest.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "fixture_index_manifest",
+      "file_role": "example",
+      "path": "examples/peer-fixture-index-manifest.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    },
+    {
+      "file_id": "redaction_manifest",
+      "file_role": "example",
+      "path": "examples/peer-private-evidence-redaction-manifest.synthetic.json",
+      "reason": "required file exists",
+      "status": "passed"
+    }
+  ],
+  "schema": "quest-termux-lab.peer-public-package-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "status_expectations": [
+    {
+      "expectation_id": "route_health_unknown_baseline",
+      "expected_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "expected_status_class": "blocked",
+      "observed_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "observed_status_class": "blocked",
+      "observed_value": "1",
+      "path": "examples/peer-route-health-report.synthetic.json",
+      "reason": "status artifact matches expected package class",
+      "status": "passed",
+      "status_field": "summary.unknown_count"
+    },
+    {
+      "expectation_id": "route_history_unknown_baseline",
+      "expected_schema": "quest-termux-lab.peer-route-health-history.v1",
+      "expected_status_class": "blocked",
+      "observed_schema": "quest-termux-lab.peer-route-health-history.v1",
+      "observed_status_class": "blocked",
+      "observed_value": "1",
+      "path": "examples/peer-route-health-history.synthetic.json",
+      "reason": "status artifact matches expected package class",
+      "status": "passed",
+      "status_field": "summary.last_unknown_count"
+    },
+    {
+      "expectation_id": "live_lab_readiness_not_ready",
+      "expected_schema": "quest-termux-lab.peer-live-lab-readiness-report.v1",
+      "expected_status_class": "blocked",
+      "observed_schema": "quest-termux-lab.peer-live-lab-readiness-report.v1",
+      "observed_status_class": "blocked",
+      "observed_value": "not_ready",
+      "path": "examples/peer-live-lab-readiness-report.synthetic.json",
+      "reason": "status artifact matches expected package class",
+      "status": "passed",
+      "status_field": "overall_status"
+    },
+    {
+      "expectation_id": "topology_baseline_blocked",
+      "expected_schema": "quest-termux-lab.peer-topology-report.v1",
+      "expected_status_class": "blocked",
+      "observed_schema": "quest-termux-lab.peer-topology-report.v1",
+      "observed_status_class": "blocked",
+      "observed_value": "topology_blocked",
+      "path": "examples/peer-topology-report.synthetic.json",
+      "reason": "status artifact matches expected package class",
+      "status": "passed",
+      "status_field": "overall_status"
+    },
+    {
+      "expectation_id": "topology_aware_lab_bundle_blocked",
+      "expected_schema": "quest-termux-lab.peer-lab-bundle-report.v1",
+      "expected_status_class": "blocked",
+      "observed_schema": "quest-termux-lab.peer-lab-bundle-report.v1",
+      "observed_status_class": "blocked",
+      "observed_value": "blocked",
+      "path": "examples/peer-lab-bundle-report.synthetic.json",
+      "reason": "status artifact matches expected package class",
+      "status": "passed",
+      "status_field": "overall_status"
+    },
+    {
+      "expectation_id": "clear_preflight_fixture_ready",
+      "expected_schema": "quest-termux-lab.peer-preflight-clear-fixture-report.v1",
+      "expected_status_class": "ready",
+      "observed_schema": "quest-termux-lab.peer-preflight-clear-fixture-report.v1",
+      "observed_status_class": "ready",
+      "observed_value": "fixture_ready",
+      "path": "examples/peer-preflight-clear-fixture-report.synthetic.json",
+      "reason": "status artifact matches expected package class",
+      "status": "passed",
+      "status_field": "overall_status"
+    },
+    {
+      "expectation_id": "fixture_index_ready",
+      "expected_schema": "quest-termux-lab.peer-fixture-index-report.v1",
+      "expected_status_class": "ready",
+      "observed_schema": "quest-termux-lab.peer-fixture-index-report.v1",
+      "observed_status_class": "ready",
+      "observed_value": "fixture_index_ready",
+      "path": "examples/peer-fixture-index-report.synthetic.json",
+      "reason": "status artifact matches expected package class",
+      "status": "passed",
+      "status_field": "overall_status"
+    },
+    {
+      "expectation_id": "blocked_baseline_review_bundle",
+      "expected_schema": "quest-termux-lab.peer-review-bundle-report.v1",
+      "expected_status_class": "blocked",
+      "observed_schema": "quest-termux-lab.peer-review-bundle-report.v1",
+      "observed_status_class": "blocked",
+      "observed_value": "review_blocked",
+      "path": "examples/peer-review-bundle-report.synthetic.json",
+      "reason": "status artifact matches expected package class",
+      "status": "passed",
+      "status_field": "overall_status"
+    },
+    {
+      "expectation_id": "clear_fixture_review_bundle",
+      "expected_schema": "quest-termux-lab.peer-review-bundle-report.v1",
+      "expected_status_class": "ready",
+      "observed_schema": "quest-termux-lab.peer-review-bundle-report.v1",
+      "observed_status_class": "ready",
+      "observed_value": "review_ready",
+      "path": "examples/peer-review-bundle-repeated-scorecard-clear-report.synthetic.json",
+      "reason": "status artifact matches expected package class",
+      "status": "passed",
+      "status_field": "overall_status"
+    },
+    {
+      "expectation_id": "preflight_clear_review_bundle_ready",
+      "expected_schema": "quest-termux-lab.peer-review-bundle-report.v1",
+      "expected_status_class": "ready",
+      "observed_schema": "quest-termux-lab.peer-review-bundle-report.v1",
+      "observed_status_class": "ready",
+      "observed_value": "review_ready",
+      "path": "examples/peer-review-bundle-preflight-clear-report.synthetic.json",
+      "reason": "status artifact matches expected package class",
+      "status": "passed",
+      "status_field": "overall_status"
+    },
+    {
+      "expectation_id": "cleanup_plan_ready",
+      "expected_schema": "quest-termux-lab.peer-cleanup-plan-report.v1",
+      "expected_status_class": "ready",
+      "observed_schema": "quest-termux-lab.peer-cleanup-plan-report.v1",
+      "observed_status_class": "ready",
+      "observed_value": "cleanup_plan_ready",
+      "path": "examples/peer-cleanup-plan-report.synthetic.json",
+      "reason": "status artifact matches expected package class",
+      "status": "passed",
+      "status_field": "overall_status"
+    },
+    {
+      "expectation_id": "file_drop_staging_ready",
+      "expected_schema": "quest-termux-lab.peer-file-drop-staging-report.v1",
+      "expected_status_class": "ready",
+      "observed_schema": "quest-termux-lab.peer-file-drop-staging-report.v1",
+      "observed_status_class": "ready",
+      "observed_value": "file_drop_staging_ready",
+      "path": "examples/peer-file-drop-staging-report.synthetic.json",
+      "reason": "status artifact matches expected package class",
+      "status": "passed",
+      "status_field": "overall_status"
+    },
+    {
+      "expectation_id": "file_drop_copy_dry_run_ready",
+      "expected_schema": "quest-termux-lab.peer-file-drop-copy-dry-run-report.v1",
+      "expected_status_class": "ready",
+      "observed_schema": "quest-termux-lab.peer-file-drop-copy-dry-run-report.v1",
+      "observed_status_class": "ready",
+      "observed_value": "file_drop_copy_dry_run_ready",
+      "path": "examples/peer-file-drop-copy-dry-run-report.synthetic.json",
+      "reason": "status artifact matches expected package class",
+      "status": "passed",
+      "status_field": "overall_status"
+    },
+    {
+      "expectation_id": "file_drop_inbox_intake_ready",
+      "expected_schema": "quest-termux-lab.peer-file-drop-inbox-intake-report.v1",
+      "expected_status_class": "ready",
+      "observed_schema": "quest-termux-lab.peer-file-drop-inbox-intake-report.v1",
+      "observed_status_class": "ready",
+      "observed_value": "file_drop_inbox_intake_ready",
+      "path": "examples/peer-file-drop-inbox-intake-report.synthetic.json",
+      "reason": "status artifact matches expected package class",
+      "status": "passed",
+      "status_field": "overall_status"
+    },
+    {
+      "expectation_id": "private_evidence_redaction_blocked",
+      "expected_schema": "quest-termux-lab.peer-private-evidence-redaction-report.v1",
+      "expected_status_class": "blocked",
+      "observed_schema": "quest-termux-lab.peer-private-evidence-redaction-report.v1",
+      "observed_status_class": "blocked",
+      "observed_value": "redaction_blocked",
+      "path": "examples/peer-private-evidence-redaction-report.synthetic.json",
+      "reason": "status artifact matches expected package class",
+      "status": "passed",
+      "status_field": "overall_status"
+    }
+  ],
+  "summary": {
+    "declared_validation_count": 5,
+    "declared_validation_failed_count": 0,
+    "entry_count": 95,
+    "failed_count": 0,
+    "manual_review_count": 0,
+    "missing_file_count": 0,
+    "passed_count": 95,
+    "required_file_count": 75,
+    "status_expectation_count": 15,
+    "status_expectation_failed_count": 0
+  }
+}

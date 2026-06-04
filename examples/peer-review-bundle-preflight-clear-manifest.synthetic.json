@@ -1,0 +1,208 @@
+{
+  "schema": "quest-termux-lab.peer-review-bundle-manifest.v1",
+  "bundle_id": "peer-review-bundle-preflight-clear-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:01:12Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "json_artifacts": [
+    {
+      "artifact_id": "preflight_clear_fixture_manifest",
+      "path": "examples/peer-preflight-clear-fixture-manifest.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-preflight-clear-fixture-manifest.v1"
+    },
+    {
+      "artifact_id": "preflight_clear_fixture_report",
+      "path": "examples/peer-preflight-clear-fixture-report.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-preflight-clear-fixture-report.v1"
+    },
+    {
+      "artifact_id": "clear_route_health_report_001",
+      "path": "examples/peer-route-health-report.clear-001.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-route-health-report.v1"
+    },
+    {
+      "artifact_id": "clear_route_health_report_002",
+      "path": "examples/peer-route-health-report.clear-002.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-route-health-report.v1"
+    },
+    {
+      "artifact_id": "clear_route_health_history",
+      "path": "examples/peer-route-health-history.clear.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-route-health-history.v1"
+    },
+    {
+      "artifact_id": "clear_readiness_policy",
+      "path": "examples/peer-live-lab-readiness-policy.clear.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-live-lab-readiness-policy.v1"
+    },
+    {
+      "artifact_id": "clear_readiness_report",
+      "path": "examples/peer-live-lab-readiness-report.clear.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-live-lab-readiness-report.v1"
+    },
+    {
+      "artifact_id": "clear_topology_report",
+      "path": "examples/peer-topology-report.clear.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-topology-report.v1"
+    },
+    {
+      "artifact_id": "clear_lab_bundle_manifest",
+      "path": "examples/peer-lab-bundle-manifest.clear.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-lab-bundle-manifest.v1"
+    },
+    {
+      "artifact_id": "clear_lab_bundle_report",
+      "path": "examples/peer-lab-bundle-report.clear.synthetic.json",
+      "expected_schema": "quest-termux-lab.peer-lab-bundle-report.v1"
+    }
+  ],
+  "file_artifacts": [
+    {
+      "artifact_id": "peer_mesh_preparation_doc",
+      "path": "docs/peer-mesh-preparation.md",
+      "artifact_role": "doc"
+    },
+    {
+      "artifact_id": "readme",
+      "path": "README.md",
+      "artifact_role": "doc"
+    },
+    {
+      "artifact_id": "agent_notes",
+      "path": "AGENTS.md",
+      "artifact_role": "doc"
+    },
+    {
+      "artifact_id": "preflight_clear_fixture_tool",
+      "path": "tools/peer_mesh_preflight_clear_fixture.py",
+      "artifact_role": "tool"
+    },
+    {
+      "artifact_id": "preflight_clear_fixture_tests",
+      "path": "tools/test_peer_mesh_preflight_clear_fixture.py",
+      "artifact_role": "test"
+    },
+    {
+      "artifact_id": "review_bundle_tool",
+      "path": "tools/peer_mesh_review_bundle.py",
+      "artifact_role": "tool"
+    },
+    {
+      "artifact_id": "review_bundle_tests",
+      "path": "tools/test_peer_mesh_review_bundle.py",
+      "artifact_role": "test"
+    },
+    {
+      "artifact_id": "preflight_clear_fixture_manifest_schema",
+      "path": "schemas/peer-preflight-clear-fixture-manifest.schema.json",
+      "artifact_role": "schema"
+    },
+    {
+      "artifact_id": "preflight_clear_fixture_report_schema",
+      "path": "schemas/peer-preflight-clear-fixture-report.schema.json",
+      "artifact_role": "schema"
+    },
+    {
+      "artifact_id": "review_bundle_manifest_schema",
+      "path": "schemas/peer-review-bundle-manifest.schema.json",
+      "artifact_role": "schema"
+    },
+    {
+      "artifact_id": "review_bundle_report_schema",
+      "path": "schemas/peer-review-bundle-report.schema.json",
+      "artifact_role": "schema"
+    }
+  ],
+  "status_checks": [
+    {
+      "artifact_id": "preflight_clear_fixture_report",
+      "status_field": "overall_status",
+      "accepted_values": ["fixture_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["fixture_blocked"]
+    },
+    {
+      "artifact_id": "preflight_clear_fixture_report",
+      "status_field": "route_health_status",
+      "accepted_values": ["clear"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["blocked"]
+    },
+    {
+      "artifact_id": "preflight_clear_fixture_report",
+      "status_field": "route_history_status",
+      "accepted_values": ["clear"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["blocked"]
+    },
+    {
+      "artifact_id": "preflight_clear_fixture_report",
+      "status_field": "readiness_status",
+      "accepted_values": ["ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["not_ready"]
+    },
+    {
+      "artifact_id": "preflight_clear_fixture_report",
+      "status_field": "topology_status",
+      "accepted_values": ["topology_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["topology_blocked"]
+    },
+    {
+      "artifact_id": "preflight_clear_fixture_report",
+      "status_field": "lab_bundle_status",
+      "accepted_values": ["synthetic_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["blocked"]
+    },
+    {
+      "artifact_id": "clear_route_health_report_001",
+      "status_field": "summary.unknown_count",
+      "accepted_values": ["0"],
+      "manual_review_values": [],
+      "blocked_values": ["1"]
+    },
+    {
+      "artifact_id": "clear_route_health_report_002",
+      "status_field": "summary.unknown_count",
+      "accepted_values": ["0"],
+      "manual_review_values": [],
+      "blocked_values": ["1"]
+    },
+    {
+      "artifact_id": "clear_route_health_history",
+      "status_field": "summary.last_unknown_count",
+      "accepted_values": ["0"],
+      "manual_review_values": [],
+      "blocked_values": ["1"]
+    },
+    {
+      "artifact_id": "clear_readiness_report",
+      "status_field": "overall_status",
+      "accepted_values": ["ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["not_ready"]
+    },
+    {
+      "artifact_id": "clear_topology_report",
+      "status_field": "overall_status",
+      "accepted_values": ["topology_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["topology_blocked"]
+    },
+    {
+      "artifact_id": "clear_lab_bundle_report",
+      "status_field": "overall_status",
+      "accepted_values": ["synthetic_ready"],
+      "manual_review_values": ["manual_review"],
+      "blocked_values": ["blocked"]
+    }
+  ],
+  "authority_boundary": [
+    "This review bundle manifest references the preflight clear fixture only.",
+    "This review bundle manifest keeps the blocked public baseline separate from the generated happy-path route preflight fixture.",
+    "This review bundle manifest does not execute validation slots, approve live work, select endpoints, replay evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps."
+  ]
+}

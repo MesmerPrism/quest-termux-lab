@@ -1,0 +1,26 @@
+{
+  "schema": "quest-termux-lab.peer-file-drop-inbox-intake-manifest.v1",
+  "intake_id": "peer-file-drop-inbox-intake-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "receiver_agent_id": "quest-agent-gamma",
+  "observed_at": "2026-06-04T10:00:04Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "expected_message_schema": "quest-termux-lab.peer-gossip-envelope.v1",
+  "inbox_entries": [
+    {
+      "delivery_id": "delivery-alpha-to-gamma-file-drop-001",
+      "target_agent_id": "quest-agent-gamma",
+      "message_id": "gossip-alpha-file-drop-001",
+      "relative_staging_path": "runs/peer-mesh-round/peer-round-synthetic-001/quest-agent-gamma/inbox/quest-agent-alpha__to__quest-agent-gamma__gossip-alpha-file-drop-001.peer-gossip-envelope.json",
+      "simulated_presence": "simulated_present",
+      "envelope_path": "examples/peer-gossip-envelope.file-drop.synthetic.json",
+      "reason": "Synthetic inbox intake fixture declares that the copied envelope is present for receiver-side validation."
+    }
+  ],
+  "authority_boundary": [
+    "File-drop inbox intake manifests declare synthetic receiver-side inbox entries only.",
+    "File-drop inbox intake manifests do not scan inbox directories, copy files, approve live work, select private endpoints, monitor peers, probe peers, open sockets, discover devices, send gossip, use ADB, launch apps, or execute commands.",
+    "Declared envelope paths must stay relative to the artifact root and point at public-safe synthetic JSON fixtures."
+  ]
+}

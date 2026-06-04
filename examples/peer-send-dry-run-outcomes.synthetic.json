@@ -1,0 +1,19 @@
+{
+  "schema": "quest-termux-lab.peer-send-dry-run-outcomes.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:05Z",
+  "outcomes": [
+    {
+      "target_agent_id": "quest-agent-beta",
+      "message_id": "gossip-alpha-001",
+      "result": "accepted",
+      "reason": null
+    }
+  ],
+  "authority_boundary": [
+    "Dry-run outcomes simulate gossip delivery receipts only.",
+    "Dry-run outcomes do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests.",
+    "Dry-run outcomes do not prove live transport behavior."
+  ]
+}

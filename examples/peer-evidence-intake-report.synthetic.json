@@ -1,0 +1,65 @@
+{
+  "artifacts": [
+    {
+      "artifact_kind": "rehearsal_report",
+      "expected_schema": "quest-termux-lab.peer-rehearsal-report.v1",
+      "observed_schema": "quest-termux-lab.peer-rehearsal-report.v1",
+      "reason": "rehearsal report is not rehearsal_ready",
+      "status": "rejected"
+    },
+    {
+      "artifact_kind": "trust_report",
+      "expected_schema": "quest-termux-lab.peer-trust-report.v1",
+      "observed_schema": "quest-termux-lab.peer-trust-report.v1",
+      "reason": "trust report is untrusted",
+      "status": "rejected"
+    },
+    {
+      "artifact_kind": "gossip_receipt",
+      "expected_schema": "quest-termux-lab.peer-http-gossip-receipt.v1",
+      "observed_schema": "quest-termux-lab.peer-http-gossip-receipt.v1",
+      "reason": "artifact accepted",
+      "status": "accepted"
+    },
+    {
+      "artifact_kind": "route_health_report",
+      "expected_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "observed_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "reason": "route-health report still has unknown routes",
+      "status": "manual_review"
+    },
+    {
+      "artifact_kind": "route_history_report",
+      "expected_schema": "quest-termux-lab.peer-route-health-history.v1",
+      "observed_schema": "quest-termux-lab.peer-route-health-history.v1",
+      "reason": "route-history report still has unknown routes",
+      "status": "manual_review"
+    },
+    {
+      "artifact_kind": "cleanup_record",
+      "expected_schema": "quest-termux-lab.peer-cleanup-record.v1",
+      "observed_schema": "quest-termux-lab.peer-cleanup-record.v1",
+      "reason": "cleanup has not started in public synthetic evidence",
+      "status": "manual_review"
+    }
+  ],
+  "authority_boundary": [
+    "Evidence intake reports validate synthetic peer-mesh artifacts only.",
+    "Evidence intake reports do not approve live work, select endpoints, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, or launch apps.",
+    "Evidence intake reports do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "intake_id": "peer-evidence-intake-synthetic-001",
+  "observed_at": "2026-06-04T10:00:11Z",
+  "overall_status": "rejected",
+  "schema": "quest-termux-lab.peer-evidence-intake-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "accepted_artifact_count": 1,
+    "artifact_count": 6,
+    "manual_review_artifact_count": 3,
+    "missing_artifact_count": 0,
+    "rejected_artifact_count": 2
+  }
+}

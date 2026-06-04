@@ -1,0 +1,237 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-public-package-report.schema.json",
+  "title": "Quest Termux Lab Peer Public Package Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "package_index_id",
+    "experiment_scope",
+    "overall_status",
+    "required_files",
+    "status_expectations",
+    "declared_validation_slots",
+    "summary",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-public-package-report.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "package_index_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "experiment_scope": {
+      "const": "private_configured_peer_gossip_only"
+    },
+    "overall_status": {
+      "enum": ["package_ready", "manual_review", "package_blocked"]
+    },
+    "required_files": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/required_file"
+      }
+    },
+    "status_expectations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/status_expectation_result"
+      }
+    },
+    "declared_validation_slots": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/declared_validation_result"
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entry_count",
+        "passed_count",
+        "manual_review_count",
+        "failed_count",
+        "required_file_count",
+        "missing_file_count",
+        "status_expectation_count",
+        "status_expectation_failed_count",
+        "declared_validation_count",
+        "declared_validation_failed_count"
+      ],
+      "properties": {
+        "entry_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "passed_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "manual_review_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "required_file_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_file_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "status_expectation_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "status_expectation_failed_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "declared_validation_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "declared_validation_failed_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "required_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file_id", "file_role", "path", "status", "reason"],
+      "properties": {
+        "file_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "file_role": {
+          "enum": ["doc", "tool", "test", "schema", "example"]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": ["passed", "manual_review", "failed"]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "status_expectation_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expectation_id",
+        "path",
+        "expected_schema",
+        "observed_schema",
+        "status_field",
+        "observed_value",
+        "observed_status_class",
+        "expected_status_class",
+        "status",
+        "reason"
+      ],
+      "properties": {
+        "expectation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expected_schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observed_schema": {
+          "type": "string"
+        },
+        "status_field": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observed_value": {
+          "type": "string"
+        },
+        "observed_status_class": {
+          "enum": ["ready", "manual_review", "blocked"]
+        },
+        "expected_status_class": {
+          "enum": ["ready", "manual_review", "blocked"]
+        },
+        "status": {
+          "enum": ["passed", "manual_review", "failed"]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "declared_validation_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["validation_id", "observed_status", "status", "evidence_note", "reason"],
+      "properties": {
+        "validation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observed_status": {
+          "enum": ["passed", "manual_review", "failed", "not_run"]
+        },
+        "status": {
+          "enum": ["passed", "manual_review", "failed"]
+        },
+        "evidence_note": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

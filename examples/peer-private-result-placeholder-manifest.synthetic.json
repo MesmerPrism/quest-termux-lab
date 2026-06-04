@@ -1,0 +1,16 @@
+{
+  "schema": "quest-termux-lab.peer-private-result-placeholder-manifest.v1",
+  "placeholder_id": "peer-private-result-placeholder-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:05:06Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "import_plan_report_path": "examples/peer-private-import-plan-report.synthetic.json",
+  "require_import_ready": true,
+  "require_derivative_schemas": true,
+  "authority_boundary": [
+    "Private result placeholder manifests declare future public result slots only.",
+    "Private result placeholder manifests do not read private evidence, sanitize live artifacts, approve live work, select endpoints, collect evidence, replay evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, launch apps, execute commands, or execute validation slots.",
+    "Private result placeholder manifests do not carry private endpoint values, raw network addresses, raw device identifiers, raw logs, pairing material, app package IDs, operator identity, or credential material."
+  ]
+}

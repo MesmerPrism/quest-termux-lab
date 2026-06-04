@@ -1,0 +1,141 @@
+{
+  "authority_boundary": [
+    "Private result placeholder reports declare future public result slots only.",
+    "Private result placeholder reports do not read private evidence, sanitize live artifacts, approve live work, select endpoints, collect evidence, replay evidence, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, launch apps, execute commands, or execute validation slots.",
+    "Private result placeholder reports do not carry private endpoint values, raw network addresses, raw device identifiers, raw logs, pairing material, app package IDs, operator identity, or credential material."
+  ],
+  "checks": [
+    {
+      "check_id": "import_plan_identity",
+      "observed": "match",
+      "reason": "import plan identity matches placeholder manifest",
+      "status": "passed",
+      "threshold": "match"
+    },
+    {
+      "check_id": "import_plan_status",
+      "observed": "import_blocked",
+      "reason": "import plan is not ready for public result placeholders",
+      "status": "failed",
+      "threshold": "import_ready"
+    },
+    {
+      "check_id": "derivative_schema_presence",
+      "observed": "all_present",
+      "reason": "sanitized derivative slots declare public derivative schemas",
+      "status": "passed",
+      "threshold": "all derivative slots carry schema"
+    }
+  ],
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "fleet_id": "synthetic-lab-fleet",
+  "import_plan_status": "import_blocked",
+  "observed_at": "2026-06-04T10:05:06Z",
+  "overall_status": "result_placeholders_blocked",
+  "placeholder_id": "peer-private-result-placeholder-synthetic-001",
+  "placeholder_slots": [
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "operator_approval_record",
+      "expected_schema": "private.peer.operator-approval-record.v1",
+      "placeholder_status": "private_only",
+      "public_derivative_schema": "",
+      "public_placeholder": true,
+      "public_release": "private_only",
+      "reason": "private-only evidence is represented as a non-public placeholder",
+      "required": true,
+      "slot_id": "operator_approval",
+      "source_import_status": "private_only"
+    },
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "endpoint_selection_record",
+      "expected_schema": "private.peer.endpoint-selection-record.v1",
+      "placeholder_status": "private_only",
+      "public_derivative_schema": "",
+      "public_placeholder": true,
+      "public_release": "private_only",
+      "reason": "private-only evidence is represented as a non-public placeholder",
+      "required": true,
+      "slot_id": "endpoint_selection",
+      "source_import_status": "private_only"
+    },
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "gossip_receipt",
+      "expected_schema": "quest-termux-lab.peer-http-gossip-receipt.v1",
+      "placeholder_status": "blocked_until_import_ready",
+      "public_derivative_schema": "quest-termux-lab.peer-http-gossip-receipt.v1",
+      "public_placeholder": true,
+      "public_release": "sanitized_derivative_only",
+      "reason": "public derivative slot is blocked until import planning is ready",
+      "required": true,
+      "slot_id": "gossip_receipts",
+      "source_import_status": "blocked_until_redaction_ready"
+    },
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "route_health_report",
+      "expected_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "placeholder_status": "blocked_until_import_ready",
+      "public_derivative_schema": "quest-termux-lab.peer-route-health-report.v1",
+      "public_placeholder": true,
+      "public_release": "sanitized_derivative_only",
+      "reason": "public derivative slot is blocked until import planning is ready",
+      "required": true,
+      "slot_id": "route_health_after_run",
+      "source_import_status": "blocked_until_redaction_ready"
+    },
+    {
+      "collection_status": "pending_private_run",
+      "evidence_kind": "cleanup_record",
+      "expected_schema": "quest-termux-lab.peer-cleanup-record.v1",
+      "placeholder_status": "blocked_until_import_ready",
+      "public_derivative_schema": "quest-termux-lab.peer-cleanup-record.v1",
+      "public_placeholder": true,
+      "public_release": "sanitized_derivative_only",
+      "reason": "public derivative slot is blocked until import planning is ready",
+      "required": true,
+      "slot_id": "cleanup_after_run",
+      "source_import_status": "blocked_until_redaction_ready"
+    },
+    {
+      "collection_status": "optional_pending_private_run",
+      "evidence_kind": "scorecard_report",
+      "expected_schema": "quest-termux-lab.peer-scorecard-report.v1",
+      "placeholder_status": "blocked_until_import_ready",
+      "public_derivative_schema": "quest-termux-lab.peer-scorecard-report.v1",
+      "public_placeholder": true,
+      "public_release": "sanitized_derivative_only",
+      "reason": "public derivative slot is blocked until import planning is ready",
+      "required": false,
+      "slot_id": "scorecard_after_run",
+      "source_import_status": "blocked_until_redaction_ready"
+    },
+    {
+      "collection_status": "optional_pending_private_run",
+      "evidence_kind": "scorecard_regression_report",
+      "expected_schema": "quest-termux-lab.peer-scorecard-regression-report.v1",
+      "placeholder_status": "blocked_until_import_ready",
+      "public_derivative_schema": "quest-termux-lab.peer-scorecard-regression-report.v1",
+      "public_placeholder": true,
+      "public_release": "sanitized_derivative_only",
+      "reason": "public derivative slot is blocked until import planning is ready",
+      "required": false,
+      "slot_id": "regression_after_run",
+      "source_import_status": "blocked_until_redaction_ready"
+    }
+  ],
+  "schema": "quest-termux-lab.peer-private-result-placeholder-report.v1",
+  "source_agent_id": "quest-agent-alpha",
+  "summary": {
+    "awaiting_derivative_slot_count": 0,
+    "blocked_slot_count": 5,
+    "check_count": 3,
+    "failed_check_count": 1,
+    "manual_review_check_count": 0,
+    "passed_check_count": 2,
+    "placeholder_slot_count": 7,
+    "private_only_slot_count": 2
+  }
+}

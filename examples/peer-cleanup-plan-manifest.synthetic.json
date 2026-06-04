@@ -1,0 +1,79 @@
+{
+  "schema": "quest-termux-lab.peer-cleanup-plan-manifest.v1",
+  "cleanup_plan_id": "peer-cleanup-plan-synthetic-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:01:20Z",
+  "experiment_scope": "private_configured_peer_gossip_only",
+  "cleanup_steps": [
+    {
+      "step_id": "cleanup-01-operator-review",
+      "cleanup_kind": "operator_review",
+      "timing": "pre_run",
+      "required": true,
+      "expected_evidence_kind": "cleanup_record",
+      "reason": "The private run should have an explicit operator cleanup review slot before live transport."
+    },
+    {
+      "step_id": "cleanup-02-transport-stopped",
+      "cleanup_kind": "confirm_peer_transport_stopped",
+      "timing": "post_run",
+      "required": true,
+      "expected_evidence_kind": "cleanup_record",
+      "reason": "The private run should record that configured peer transport was stopped or never started."
+    },
+    {
+      "step_id": "cleanup-03-clear-inbox",
+      "cleanup_kind": "clear_ephemeral_inbox",
+      "timing": "post_run",
+      "required": true,
+      "expected_evidence_kind": "cleanup_record",
+      "reason": "The private run should record cleanup of ephemeral peer inbox state."
+    },
+    {
+      "step_id": "cleanup-04-clear-outbox",
+      "cleanup_kind": "clear_ephemeral_outbox",
+      "timing": "post_run",
+      "required": true,
+      "expected_evidence_kind": "cleanup_record",
+      "reason": "The private run should record cleanup of ephemeral peer outbox state."
+    },
+    {
+      "step_id": "cleanup-05-preserve-summary",
+      "cleanup_kind": "preserve_sanitized_summary",
+      "timing": "post_evidence",
+      "required": false,
+      "expected_evidence_kind": "evidence_intake_report",
+      "reason": "A sanitized summary can be preserved after private review without carrying endpoint values."
+    },
+    {
+      "step_id": "cleanup-06-post-route-health",
+      "cleanup_kind": "record_post_run_route_health",
+      "timing": "post_evidence",
+      "required": false,
+      "expected_evidence_kind": "route_health_report",
+      "reason": "A post-run route-health derivative can show whether routes returned to expected synthetic state."
+    },
+    {
+      "step_id": "cleanup-07-route-history",
+      "cleanup_kind": "record_route_history",
+      "timing": "post_evidence",
+      "required": false,
+      "expected_evidence_kind": "route_history_report",
+      "reason": "A route-history derivative can make cleanup repeatability reviewable."
+    },
+    {
+      "step_id": "cleanup-08-record",
+      "cleanup_kind": "record_cleanup_record",
+      "timing": "final_review",
+      "required": true,
+      "expected_evidence_kind": "cleanup_record",
+      "reason": "A cleanup record is required before private run evidence can be accepted."
+    }
+  ],
+  "authority_boundary": [
+    "Cleanup plan manifests declare cleanup categories only.",
+    "Cleanup plan manifests do not execute cleanup, approve live work, select endpoints, inspect devices, monitor peers, probe peers, open sockets, copy files, discover devices, send gossip, use ADB, launch apps, or execute commands.",
+    "Cleanup plan manifests do not carry private endpoint values, raw network addresses, raw device identifiers, gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests."
+  ]
+}

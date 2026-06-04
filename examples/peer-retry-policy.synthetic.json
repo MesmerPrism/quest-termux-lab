@@ -1,0 +1,21 @@
+{
+  "schema": "quest-termux-lab.peer-retry-policy.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:01Z",
+  "max_attempts": 3,
+  "min_retry_delay_seconds": 10,
+  "max_retry_delay_seconds": 60,
+  "backoff_multiplier": 2,
+  "retryable_errors": [
+    "no synthetic outcome configured",
+    "synthetic no response",
+    "http_timeout",
+    "file_drop_unavailable"
+  ],
+  "authority_boundary": [
+    "Retry policy schedules gossip delivery attempts only.",
+    "Retry policy does not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests.",
+    "Retry policy does not prove live transport reliability."
+  ]
+}
