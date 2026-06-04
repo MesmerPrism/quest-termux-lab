@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/fleet-command-result.schema.json",
+  "title": "Quest Termux Lab Fleet Command Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "agent_id",
+    "command_id",
+    "accepted",
+    "status",
+    "started_at",
+    "finished_at",
+    "duration_ms",
+    "local_adb_used",
+    "redactions_applied"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.fleet-command-result.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "command_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "accepted": {
+      "type": "boolean"
+    },
+    "status": {
+      "enum": ["completed", "rejected", "failed", "timeout", "skipped"]
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "finished_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "duration_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "exit_code": {
+      "type": ["integer", "null"]
+    },
+    "stdout_tail": {
+      "type": ["string", "null"]
+    },
+    "stderr_tail": {
+      "type": ["string", "null"]
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "path", "redacted"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "minLength": 1
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "redacted": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "local_adb_used": {
+      "type": "boolean"
+    },
+    "local_adb_shell_uid": {
+      "type": ["string", "null"]
+    },
+    "error_code": {
+      "type": ["string", "null"]
+    },
+    "error_message": {
+      "type": ["string", "null"]
+    },
+    "redactions_applied": {
+      "type": "boolean"
+    }
+  }
+}

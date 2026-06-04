@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-node-config.schema.json",
+  "title": "Quest Termux Lab Peer Node Config",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "agent_id",
+    "transport_mode",
+    "inbox_dir",
+    "outbox_dir",
+    "max_hop_ttl",
+    "gossip_interval_seconds",
+    "allowed_message_schemas",
+    "forbidden_capabilities"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-node-config.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{2,80}$"
+    },
+    "agent_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{2,80}$"
+    },
+    "transport_mode": {
+      "enum": ["file_drop_simulator", "configured_http_future"]
+    },
+    "inbox_dir": {
+      "type": "string",
+      "minLength": 1
+    },
+    "outbox_dir": {
+      "type": "string",
+      "minLength": 1
+    },
+    "max_hop_ttl": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 8
+    },
+    "gossip_interval_seconds": {
+      "type": "number",
+      "minimum": 0.1
+    },
+    "allowed_message_schemas": {
+      "type": "array",
+      "items": {
+        "enum": ["quest-termux-lab.peer-gossip-envelope.v1"]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "forbidden_capabilities": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "peer_command_relay",
+          "peer_shell",
+          "peer_adb",
+          "peer_install_launch",
+          "credential_exchange"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  }
+}

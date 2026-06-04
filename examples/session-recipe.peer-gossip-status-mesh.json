@@ -1,0 +1,80 @@
+{
+  "schema": "quest-termux-lab.session-recipe.v1",
+  "id": "peer-gossip-status-mesh",
+  "purpose": "Prepare a peer mesh where Termux agents exchange compact status observations without relaying commands or ADB authority.",
+  "authority_boundary": [
+    "Peer mesh messages are status gossip only.",
+    "Peers do not send commands, shell text, ADB pairing material, APK install requests, app launch requests, or cross-headset ADB targets.",
+    "The central fleet controller remains the command queue and audit surface.",
+    "Central direct ADB remains the recovery and privileged truth-check path."
+  ],
+  "preflight": [
+    {
+      "label": "review-schema",
+      "command": "Review peer-gossip-envelope and peer-mesh-summary schemas.",
+      "operator_visible": true
+    },
+    {
+      "label": "synthetic-only",
+      "command": "Run the peer mesh simulator with synthetic envelopes before adding any network transport.",
+      "operator_visible": true
+    }
+  ],
+  "start": [
+    {
+      "label": "simulate-merge",
+      "command": "python tools/peer_mesh_gossip.py summarize --observer quest-agent-alpha examples/peer-gossip-envelope.synthetic.json",
+      "operator_visible": true
+    }
+  ],
+  "status": [
+    {
+      "label": "summary",
+      "command": "Confirm the summary contains known peers, status, central reachability, and local ADB availability fields only.",
+      "operator_visible": true
+    },
+    {
+      "label": "forbidden-message-count",
+      "command": "Confirm forbidden_message_count is zero for public-safe status gossip.",
+      "operator_visible": true
+    }
+  ],
+  "stop": [
+    {
+      "label": "no-network",
+      "command": "No network listener or peer transport is started in this preparation slice.",
+      "operator_visible": true
+    }
+  ],
+  "cleanup": [
+    {
+      "label": "public-boundary",
+      "command": "Run python tools/check_public_boundary.py --repo-root . before promoting examples.",
+      "operator_visible": true
+    }
+  ],
+  "evidence": [
+    "Synthetic peer gossip envelope.",
+    "Synthetic peer mesh summary.",
+    "Simulator stdout summary.",
+    "Unit tests for merge, stale, and forbidden-message behavior."
+  ],
+  "risks": [
+    {
+      "risk": "Peer mesh can drift into peer command relay or cross-headset ADB control.",
+      "recovery": "Reject command-like and shell-like fields in gossip messages and keep command dispatch in the central controller."
+    },
+    {
+      "risk": "Stale peer observations can look like current fleet truth.",
+      "recovery": "Use per-observation stale_after_seconds and compute alive/stale state in summaries."
+    },
+    {
+      "risk": "Mesh discovery can expose LAN details or real device identities.",
+      "recovery": "Keep this slice synthetic and promote only redacted or generated agent IDs."
+    }
+  ],
+  "notes": [
+    "This is preparation for a future mesh. It does not open UDP, mDNS, Bluetooth, MQTT, WebSocket, or HTTP peer listeners.",
+    "A later live route should start with gossip-only status over a controlled transport before considering relay behavior."
+  ]
+}

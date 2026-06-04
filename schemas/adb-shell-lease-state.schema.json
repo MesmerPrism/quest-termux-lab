@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/adb-shell-lease-state.schema.json",
+  "title": "Quest Termux Lab ADB Shell Lease State",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "agent_id",
+    "lease_observed_at",
+    "local_adb_available",
+    "authorization_source",
+    "central_adb_recovery_used"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.adb-shell-lease-state.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lease_observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "local_adb_available": {
+      "type": "boolean"
+    },
+    "local_adb_target": {
+      "type": ["string", "null"]
+    },
+    "local_adb_shell_uid": {
+      "type": ["string", "null"]
+    },
+    "authorization_source": {
+      "enum": [
+        "unknown",
+        "operator_enabled_wifi_adb",
+        "central_paired_wireless_debugging",
+        "central_usb_tcpip_bootstrap",
+        "already_active_endpoint",
+        "not_available"
+      ]
+    },
+    "central_adb_recovery_used": {
+      "type": "boolean"
+    },
+    "central_adb_target": {
+      "type": ["string", "null"]
+    },
+    "failure_reason": {
+      "type": ["string", "null"]
+    },
+    "next_recovery_action": {
+      "type": ["string", "null"]
+    }
+  }
+}

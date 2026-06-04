@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-http-node-config.schema.json",
+  "title": "Quest Termux Lab Peer HTTP Node Config",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "agent_id",
+    "bind_host",
+    "bind_port",
+    "seen_message_ttl_seconds",
+    "api_prefix",
+    "accepted_message_schemas",
+    "rejected_routes",
+    "transport_scope"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-http-node-config.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{2,80}$"
+    },
+    "agent_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{2,80}$"
+    },
+    "bind_host": {
+      "const": "127.0.0.1"
+    },
+    "bind_port": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "seen_message_ttl_seconds": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "api_prefix": {
+      "const": "/api/peer/v1"
+    },
+    "accepted_message_schemas": {
+      "type": "array",
+      "items": {
+        "enum": ["quest-termux-lab.peer-gossip-envelope.v1"]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "rejected_routes": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "heartbeat",
+          "commands",
+          "command-results",
+          "shell",
+          "adb",
+          "install",
+          "launch",
+          "pairing"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "transport_scope": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "loopback_only",
+          "configured_peer_future",
+          "status_gossip_only",
+          "no_discovery",
+          "no_command_authority",
+          "no_adb_authority"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  }
+}

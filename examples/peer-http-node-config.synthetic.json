@@ -1,0 +1,30 @@
+{
+  "schema": "quest-termux-lab.peer-http-node-config.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "agent_id": "quest-agent-alpha",
+  "bind_host": "127.0.0.1",
+  "bind_port": 8788,
+  "seen_message_ttl_seconds": 300,
+  "api_prefix": "/api/peer/v1",
+  "accepted_message_schemas": [
+    "quest-termux-lab.peer-gossip-envelope.v1"
+  ],
+  "rejected_routes": [
+    "heartbeat",
+    "commands",
+    "command-results",
+    "shell",
+    "adb",
+    "install",
+    "launch",
+    "pairing"
+  ],
+  "transport_scope": [
+    "loopback_only",
+    "configured_peer_future",
+    "status_gossip_only",
+    "no_discovery",
+    "no_command_authority",
+    "no_adb_authority"
+  ]
+}

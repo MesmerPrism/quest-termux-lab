@@ -1,0 +1,29 @@
+{
+  "schema": "quest-termux-lab.peer-gossip-envelope.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "message_id": "gossip-from-heartbeat-alpha-001",
+  "sender_agent_id": "quest-agent-alpha",
+  "created_at": "2026-06-04T10:01:30Z",
+  "hop_ttl": 2,
+  "observations": [
+    {
+      "agent_id": "quest-agent-alpha",
+      "observed_at": "2026-06-04T09:01:24Z",
+      "heard_from_agent_id": "quest-agent-alpha",
+      "heartbeat_sequence": 42,
+      "agent_alive": true,
+      "central_reachable": true,
+      "local_adb_available": false,
+      "local_adb_shell_uid": null,
+      "battery_percent": 81,
+      "last_command_status": "completed",
+      "stale_after_seconds": 30,
+      "summary_hash": null
+    }
+  ],
+  "authority_boundary": [
+    "Peer gossip carries status observations only.",
+    "Peer gossip does not carry commands, shell text, ADB targets, pairing material, or install/launch authority.",
+    "Central direct ADB remains the recovery and privileged truth-check route."
+  ]
+}

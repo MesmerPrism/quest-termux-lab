@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-http-summary.schema.json",
+  "title": "Quest Termux Lab Peer HTTP Summary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "observer_agent_id",
+    "observed_at",
+    "transport_scope",
+    "accepted_message_count",
+    "duplicate_message_count",
+    "rejected_message_count",
+    "expired_seen_message_count",
+    "seen_message_count",
+    "seen_message_ttl_seconds",
+    "peer_summary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-http-summary.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observer_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "transport_scope": {
+      "const": "loopback_http_simulator"
+    },
+    "accepted_message_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "duplicate_message_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "rejected_message_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "expired_seen_message_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "seen_message_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "seen_message_ttl_seconds": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "peer_summary": {
+      "$ref": "peer-mesh-summary.schema.json"
+    }
+  }
+}

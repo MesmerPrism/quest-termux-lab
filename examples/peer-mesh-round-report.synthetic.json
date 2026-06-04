@@ -1,0 +1,41 @@
+{
+  "schema": "quest-termux-lab.peer-mesh-round-report.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "round_id": "peer-round-synthetic-001",
+  "node_count": 3,
+  "initial_envelope_count": 3,
+  "direct_delivery_count": 2,
+  "relayed_envelope_count": 1,
+  "relay_passes": 1,
+  "nodes": [
+    {
+      "agent_id": "quest-agent-alpha",
+      "inbox_envelope_count": 1,
+      "outbox_envelope_count": 1,
+      "known_peer_count": 1,
+      "forbidden_message_count": 0,
+      "summary_file": "quest-agent-alpha/summary.json"
+    },
+    {
+      "agent_id": "quest-agent-beta",
+      "inbox_envelope_count": 2,
+      "outbox_envelope_count": 2,
+      "known_peer_count": 2,
+      "forbidden_message_count": 0,
+      "summary_file": "quest-agent-beta/summary.json"
+    },
+    {
+      "agent_id": "quest-agent-gamma",
+      "inbox_envelope_count": 3,
+      "outbox_envelope_count": 1,
+      "known_peer_count": 3,
+      "forbidden_message_count": 0,
+      "summary_file": "quest-agent-gamma/summary.json"
+    }
+  ],
+  "authority_boundary": [
+    "Round simulation writes synthetic status envelopes only.",
+    "It does not open peer sockets, discover devices, run shell commands, use ADB, or relay central commands.",
+    "Central direct ADB remains the recovery and privileged truth-check route."
+  ]
+}

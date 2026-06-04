@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-route-config.schema.json",
+  "title": "Quest Termux Lab Peer Route Config",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "routes",
+    "allowed_message_schemas",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-route-config.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "target_agent_id",
+          "transport_mode"
+        ],
+        "properties": {
+          "target_agent_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "transport_mode": {
+            "enum": ["file_drop_simulator", "loopback_http_simulator", "disabled"]
+          },
+          "gossip_endpoint": {
+            "type": "string",
+            "pattern": "^http://127\\.0\\.0\\.1:[0-9]{1,5}/api/peer/v1/gossip$"
+          },
+          "target_inbox_dir": {
+            "type": "string",
+            "pattern": "^(?!.*\\.\\.)[a-zA-Z0-9_./-]+$"
+          }
+        }
+      }
+    },
+    "allowed_message_schemas": {
+      "type": "array",
+      "items": {
+        "enum": ["quest-termux-lab.peer-gossip-envelope.v1"]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

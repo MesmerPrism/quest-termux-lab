@@ -1,0 +1,36 @@
+{
+  "schema": "quest-termux-lab.peer-dispatch-plan.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:01Z",
+  "route_count": 2,
+  "dispatches": [
+    {
+      "delivery_id": "delivery-alpha-to-beta-001",
+      "target_agent_id": "quest-agent-beta",
+      "message_id": "gossip-alpha-001",
+      "delivery_state": "pending",
+      "decision": "ready",
+      "transport_mode": "loopback_http_simulator",
+      "method": "post_gossip",
+      "route_target": "http://127.0.0.1:8788/api/peer/v1/gossip",
+      "message_schema": "quest-termux-lab.peer-gossip-envelope.v1",
+      "attempt_count": 0,
+      "expires_at": "2026-06-04T10:05:00Z",
+      "reason": null
+    }
+  ],
+  "summary": {
+    "dispatch_count": 1,
+    "ready_count": 1,
+    "skipped_terminal_count": 0,
+    "expired_count": 0,
+    "missing_route_count": 0,
+    "route_disabled_count": 0
+  },
+  "authority_boundary": [
+    "Dispatch plans describe intended gossip delivery only.",
+    "Dispatch plans do not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests.",
+    "This simulator does not open sockets, copy files, discover peers, or send gossip."
+  ]
+}

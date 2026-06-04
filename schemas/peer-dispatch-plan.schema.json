@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-dispatch-plan.schema.json",
+  "title": "Quest Termux Lab Peer Dispatch Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "source_agent_id",
+    "observed_at",
+    "route_count",
+    "dispatches",
+    "summary",
+    "authority_boundary"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-dispatch-plan.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "route_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "dispatches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "delivery_id",
+          "target_agent_id",
+          "message_id",
+          "delivery_state",
+          "decision",
+          "transport_mode",
+          "method",
+          "route_target",
+          "message_schema",
+          "attempt_count",
+          "expires_at",
+          "reason"
+        ],
+        "properties": {
+          "delivery_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target_agent_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "message_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "delivery_state": {
+            "enum": ["pending", "accepted", "duplicate", "rejected", "expired"]
+          },
+          "decision": {
+            "enum": ["ready", "skipped_terminal", "expired", "missing_route", "route_disabled"]
+          },
+          "transport_mode": {
+            "enum": ["file_drop_simulator", "loopback_http_simulator", "none", "disabled"]
+          },
+          "method": {
+            "enum": ["copy_envelope", "post_gossip", "none"]
+          },
+          "route_target": {
+            "type": ["string", "null"]
+          },
+          "message_schema": {
+            "const": "quest-termux-lab.peer-gossip-envelope.v1"
+          },
+          "attempt_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reason": {
+            "type": ["string", "null"]
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dispatch_count",
+        "ready_count",
+        "skipped_terminal_count",
+        "expired_count",
+        "missing_route_count",
+        "route_disabled_count"
+      ],
+      "properties": {
+        "dispatch_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ready_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skipped_terminal_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "expired_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_route_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "route_disabled_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "authority_boundary": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

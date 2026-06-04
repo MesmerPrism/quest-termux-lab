@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/fleet-command-request.schema.json",
+  "title": "Quest Termux Lab Fleet Command Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "command_id",
+    "target_agent_id",
+    "issued_at",
+    "expires_at",
+    "idempotency_key",
+    "kind",
+    "requires_local_adb_shell",
+    "timeout_ms",
+    "max_stdout_bytes",
+    "max_stderr_bytes",
+    "payload"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.fleet-command-request.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "command_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]{2,120}$"
+    },
+    "target_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": [
+        "agent.status",
+        "agent.capabilities",
+        "termux.exec_allowlisted",
+        "file.hash",
+        "file.tail",
+        "file.list_evidence",
+        "file.pack_evidence",
+        "broker.status_summary",
+        "broker.stream_summary",
+        "adb.self_check",
+        "adb.shell_allowlisted",
+        "android.foreground_snapshot",
+        "android.logcat_slice",
+        "android.dumpsys_snapshot",
+        "app.launch_allowlisted",
+        "app.force_stop_allowlisted"
+      ]
+    },
+    "requires_local_adb_shell": {
+      "type": "boolean"
+    },
+    "timeout_ms": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 120000
+    },
+    "max_stdout_bytes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65536
+    },
+    "max_stderr_bytes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65536
+    },
+    "payload": {
+      "type": "object"
+    },
+    "sensitivity": {
+      "enum": ["public_safe", "local_only", "private_evidence"]
+    },
+    "requested_by": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string"
+    }
+  }
+}

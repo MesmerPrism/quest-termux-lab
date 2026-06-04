@@ -1,0 +1,30 @@
+{
+  "schema": "quest-termux-lab.fleet-agent-heartbeat.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "agent_id": "quest-agent-alpha",
+  "sequence": 42,
+  "observed_at": "2026-06-04T09:01:24Z",
+  "agent_uptime_seconds": 123.5,
+  "central_reachable": true,
+  "battery_percent": 81,
+  "charging": true,
+  "storage_free_bytes": 1234567890,
+  "process_count": 24,
+  "active_jobs": 0,
+  "last_command_id": "cmd-agent-status-001",
+  "last_command_status": "completed",
+  "last_error_code": null,
+  "local_adb": {
+    "checked": true,
+    "available": false,
+    "adb_target": "127.0.0.1:5555",
+    "shell_uid": null,
+    "last_success_at": null,
+    "last_failure_reason": "not_checked_in_synthetic_fixture"
+  },
+  "foreground": {
+    "source": "agent_report",
+    "package_or_panel": null,
+    "confidence": "low"
+  }
+}

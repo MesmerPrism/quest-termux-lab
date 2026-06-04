@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/fleet-agent-heartbeat.schema.json",
+  "title": "Quest Termux Lab Fleet Agent Heartbeat",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "agent_id",
+    "sequence",
+    "observed_at",
+    "agent_uptime_seconds",
+    "central_reachable",
+    "active_jobs",
+    "local_adb"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.fleet-agent-heartbeat.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "agent_uptime_seconds": {
+      "type": "number",
+      "minimum": 0
+    },
+    "central_reachable": {
+      "type": "boolean"
+    },
+    "battery_percent": {
+      "type": ["integer", "null"],
+      "minimum": 0,
+      "maximum": 100
+    },
+    "charging": {
+      "type": ["boolean", "null"]
+    },
+    "storage_free_bytes": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "process_count": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "active_jobs": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "last_command_id": {
+      "type": ["string", "null"]
+    },
+    "last_command_status": {
+      "type": ["string", "null"]
+    },
+    "last_error_code": {
+      "type": ["string", "null"]
+    },
+    "local_adb": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checked", "available", "adb_target", "shell_uid", "last_failure_reason"],
+      "properties": {
+        "checked": {
+          "type": "boolean"
+        },
+        "available": {
+          "type": "boolean"
+        },
+        "adb_target": {
+          "type": ["string", "null"]
+        },
+        "shell_uid": {
+          "type": ["string", "null"]
+        },
+        "last_success_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "last_failure_reason": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "foreground": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "package_or_panel": {
+          "type": ["string", "null"]
+        },
+        "confidence": {
+          "enum": ["none", "low", "medium", "high"]
+        }
+      }
+    }
+  }
+}

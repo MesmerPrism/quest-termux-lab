@@ -1,0 +1,20 @@
+{
+  "schema": "quest-termux-lab.peer-node-config.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "agent_id": "quest-agent-alpha",
+  "transport_mode": "file_drop_simulator",
+  "inbox_dir": "runs/peer-mesh/quest-agent-alpha/inbox",
+  "outbox_dir": "runs/peer-mesh/quest-agent-alpha/outbox",
+  "max_hop_ttl": 2,
+  "gossip_interval_seconds": 5,
+  "allowed_message_schemas": [
+    "quest-termux-lab.peer-gossip-envelope.v1"
+  ],
+  "forbidden_capabilities": [
+    "peer_command_relay",
+    "peer_shell",
+    "peer_adb",
+    "peer_install_launch",
+    "credential_exchange"
+  ]
+}

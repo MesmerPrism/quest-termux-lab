@@ -1,0 +1,102 @@
+{
+  "schema": "quest-termux-lab.session-recipe.v1",
+  "id": "outbound-fleet-agent",
+  "purpose": "Run a Termux-owned outbound polling agent that reports compact health and receives allowlisted bounded commands from a central fleet controller.",
+  "authority_boundary": [
+    "Termux remains a normal Android app sidecar.",
+    "The fleet agent does not create ADB authorization, become Android shell, replace HOME, own broker authority, or act as a hidden watchdog.",
+    "Local ADB commands are allowed only when an already authorized Wi-Fi ADB endpoint is available and the command explicitly requires it.",
+    "The first implementation uses outbound polling and exposes no inbound listener on the headset."
+  ],
+  "preflight": [
+    {
+      "label": "agent-config",
+      "command": "Review the public-safe agent config and confirm fleet_id, agent_id, central endpoint, command allowlist, and local ADB setting.",
+      "operator_visible": true
+    },
+    {
+      "label": "central-controller",
+      "command": "Start the central fleet controller on a controlled lab host or simulator.",
+      "operator_visible": true
+    },
+    {
+      "label": "termux-runtime",
+      "command": "Confirm Termux can run Python 3 and write to the agent workspace.",
+      "operator_visible": true
+    }
+  ],
+  "start": [
+    {
+      "label": "start-agent",
+      "command": "python scripts/termux_fleet_agent.py --config config.synthetic.json",
+      "operator_visible": true
+    },
+    {
+      "label": "queue-command",
+      "command": "Queue an agent.status command through the central controller.",
+      "operator_visible": true
+    }
+  ],
+  "status": [
+    {
+      "label": "heartbeat",
+      "command": "Confirm the central controller has a fresh heartbeat for the agent.",
+      "operator_visible": true
+    },
+    {
+      "label": "command-result",
+      "command": "Confirm the central controller received a bounded command result with matching command_id and agent_id.",
+      "operator_visible": true
+    },
+    {
+      "label": "local-evidence",
+      "command": "Confirm the agent wrote local JSONL command/result evidence under its workspace.",
+      "operator_visible": true
+    }
+  ],
+  "stop": [
+    {
+      "label": "stop-agent",
+      "command": "Stop the foreground agent process or write a reviewed stop condition for a bounded test run.",
+      "operator_visible": true
+    }
+  ],
+  "cleanup": [
+    {
+      "label": "no-listener",
+      "command": "Confirm the outbound-only agent did not leave an inbound listener.",
+      "operator_visible": true
+    },
+    {
+      "label": "redaction",
+      "command": "Keep real fleet logs, device names, IPs, package IDs, and ADB outputs out of the public repository.",
+      "operator_visible": true
+    }
+  ],
+  "evidence": [
+    "Fleet agent manifest.",
+    "Heartbeat records.",
+    "Command request and result records.",
+    "ADB shell lease state when local ADB is checked.",
+    "Central controller summary.",
+    "Agent-local JSONL evidence."
+  ],
+  "risks": [
+    {
+      "risk": "Android may pause or kill long-running Termux processes.",
+      "recovery": "Treat stale heartbeat as recovery-needed and use central direct ADB or operator action to restore the agent."
+    },
+    {
+      "risk": "Wi-Fi ADB may be unavailable even when the agent is alive.",
+      "recovery": "Reject commands that require local ADB and escalate to central direct ADB only when needed."
+    },
+    {
+      "risk": "An overly broad command allowlist can become remote shell control.",
+      "recovery": "Keep command kinds explicit, bounded, and logged; reject arbitrary shell by default."
+    }
+  ],
+  "notes": [
+    "This recipe is for fleet monitoring and bounded control, not live device validation by itself.",
+    "The synthetic examples intentionally do not contain real headset names, serials, LAN IPs, or authorization material."
+  ]
+}

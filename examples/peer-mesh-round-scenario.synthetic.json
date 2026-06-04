@@ -1,0 +1,43 @@
+{
+  "schema": "quest-termux-lab.peer-mesh-round-scenario.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "round_id": "peer-round-synthetic-001",
+  "nodes": [
+    {
+      "agent_id": "quest-agent-alpha"
+    },
+    {
+      "agent_id": "quest-agent-beta"
+    },
+    {
+      "agent_id": "quest-agent-gamma"
+    }
+  ],
+  "heartbeats": [
+    {
+      "agent_id": "quest-agent-alpha",
+      "path": "examples/fleet-agent-heartbeat.synthetic.json"
+    },
+    {
+      "agent_id": "quest-agent-beta",
+      "path": "examples/fleet-agent-heartbeat.beta.synthetic.json"
+    },
+    {
+      "agent_id": "quest-agent-gamma",
+      "path": "examples/fleet-agent-heartbeat.gamma.synthetic.json"
+    }
+  ],
+  "gossip_links": [
+    {
+      "from_agent_id": "quest-agent-alpha",
+      "to_agent_id": "quest-agent-beta"
+    },
+    {
+      "from_agent_id": "quest-agent-beta",
+      "to_agent_id": "quest-agent-gamma"
+    }
+  ],
+  "max_hop_ttl": 2,
+  "relay_passes": 1,
+  "stale_after_seconds": 30
+}

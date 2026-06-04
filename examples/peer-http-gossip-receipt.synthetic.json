@@ -1,0 +1,17 @@
+{
+  "schema": "quest-termux-lab.peer-http-gossip-receipt.v1",
+  "status": "accepted",
+  "observed_at": "2026-06-04T10:00:05Z",
+  "fleet_id": "synthetic-lab-fleet",
+  "observer_agent_id": "quest-agent-alpha",
+  "message_id": "gossip-alpha-001",
+  "sender_agent_id": "quest-agent-alpha",
+  "applied": true,
+  "reason": null,
+  "known_peer_count": 2,
+  "accepted_message_count": 1,
+  "duplicate_message_count": 0,
+  "rejected_message_count": 0,
+  "expired_seen_message_count": 0,
+  "seen_message_ttl_seconds": 300
+}

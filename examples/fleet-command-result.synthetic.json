@@ -1,0 +1,20 @@
+{
+  "schema": "quest-termux-lab.fleet-command-result.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "agent_id": "quest-agent-alpha",
+  "command_id": "cmd-agent-status-001",
+  "accepted": true,
+  "status": "completed",
+  "started_at": "2026-06-04T09:01:21Z",
+  "finished_at": "2026-06-04T09:01:21Z",
+  "duration_ms": 17,
+  "exit_code": 0,
+  "stdout_tail": "{\"agent_id\":\"quest-agent-alpha\",\"status\":\"alive\"}",
+  "stderr_tail": "",
+  "artifacts": [],
+  "local_adb_used": false,
+  "local_adb_shell_uid": null,
+  "error_code": null,
+  "error_message": null,
+  "redactions_applied": false
+}

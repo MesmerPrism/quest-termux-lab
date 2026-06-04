@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-http-gossip-receipt.schema.json",
+  "title": "Quest Termux Lab Peer HTTP Gossip Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "status",
+    "observed_at",
+    "fleet_id",
+    "observer_agent_id",
+    "message_id",
+    "sender_agent_id",
+    "applied",
+    "reason",
+    "known_peer_count",
+    "accepted_message_count",
+    "duplicate_message_count",
+    "rejected_message_count",
+    "expired_seen_message_count",
+    "seen_message_ttl_seconds"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-http-gossip-receipt.v1"
+    },
+    "status": {
+      "enum": ["accepted", "duplicate"]
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observer_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "message_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sender_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "applied": {
+      "type": "boolean"
+    },
+    "reason": {
+      "type": ["string", "null"]
+    },
+    "known_peer_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "accepted_message_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "duplicate_message_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "rejected_message_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "expired_seen_message_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "seen_message_ttl_seconds": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    }
+  }
+}

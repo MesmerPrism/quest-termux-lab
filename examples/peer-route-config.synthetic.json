@@ -1,0 +1,25 @@
+{
+  "schema": "quest-termux-lab.peer-route-config.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "routes": [
+    {
+      "target_agent_id": "quest-agent-beta",
+      "transport_mode": "loopback_http_simulator",
+      "gossip_endpoint": "http://127.0.0.1:8788/api/peer/v1/gossip"
+    },
+    {
+      "target_agent_id": "quest-agent-gamma",
+      "transport_mode": "file_drop_simulator",
+      "target_inbox_dir": "runs/peer-mesh-round/peer-round-synthetic-001/quest-agent-gamma/inbox"
+    }
+  ],
+  "allowed_message_schemas": [
+    "quest-termux-lab.peer-gossip-envelope.v1"
+  ],
+  "authority_boundary": [
+    "Route config describes where status gossip would be delivered in a dry run.",
+    "Route config does not carry gossip bodies, commands, shell text, ADB targets, pairing material, install requests, or launch requests.",
+    "Public fixtures use loopback HTTP or relative file-drop paths only."
+  ]
+}

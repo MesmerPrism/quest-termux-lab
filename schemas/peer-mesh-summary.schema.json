@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-mesh-summary.schema.json",
+  "title": "Quest Termux Lab Peer Mesh Summary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "observer_agent_id",
+    "observed_at",
+    "known_peer_count",
+    "peers",
+    "forbidden_message_count"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-mesh-summary.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observer_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "known_peer_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "forbidden_message_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "peers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "agent_id",
+          "status",
+          "observed_at",
+          "heard_from_agent_id",
+          "central_reachable",
+          "local_adb_available"
+        ],
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": ["alive", "stale", "unknown"]
+          },
+          "observed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "heard_from_agent_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "central_reachable": {
+            "type": "boolean"
+          },
+          "local_adb_available": {
+            "type": "boolean"
+          },
+          "battery_percent": {
+            "type": ["integer", "null"],
+            "minimum": 0,
+            "maximum": 100
+          },
+          "last_command_status": {
+            "type": ["string", "null"]
+          }
+        }
+      }
+    }
+  }
+}

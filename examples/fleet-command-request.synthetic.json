@@ -1,0 +1,18 @@
+{
+  "schema": "quest-termux-lab.fleet-command-request.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "command_id": "cmd-agent-status-001",
+  "target_agent_id": "quest-agent-alpha",
+  "issued_at": "2026-06-04T09:01:20Z",
+  "expires_at": "2026-06-04T09:06:20Z",
+  "idempotency_key": "synthetic-agent-status-001",
+  "kind": "agent.status",
+  "requires_local_adb_shell": false,
+  "timeout_ms": 5000,
+  "max_stdout_bytes": 4096,
+  "max_stderr_bytes": 4096,
+  "payload": {},
+  "sensitivity": "public_safe",
+  "requested_by": "synthetic-command-center",
+  "reason": "Synthetic heartbeat smoke command."
+}

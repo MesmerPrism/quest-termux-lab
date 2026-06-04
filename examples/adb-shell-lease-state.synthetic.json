@@ -1,0 +1,14 @@
+{
+  "schema": "quest-termux-lab.adb-shell-lease-state.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "agent_id": "quest-agent-alpha",
+  "lease_observed_at": "2026-06-04T09:01:22Z",
+  "local_adb_available": false,
+  "local_adb_target": "127.0.0.1:5555",
+  "local_adb_shell_uid": null,
+  "authorization_source": "not_available",
+  "central_adb_recovery_used": false,
+  "central_adb_target": null,
+  "failure_reason": "Synthetic fixture did not attempt ADB.",
+  "next_recovery_action": "Use central direct ADB only in a live operator-approved run."
+}

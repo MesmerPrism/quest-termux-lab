@@ -1,0 +1,30 @@
+{
+  "schema": "quest-termux-lab.peer-mesh-summary.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "observer_agent_id": "quest-agent-alpha",
+  "observed_at": "2026-06-04T10:00:05Z",
+  "known_peer_count": 2,
+  "forbidden_message_count": 0,
+  "peers": [
+    {
+      "agent_id": "quest-agent-alpha",
+      "status": "alive",
+      "observed_at": "2026-06-04T10:00:00Z",
+      "heard_from_agent_id": "quest-agent-alpha",
+      "central_reachable": true,
+      "local_adb_available": false,
+      "battery_percent": 81,
+      "last_command_status": "completed"
+    },
+    {
+      "agent_id": "quest-agent-beta",
+      "status": "alive",
+      "observed_at": "2026-06-04T09:59:50Z",
+      "heard_from_agent_id": "quest-agent-alpha",
+      "central_reachable": false,
+      "local_adb_available": false,
+      "battery_percent": 74,
+      "last_command_status": "empty"
+    }
+  ]
+}

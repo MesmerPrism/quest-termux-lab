@@ -32,6 +32,18 @@ Before committing, run:
 ```powershell
 python tools/check_public_boundary.py --repo-root .
 python -m py_compile tools/capture_vnc_screenshot.py tools/stream_vnc_mjpeg.py tools/check_public_boundary.py
+python -m py_compile tools/fleet_control_plane.py scripts/termux_fleet_agent.py tools/test_fleet_control_plane.py
+python -m unittest tools.test_fleet_control_plane
+python -m py_compile tools/peer_mesh_gossip.py tools/test_peer_mesh_gossip.py
+python -m unittest tools.test_peer_mesh_gossip
+python -m py_compile tools/peer_mesh_round.py tools/test_peer_mesh_round.py
+python -m unittest tools.test_peer_mesh_round
+python -m py_compile tools/peer_mesh_http_sim.py tools/test_peer_mesh_http_sim.py
+python -m unittest tools.test_peer_mesh_http_sim
+python -m py_compile tools/peer_mesh_delivery.py tools/test_peer_mesh_delivery.py
+python -m unittest tools.test_peer_mesh_delivery
+python -m py_compile tools/peer_mesh_dispatch_plan.py tools/test_peer_mesh_dispatch_plan.py
+python -m unittest tools.test_peer_mesh_dispatch_plan
 powershell -NoProfile -Command "[scriptblock]::Create((Get-Content -Raw tools/capture_x11_surface_metrics.ps1)) | Out-Null"
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/build_android_vnc_panel_viewer.ps1 -Unsigned
 bash -n scripts/build-minimal-android-apk-on-device.sh scripts/wifi-adb-keepawake-watchdog.sh scripts/quest-x11-wide-prefs.sh scripts/start-quest-x11-wide.sh

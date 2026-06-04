@@ -25,6 +25,18 @@ inform downstream XR tools.
   records for treating Termux or Proot as a normal-app developer sidecar.
 - Public-safe on-device APK build/install/launch guidance for an
   operator-authorized WiFi ADB loopback route.
+- Public-safe outbound fleet-agent schemas, examples, and simulator tooling
+  for Termux agents that report heartbeats and execute bounded allowlisted
+  commands without exposing a headset listener.
+- Public-safe peer-gossip preparation for future Termux agent meshes, limited
+  to compact status observations, synthetic merge tests, and file-drop round
+  simulation.
+- Public-safe peer delivery-state modeling for future configured peers,
+  limited to pending, accepted, duplicate, rejected, and expired gossip
+  delivery status.
+- Public-safe configured-peer dispatch planning that decides whether pending
+  gossip would use loopback HTTP, file-drop, disabled, missing, expired, or
+  terminal routes without sending anything.
 
 ## Current Milestone
 
@@ -73,6 +85,48 @@ installed helper can receive boot and write its own status after it has been
 launched and pre-granted, but it did not restore classic WiFi ADB after reboot.
 Termux-local ADB still needs an external or user-authorized ADB bootstrap
 before it can connect and receive `uid=2000(shell)`.
+
+The first outbound fleet-control-plane slice is simulator-only and public-safe:
+it defines Termux agent manifests, heartbeats, command requests/results, ADB
+lease-state records, a small central controller, and an outbound-only Python
+agent. It does not touch ADB or a headset unless a later live run explicitly
+enables local ADB in the agent config. See
+`docs/outbound-fleet-control-plane.md`.
+
+The first peer-mesh slice is also simulator-only: it defines gossip envelopes,
+peer summaries, a merge tool, and tests for stale-state and forbidden-message
+handling. It does not open peer sockets, relay commands, or use cross-headset
+ADB. See `docs/peer-mesh-preparation.md`.
+
+The peer-mesh simulator can now derive a gossip envelope from a fleet
+heartbeat, merge file-drop inbox directories, and prepare TTL-limited relay
+envelopes while stripping or rejecting command-like, shell-like, credential,
+and ADB-target fields.
+
+The peer-mesh round simulator adds a dry-run harness for multiple synthetic
+Termux agents. It creates per-peer inbox/outbox folders, delivers configured
+status gossip links, performs bounded TTL relay passes, and writes per-peer
+summaries plus a round report. It still does not open peer sockets, discover
+devices, run shell commands, use ADB, or relay central commands.
+
+The peer HTTP simulator adds the next transport-shaped dry run: a
+loopback-only HTTP endpoint that accepts `peer-gossip-envelope.v1` messages and
+returns an HTTP summary wrapper. It rejects heartbeats, command routes, shell
+fields, ADB targets, pairing material, install/launch operations, and
+non-loopback binding in the public fixture. It also returns explicit gossip
+receipts, treats exact duplicate message IDs as idempotent, and rejects same-ID
+content changes as replay conflicts inside a bounded replay window.
+
+The peer delivery-state simulator adds the sender-side dry run: it tracks
+pending gossip deliveries, applies HTTP receipts, records duplicate or rejected
+outcomes, and expires undelivered entries. It stores message IDs and delivery
+status only; it does not store gossip bodies, commands, shell text, ADB
+targets, pairing material, install requests, or launch requests.
+
+The peer dispatch-plan simulator adds the next sender-side step: it combines
+delivery state with configured peer routes and produces a no-send plan. A
+pending delivery can become ready for loopback HTTP or relative file-drop, or
+be marked as expired, skipped terminal, route disabled, or missing route.
 
 ## Workflow Pairing
 
@@ -132,14 +186,24 @@ this repository unless license obligations are reviewed.
    live stream endpoint evidence, then stop it.
 8. Broker feedback sidecar: poll a broker-owned status/registry surface and
    publish bounded diagnostic feedback through an explicit broker route.
-9. On-device Codex engineering: prove the CLI, sandbox behavior, small public
+9. Outbound fleet agent: prove simulator heartbeats, command polling, bounded
+   results, and no inbound listener before any live multi-headset run.
+10. Peer gossip mesh: prove synthetic status merge and forbidden-command
+    rejection before adding any peer network transport.
+11. Peer HTTP simulator: prove a loopback-only gossip receive/summarize route
+    before any configured LAN peer experiment.
+12. Peer delivery state: prove pending, accepted, duplicate, rejected, and
+    expired delivery outcomes before any live send loop.
+13. Peer dispatch plan: prove configured route selection and no-send planning
+    before any live send loop.
+14. On-device Codex engineering: prove the CLI, sandbox behavior, small public
    repo edits, validation, and patch review before any build or deploy lane.
-10. On-device APK loop: use an operator-authorized WiFi ADB endpoint to build,
+15. On-device APK loop: use an operator-authorized WiFi ADB endpoint to build,
    sign, install, and launch a source-only smoke APK from Termux.
-11. Reboot ADB recovery: treat Termux:Boot and pre-granted normal helpers as
+16. Reboot ADB recovery: treat Termux:Boot and pre-granted normal helpers as
    status probes only unless the target OS proves an official user-authorized
    wireless-debugging route.
-12. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
+17. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
    treat each as a separate high-risk gate.
 
 ## Validation
@@ -147,6 +211,18 @@ this repository unless license obligations are reviewed.
 ```powershell
 python tools/check_public_boundary.py --repo-root .
 python -m py_compile tools/capture_vnc_screenshot.py tools/stream_vnc_mjpeg.py tools/check_public_boundary.py
+python -m py_compile tools/fleet_control_plane.py scripts/termux_fleet_agent.py tools/test_fleet_control_plane.py
+python -m unittest tools.test_fleet_control_plane
+python -m py_compile tools/peer_mesh_gossip.py tools/test_peer_mesh_gossip.py
+python -m unittest tools.test_peer_mesh_gossip
+python -m py_compile tools/peer_mesh_round.py tools/test_peer_mesh_round.py
+python -m unittest tools.test_peer_mesh_round
+python -m py_compile tools/peer_mesh_http_sim.py tools/test_peer_mesh_http_sim.py
+python -m unittest tools.test_peer_mesh_http_sim
+python -m py_compile tools/peer_mesh_delivery.py tools/test_peer_mesh_delivery.py
+python -m unittest tools.test_peer_mesh_delivery
+python -m py_compile tools/peer_mesh_dispatch_plan.py tools/test_peer_mesh_dispatch_plan.py
+python -m unittest tools.test_peer_mesh_dispatch_plan
 powershell -NoProfile -Command "[scriptblock]::Create((Get-Content -Raw tools\capture_x11_surface_metrics.ps1)) | Out-Null"
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\build_android_vnc_panel_viewer.ps1 -Unsigned
 bash -n scripts/build-minimal-android-apk-on-device.sh scripts/wifi-adb-keepawake-watchdog.sh scripts/quest-x11-wide-prefs.sh scripts/start-quest-x11-wide.sh

@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/peer-mesh-round-scenario.schema.json",
+  "title": "Quest Termux Lab Peer Mesh Round Scenario",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "round_id",
+    "nodes",
+    "heartbeats",
+    "gossip_links",
+    "max_hop_ttl",
+    "relay_passes",
+    "stale_after_seconds"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.peer-mesh-round-scenario.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{2,80}$"
+    },
+    "round_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]{2,120}$"
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["agent_id"],
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]{2,80}$"
+          }
+        }
+      }
+    },
+    "heartbeats": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["agent_id", "path"],
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]{2,80}$"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^(?!.*\\.\\.)[a-zA-Z0-9_./-]+$"
+          }
+        }
+      }
+    },
+    "gossip_links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["from_agent_id", "to_agent_id"],
+        "properties": {
+          "from_agent_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]{2,80}$"
+          },
+          "to_agent_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]{2,80}$"
+          }
+        }
+      }
+    },
+    "max_hop_ttl": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 8
+    },
+    "relay_passes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4
+    },
+    "stale_after_seconds": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

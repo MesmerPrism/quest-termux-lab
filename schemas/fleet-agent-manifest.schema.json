@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/fleet-agent-manifest.schema.json",
+  "title": "Quest Termux Lab Fleet Agent Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "agent_id",
+    "agent_label",
+    "agent_version",
+    "transport_mode",
+    "central_endpoint",
+    "allowed_command_kinds",
+    "supports_local_adb",
+    "created_at"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.fleet-agent-manifest.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{2,80}$"
+    },
+    "agent_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{2,80}$"
+    },
+    "agent_label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "agent_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "transport_mode": {
+      "enum": ["outbound_http_poll", "outbound_websocket_future"]
+    },
+    "central_endpoint": {
+      "type": "string",
+      "minLength": 1
+    },
+    "allowed_command_kinds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "local_workspace_root": {
+      "type": "string"
+    },
+    "supports_local_adb": {
+      "type": "boolean"
+    },
+    "public_safe_profile": {
+      "type": "boolean",
+      "default": true
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "fleet_id": "synthetic-lab-fleet",
+  "agent_id": "quest-agent-alpha",
+  "central_url": "http://127.0.0.1:8787",
+  "workspace_root": "runs/fleet-agent-synthetic",
+  "poll_interval_seconds": 2,
+  "allowed_command_kinds": [
+    "agent.status",
+    "agent.capabilities",
+    "termux.exec_allowlisted",
+    "adb.self_check"
+  ],
+  "command_aliases": {
+    "python_version": [
+      "python",
+      "--version"
+    ]
+  },
+  "local_adb_enabled": false,
+  "local_adb_target": "127.0.0.1:5555"
+}
