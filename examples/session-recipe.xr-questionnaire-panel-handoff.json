@@ -1,0 +1,136 @@
+{
+  "schema": "quest-termux-lab.session-recipe.v1",
+  "id": "xr-questionnaire-panel-handoff",
+  "purpose": "Test a reusable cross-package Quest handoff where a foreground XR app opens a separate 2D questionnaire panel, the panel receives input, and the same XR app returns to foreground after the panel closes.",
+  "authority_boundary": [
+    "The questionnaire app is a normal Quest 2D panel app, not HOME, device owner, shell, or XR compositor authority.",
+    "The foreground XR app owns the product launch request.",
+    "Termux and ADB are lab fallback tools only and are not required for the product path.",
+    "The test must not use force-stop, package killing, hidden launchers, or Meta menu navigation as the normal return path."
+  ],
+  "preflight": [
+    {
+      "label": "Activate Quest workflow",
+      "command": "Operator step: activate the team's Meta Quest workflow for live headset operations before installs, launches, screenshots, logcat, or ADB.",
+      "operator_visible": true
+    },
+    {
+      "label": "Install XR caller",
+      "command": "Operator step: install a test XR app that logs OpenXR state and has a visible Open Questionnaire command.",
+      "operator_visible": true
+    },
+    {
+      "label": "Install questionnaire panel",
+      "command": "Operator step: install a separate questionnaire APK with an exported Quest 2D panel activity.",
+      "operator_visible": true
+    },
+    {
+      "label": "Record baseline",
+      "command": "Record headset model, OS version, current foreground surface, recovery route, and whether ADB or a shell lease is active.",
+      "operator_visible": true
+    }
+  ],
+  "start": [
+    {
+      "label": "Launch XR app",
+      "command": "Operator step: launch the XR caller app through the normal Quest app route.",
+      "operator_visible": true
+    },
+    {
+      "label": "Open questionnaire",
+      "command": "Inside the XR app, invoke the app-owned command that starts the questionnaire panel with a session id and return PendingIntent.",
+      "operator_visible": true
+    },
+    {
+      "label": "Answer questionnaire",
+      "command": "Interact with the focused 2D panel using normal Quest input and submit or cancel the questionnaire.",
+      "operator_visible": true
+    },
+    {
+      "label": "Return to XR",
+      "command": "Use the questionnaire panel's Back to XR control; it should invoke the supplied return route and finish only the panel activity.",
+      "operator_visible": true
+    }
+  ],
+  "status": [
+    {
+      "label": "Panel focus",
+      "command": "Confirm the questionnaire panel is foregrounded and receives Quest input while the XR app remains alive.",
+      "operator_visible": true
+    },
+    {
+      "label": "XR session state",
+      "command": "Record the XR app's OpenXR session state before launch, while the panel is focused, and after return.",
+      "operator_visible": false
+    },
+    {
+      "label": "Foreground readback",
+      "command": "Record foreground package/activity before launch, during questionnaire focus, and after return using the active Quest workflow provider.",
+      "operator_visible": false
+    },
+    {
+      "label": "No product-path ADB",
+      "command": "Confirm the product-path pass did not use adb shell am start, force-stop, package kill, or Meta menu navigation for the handoff.",
+      "operator_visible": true
+    }
+  ],
+  "stop": [
+    {
+      "label": "Close questionnaire",
+      "command": "If still open, close the questionnaire through its own UI or Android Back.",
+      "operator_visible": true
+    },
+    {
+      "label": "Return to known surface",
+      "command": "Return to a known operator-approved surface using the normal recovery route for the session.",
+      "operator_visible": true
+    }
+  ],
+  "cleanup": [
+    {
+      "label": "Stop lab-only helpers",
+      "command": "Stop any optional logcat, capture, Termux, or ADB helper started specifically for the run.",
+      "operator_visible": true
+    },
+    {
+      "label": "Verify no force-stop dependency",
+      "command": "Record whether cleanup used force-stop; if yes, classify it as cleanup only, not part of the handoff result.",
+      "operator_visible": false
+    },
+    {
+      "label": "Sanitize evidence",
+      "command": "Keep raw logs, screenshots, device serials, private package IDs, local paths, pairing data, and generated APKs out of public artifacts.",
+      "operator_visible": true
+    }
+  ],
+  "evidence": [
+    "Sanitized run summary with headset model family and OS version.",
+    "Foreground surface before launch, during questionnaire focus, and after return.",
+    "OpenXR session state transition summary for the XR app.",
+    "Process liveness summary for XR and questionnaire packages.",
+    "Classification of any protected prompt, controller requirement, or launch failure.",
+    "Statement that product-path return used the questionnaire return route rather than ADB, force-stop, package kill, or Meta menu navigation."
+  ],
+  "risks": [
+    {
+      "risk": "The XR app may lose OpenXR FOCUSED state while the 2D panel owns input.",
+      "recovery": "Treat VISIBLE or paused-but-alive state as expected during panel focus; fail only if the XR app tears down or cannot regain focus after panel close."
+    },
+    {
+      "risk": "The questionnaire return route may create a duplicate XR activity instead of resuming the existing one.",
+      "recovery": "Use a caller-provided PendingIntent, stable launch mode, and reorder/single-top flags; record task behavior in the run summary."
+    },
+    {
+      "risk": "A package-name fallback can return to the wrong app or fail under package visibility limits.",
+      "recovery": "Prefer a caller-provided return PendingIntent; use configured package/activity fallback only as an explicit secondary route."
+    },
+    {
+      "risk": "ADB launch can make the lab pass look stronger than the product path really is.",
+      "recovery": "Classify any adb shell am start or input-keyevent usage as lab fallback evidence, not the product-path handoff."
+    }
+  ],
+  "notes": [
+    "See docs/xr-questionnaire-panel-handoff.md for the public-safe contract and manifest sketch.",
+    "This recipe is a test checklist, not proof that the cross-package handoff has passed on a real headset."
+  ]
+}

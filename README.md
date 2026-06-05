@@ -25,6 +25,10 @@ inform downstream XR tools.
   records for treating Termux or Proot as a normal-app developer sidecar.
 - Public-safe on-device APK build/install/launch guidance for an
   operator-authorized WiFi ADB loopback route.
+- Public-safe cross-package XR questionnaire panel handoff guidance for testing
+  a foreground XR app launching a separate 2D panel app and returning to the
+  same XR app without ADB, force-stop, package killing, or Meta menu
+  navigation in the product path.
 - Public-safe outbound fleet-agent schemas, examples, and simulator tooling
   for Termux agents that report heartbeats and execute bounded allowlisted
   commands without exposing a headset listener.
@@ -164,6 +168,14 @@ session, built a small Android Activity APK with source-only inputs, signed it
 locally, installed it, and launched it into a visible Quest panel. This does
 not yet prove a Makepad build or OpenXR rendering. See
 `docs/on-device-apk-build-install-launch.md`.
+
+A new cross-package XR questionnaire panel handoff note is available at
+`docs/xr-questionnaire-panel-handoff.md`, with a compact test checklist at
+`examples/session-recipe.xr-questionnaire-panel-handoff.json`. It describes a
+reusable app-to-app contract where any cooperating foreground XR app opens a
+separate 2D questionnaire panel and supplies a return route back to the same
+XR app. This is currently a design/test recipe, not a published live-device
+pass.
 
 A follow-up helper-app probe keeps the reboot boundary in place: a normal
 installed helper can receive boot and write its own status after it has been
@@ -535,10 +547,14 @@ this repository unless license obligations are reviewed.
     repo edits, validation, and patch review before any build or deploy lane.
 45. On-device APK loop: use an operator-authorized WiFi ADB endpoint to build,
     sign, install, and launch a source-only smoke APK from Termux.
-46. Reboot ADB recovery: treat Termux:Boot and pre-granted normal helpers as
+46. XR questionnaire panel handoff: test a foreground XR app launching a
+    separate 2D questionnaire panel with a caller-provided return route, then
+    returning to the same XR app without ADB, force-stop, package killing, or
+    Meta menu navigation in the product path.
+47. Reboot ADB recovery: treat Termux:Boot and pre-granted normal helpers as
     status probes only unless the target OS proves an official user-authorized
     wireless-debugging route.
-47. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
+48. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
     treat each as a separate high-risk gate.
 
 ## Validation
