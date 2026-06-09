@@ -9,6 +9,13 @@ live headset operations such as ADB, APK install/launch, screenshots, logcat,
 port forwarding, capture, and readiness checks. This repository describes the
 Termux sidecar layer; it does not replace device-operation discipline.
 
+When this work is used with Rusty Morphospace, treat Quest Termux Lab as an
+upstream public lab source for Rusty Quest sidecar integration. Morphospace
+contracts, Manifold acceptance, Lattice relation models, and Hostess operator
+actions must live in their own repos and validation lanes. This repository can
+publish sanitized observations and fixtures, but it does not own
+`rusty.quest.*`, `rusty.manifold.*`, or `rusty.lattice.*` authority.
+
 It is not:
 
 - Android `shell`

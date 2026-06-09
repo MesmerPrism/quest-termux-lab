@@ -26,6 +26,7 @@ proximity state unless the test explicitly changes it, and verify cleanup.
 | --- | --- |
 | Device coordination, ADB, installs, launches, screenshots, logcat | Meta Quest workflow |
 | Termux CLI, X11, Proot, VNC, local dashboard recipes | Quest Termux Lab |
+| Rusty Morphospace sidecar intake and Manifold handoff proposals | `rusty-quest-sidecar-mesh` |
 | Raw device evidence and private artifacts | Local/private workspace, not this repo |
 | Public reusable findings | Sanitized docs, schemas, and synthetic fixtures in this repo |
 

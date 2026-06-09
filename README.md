@@ -9,6 +9,23 @@ a broker/runtime authority, and not a way to bypass Android or Quest security
 boundaries. It collects small, auditable recipes and data models that can later
 inform downstream XR tools.
 
+## Rusty Morphospace Relationship
+
+Quest Termux Lab should stay as a public MIT lab/reference repo. It is related
+to Rusty Morphospace through the Rusty Quest sidecar lane, but it is not itself
+a Morphospace core layer or runtime authority.
+
+The Morphospace bridge is
+[`rusty-quest-sidecar-mesh`](https://github.com/MesmerPrism/rusty-quest-sidecar-mesh):
+that AGPL repo consumes selected public-safe lab artifacts, checks drift, and
+packages advisory sidecar evidence for future Rusty Manifold review. This repo
+keeps the upstream Termux-family experiments, `quest-termux-lab.*` schemas,
+runbooks, and synthetic fixtures separate from `rusty.quest.sidecar.*`
+integration contracts.
+
+See [`docs/MORPHOSPACE_CONNECTION.md`](docs/MORPHOSPACE_CONNECTION.md) for the
+full boundary.
+
 ## Current Scope
 
 - Data-only session recipe and evidence schemas.
@@ -424,6 +441,9 @@ The split is intentional:
   readiness checks, capture semantics, and cleanup gates.
 - `quest-termux-lab`: Termux, Termux:X11, Proot, local dashboard, and VNC
   sidecar recipes that remain normal Android app workflows.
+- `rusty-quest-sidecar-mesh`: Rusty Morphospace's Rusty Quest integration
+  bridge for sanitized public-lab artifact intake, sidecar handoff fixtures,
+  and future Manifold-facing proposals.
 
 ## Non-Goals
 

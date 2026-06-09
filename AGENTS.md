@@ -2,6 +2,21 @@
 
 This repository is intended to be public.
 
+## Rusty Morphospace Relationship
+
+Keep this repo as a public MIT lab/reference source, not a Rusty Morphospace
+core repo. Its Morphospace connection is through the Rusty Quest sidecar lane:
+public-safe Termux, Termux:X11, Proot, VNC, fleet-agent, and peer-mesh
+findings can inform `rusty-quest-sidecar-mesh`, which translates selected
+sanitized artifacts into `rusty.quest.sidecar.*` proposals and future
+Manifold-facing handoffs.
+
+Do not introduce `rusty.*` schema IDs, AGPL Morphospace ownership claims, or
+runtime authority here by default. Keep this repository's schemas in the
+`quest-termux-lab.*` namespace. Promote reusable lessons into Morphospace
+through a separate Rusty Quest, Manifold, Lattice, Hostess, or sidecar repo
+slice with its own validation.
+
 Keep committed content portable and sanitized:
 
 - Do not commit local filesystem paths, headset serial numbers, package IDs from
