@@ -5,6 +5,7 @@
   "authority_boundary": [
     "The questionnaire app is a normal Quest 2D panel app, not HOME, device owner, shell, or XR compositor authority.",
     "The foreground XR app owns the product launch request.",
+    "The foreground XR app owns the result content URI and validates the final answer JSON.",
     "Termux and ADB are lab fallback tools only and are not required for the product path.",
     "The test must not use force-stop, package killing, hidden launchers, or Meta menu navigation as the normal return path."
   ],
@@ -38,7 +39,7 @@
     },
     {
       "label": "Open questionnaire",
-      "command": "Inside the XR app, invoke the app-owned command that starts the questionnaire panel with a session id and return PendingIntent.",
+      "command": "Inside the XR app, invoke the app-owned command that starts the questionnaire panel with a session id, request id, nonce, caller-owned result content URI, and return PendingIntent.",
       "operator_visible": true
     },
     {
@@ -48,7 +49,7 @@
     },
     {
       "label": "Return to XR",
-      "command": "Use the questionnaire panel's Back to XR control; it should invoke the supplied return route and finish only the panel activity.",
+      "command": "Use the questionnaire panel's Back to XR control after submit; it should write final JSON to the caller-owned result URI, invoke the supplied return route, and finish only the panel activity.",
       "operator_visible": true
     }
   ],
@@ -64,13 +65,18 @@
       "operator_visible": false
     },
     {
+      "label": "Result URI",
+      "command": "Confirm the result channel is a caller-owned content URI with a write grant to the questionnaire app, and that the XR app validates schema, request id, nonce, status, and answer shape after callback or resume.",
+      "operator_visible": false
+    },
+    {
       "label": "Foreground readback",
       "command": "Record foreground package/activity before launch, during questionnaire focus, and after return using the active Quest workflow provider.",
       "operator_visible": false
     },
     {
       "label": "No product-path ADB",
-      "command": "Confirm the product-path pass did not use adb shell am start, force-stop, package kill, or Meta menu navigation for the handoff.",
+      "command": "Confirm the product-path pass did not use adb shell am start, force-stop, package kill, Meta menu navigation, public shared storage, or Termux file drops for the handoff or answer transport.",
       "operator_visible": true
     }
   ],
@@ -108,8 +114,9 @@
     "Foreground surface before launch, during questionnaire focus, and after return.",
     "OpenXR session state transition summary for the XR app.",
     "Process liveness summary for XR and questionnaire packages.",
+    "Result URI ownership, grant mode, and XR-side validation summary without publishing answer payloads.",
     "Classification of any protected prompt, controller requirement, or launch failure.",
-    "Statement that product-path return used the questionnaire return route rather than ADB, force-stop, package kill, or Meta menu navigation."
+    "Statement that product-path return used the questionnaire return route and caller-owned content URI rather than ADB, force-stop, package kill, Meta menu navigation, shared public storage, or Termux file drops."
   ],
   "risks": [
     {
@@ -119,6 +126,14 @@
     {
       "risk": "The questionnaire return route may create a duplicate XR activity instead of resuming the existing one.",
       "recovery": "Use a caller-provided PendingIntent, stable launch mode, and reorder/single-top flags; record task behavior in the run summary."
+    },
+    {
+      "risk": "URI grants may be broader than intended if multiple URIs share one Intent with read and write flags.",
+      "recovery": "Use inline request metadata plus one write-only result URI for the simple path; otherwise use manual per-URI grants/revokes or a custom provider that enforces per-path modes."
+    },
+    {
+      "risk": "The questionnaire may die after writing the result but before sending the callback.",
+      "recovery": "The XR app should persist request state before launch and check the expected result URI on resume as well as on callback."
     },
     {
       "risk": "A package-name fallback can return to the wrong app or fail under package visibility limits.",

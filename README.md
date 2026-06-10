@@ -44,8 +44,9 @@ full boundary.
   operator-authorized WiFi ADB loopback route.
 - Public-safe cross-package XR questionnaire panel handoff guidance for testing
   a foreground XR app launching a separate 2D panel app and returning to the
-  same XR app without ADB, force-stop, package killing, or Meta menu
-  navigation in the product path.
+  same XR app with a caller-owned `content://` result URI, without ADB,
+  force-stop, package killing, public shared storage, Termux file drops, or Meta
+  menu navigation in the product path.
 - Public-safe outbound fleet-agent schemas, examples, and simulator tooling
   for Termux agents that report heartbeats and execute bounded allowlisted
   commands without exposing a headset listener.
@@ -190,9 +191,9 @@ A new cross-package XR questionnaire panel handoff note is available at
 `docs/xr-questionnaire-panel-handoff.md`, with a compact test checklist at
 `examples/session-recipe.xr-questionnaire-panel-handoff.json`. It describes a
 reusable app-to-app contract where any cooperating foreground XR app opens a
-separate 2D questionnaire panel and supplies a return route back to the same
-XR app. This is currently a design/test recipe, not a published live-device
-pass.
+separate 2D questionnaire panel, supplies a caller-owned `content://` result
+URI for answer JSON, and supplies a return route back to the same XR app. This
+is currently a design/test recipe, not a published live-device pass.
 
 A follow-up helper-app probe keeps the reboot boundary in place: a normal
 installed helper can receive boot and write its own status after it has been
