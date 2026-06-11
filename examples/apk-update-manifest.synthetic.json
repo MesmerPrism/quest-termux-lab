@@ -1,0 +1,15 @@
+{
+  "schema": "quest-termux-lab.apk-update-manifest.v1",
+  "package_name": "org.questtermuxlab.synthetic.panel",
+  "version_code": 2,
+  "version_name": "0.2.0",
+  "apk_url": "https://example.invalid/quest-termux-lab/synthetic-panel.apk",
+  "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "signing_cert_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "rollout_ring": "lab",
+  "launch_after_install": true,
+  "launch_component": "org.questtermuxlab.synthetic.panel/.MainActivity",
+  "allow_downgrade": false,
+  "release_notes": "Synthetic verified APK update fixture.",
+  "published_at": "2026-06-11T00:00:00Z"
+}

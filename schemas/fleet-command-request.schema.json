@@ -59,6 +59,7 @@
         "broker.status_summary",
         "broker.stream_summary",
         "adb.self_check",
+        "apk.update_verified",
         "adb.shell_allowlisted",
         "android.foreground_snapshot",
         "android.logcat_slice",

@@ -61,6 +61,23 @@ def command(agent_id: str = "quest-agent-alpha", kind: str = "agent.status") -> 
     }
 
 
+def update_manifest(package_name: str = "org.questtermuxlab.synthetic.panel") -> dict:
+    digest = "a" * 64
+    signing = "b" * 64
+    return {
+        "schema": "quest-termux-lab.apk-update-manifest.v1",
+        "package_name": package_name,
+        "version_code": 2,
+        "version_name": "0.2.0",
+        "apk_url": "https://example.invalid/quest-termux-lab/synthetic-panel.apk",
+        "sha256": digest,
+        "signing_cert_sha256": signing,
+        "rollout_ring": "lab",
+        "launch_after_install": True,
+        "launch_component": "org.questtermuxlab.synthetic.panel/.MainActivity",
+    }
+
+
 def heartbeat(agent_id: str = "quest-agent-alpha") -> dict:
     return {
         "schema": "quest-termux-lab.fleet-agent-heartbeat.v1",
@@ -117,6 +134,36 @@ class FleetStateTests(unittest.TestCase):
         self.assertEqual(summary["agent_count"], 1)
         self.assertEqual(summary["agents"], ["quest-agent-alpha"])
 
+    def test_duplicate_idempotency_key_is_not_queued_twice(self) -> None:
+        state = fleet_control_plane.FleetState()
+        first = command()
+        second = command()
+        second["command_id"] = "cmd-agent-status-duplicate"
+        self.assertEqual(state.queue_command(first)["status"], "queued")
+        duplicate = state.queue_command(second)
+        self.assertEqual(duplicate["status"], "duplicate")
+        self.assertEqual(duplicate["existing_command_id"], first["command_id"])
+        self.assertEqual(len(state.commands["quest-agent-alpha"]), 1)
+
+    def test_summary_reports_local_adb_recovery_candidates(self) -> None:
+        state = fleet_control_plane.FleetState()
+        payload = heartbeat()
+        payload["local_adb"] = {
+            "checked": True,
+            "available": False,
+            "adb_target": "127.0.0.1:5555",
+            "shell_uid": None,
+            "last_success_at": None,
+            "last_failure_reason": "shell_uid_not_available",
+        }
+        state.record_heartbeat(payload)
+        summary = state.summary()
+        self.assertEqual(summary["recovery_candidates"][0]["agent_id"], "quest-agent-alpha")
+        self.assertEqual(
+            summary["recovery_candidates"][0]["recommended_action"],
+            "central_direct_adb_recovery",
+        )
+
 
 class AgentTests(unittest.TestCase):
     def setUp(self) -> None:
@@ -126,9 +173,31 @@ class AgentTests(unittest.TestCase):
             "agent_id": "quest-agent-alpha",
             "central_url": "http://127.0.0.1:8787",
             "workspace_root": "runs/test-agent",
-            "allowed_command_kinds": ["agent.status", "agent.capabilities", "termux.exec_allowlisted", "adb.self_check"],
+            "allowed_command_kinds": [
+                "agent.status",
+                "agent.capabilities",
+                "termux.exec_allowlisted",
+                "adb.self_check",
+                "apk.update_verified",
+                "app.launch_allowlisted",
+                "android.foreground_snapshot",
+                "android.logcat_slice",
+            ],
             "command_aliases": {"python_version": ["python", "--version"]},
             "local_adb_enabled": False,
+            "allowed_update_packages": {
+                "org.questtermuxlab.synthetic.panel": {
+                    "signing_cert_sha256": "b" * 64,
+                    "allowed_rollout_rings": ["lab"],
+                    "launch_components": [
+                        "org.questtermuxlab.synthetic.panel/.MainActivity",
+                    ],
+                }
+            },
+            "allowed_launch_components": [
+                "org.questtermuxlab.synthetic.panel/.MainActivity",
+            ],
+            "allowed_logcat_tags": ["QuestTermuxLab"],
         }
         self.state = self.agent.AgentState(started_at=time.monotonic())
 
@@ -153,6 +222,40 @@ class AgentTests(unittest.TestCase):
         result = self.agent.execute_command(self.config, self.state, request)
         self.assertFalse(result["accepted"])
         self.assertEqual(result["error_code"], "local_adb_disabled")
+
+    def test_update_manifest_rejects_unallowed_package(self) -> None:
+        request = command(kind="apk.update_verified")
+        request["requires_local_adb_shell"] = True
+        request["payload"] = {"manifest": update_manifest(package_name="org.example.other")}
+        result = self.agent.execute_command(self.config, self.state, request)
+        self.assertFalse(result["accepted"])
+        self.assertEqual(result["error_code"], "package_not_allowed")
+
+    def test_update_reports_recovery_when_local_adb_disabled(self) -> None:
+        request = command(kind="apk.update_verified")
+        request["requires_local_adb_shell"] = True
+        request["payload"] = {"manifest": update_manifest()}
+        result = self.agent.execute_command(self.config, self.state, request)
+        self.assertFalse(result["accepted"])
+        self.assertEqual(result["error_code"], "local_adb_unavailable")
+        self.assertEqual(result["update_report"]["package_name"], "org.questtermuxlab.synthetic.panel")
+        self.assertEqual(result["recovery_action"]["kind"], "central_direct_adb_recovery")
+
+    def test_rejects_disallowed_launch_component(self) -> None:
+        request = command(kind="app.launch_allowlisted")
+        request["requires_local_adb_shell"] = True
+        request["payload"] = {"component": "org.example.other/.MainActivity"}
+        result = self.agent.execute_command(self.config, self.state, request)
+        self.assertFalse(result["accepted"])
+        self.assertEqual(result["error_code"], "launch_component_not_allowed")
+
+    def test_rejects_disallowed_logcat_tag(self) -> None:
+        request = command(kind="android.logcat_slice")
+        request["requires_local_adb_shell"] = True
+        request["payload"] = {"tag": "PrivateTag", "lines": 20}
+        result = self.agent.execute_command(self.config, self.state, request)
+        self.assertFalse(result["accepted"])
+        self.assertEqual(result["error_code"], "logcat_tag_not_allowed")
 
 
 class EndToEndTests(unittest.TestCase):
@@ -193,6 +296,9 @@ class ExampleTests(unittest.TestCase):
             "fleet-agent-heartbeat.synthetic.json": "quest-termux-lab.fleet-agent-heartbeat.v1",
             "fleet-command-request.synthetic.json": "quest-termux-lab.fleet-command-request.v1",
             "fleet-command-result.synthetic.json": "quest-termux-lab.fleet-command-result.v1",
+            "apk-update-manifest.synthetic.json": "quest-termux-lab.apk-update-manifest.v1",
+            "fleet-command-request.apk-update.synthetic.json": "quest-termux-lab.fleet-command-request.v1",
+            "fleet-command-result.apk-update-recovery.synthetic.json": "quest-termux-lab.fleet-command-result.v1",
             "adb-shell-lease-state.synthetic.json": "quest-termux-lab.adb-shell-lease-state.v1",
             "session-recipe.outbound-fleet-agent.json": "quest-termux-lab.session-recipe.v1",
         }

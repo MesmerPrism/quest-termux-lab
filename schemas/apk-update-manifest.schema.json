@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/apk-update-manifest.schema.json",
+  "title": "Quest Termux Lab APK Update Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "package_name",
+    "version_code",
+    "version_name",
+    "apk_url",
+    "sha256",
+    "signing_cert_sha256",
+    "rollout_ring"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.apk-update-manifest.v1"
+    },
+    "package_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version_code": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "version_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "apk_url": {
+      "type": "string",
+      "pattern": "^https://"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    },
+    "signing_cert_sha256": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    },
+    "rollout_ring": {
+      "type": "string",
+      "minLength": 1
+    },
+    "launch_after_install": {
+      "type": "boolean",
+      "default": false
+    },
+    "launch_component": {
+      "type": ["string", "null"]
+    },
+    "allow_downgrade": {
+      "type": "boolean",
+      "default": false
+    },
+    "release_notes": {
+      "type": ["string", "null"]
+    },
+    "published_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    }
+  }
+}

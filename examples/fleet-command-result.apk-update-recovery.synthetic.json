@@ -1,0 +1,52 @@
+{
+  "schema": "quest-termux-lab.fleet-command-result.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "agent_id": "quest-agent-alpha",
+  "command_id": "cmd-apk-update-verified-001",
+  "idempotency_key": "synthetic-panel-v2-lab",
+  "accepted": false,
+  "status": "rejected",
+  "started_at": "2026-06-11T09:01:21Z",
+  "finished_at": "2026-06-11T09:01:22Z",
+  "duration_ms": 1000,
+  "exit_code": null,
+  "stdout_tail": null,
+  "stderr_tail": null,
+  "artifacts": [],
+  "local_adb_used": true,
+  "local_adb_shell_uid": null,
+  "error_code": "local_adb_unavailable",
+  "error_message": "Local ADB shell is not available for verified APK update.",
+  "update_report": {
+    "schema": "quest-termux-lab.apk-update-report.v1",
+    "package_name": "org.questtermuxlab.synthetic.panel",
+    "requested_version_code": 2,
+    "requested_version_name": "0.2.0",
+    "rollout_ring": "lab",
+    "apk_sha256_verified": false,
+    "signing_cert_verified": false,
+    "apk_package_verified": false,
+    "install_attempted": false,
+    "installed_version_code": null,
+    "installed_version_name": null,
+    "previous_version_code": null,
+    "previous_version_name": null,
+    "launch_attempted": false,
+    "launch_component": null
+  },
+  "rollback_report": {
+    "schema": "quest-termux-lab.apk-update-rollback-report.v1",
+    "status": "not_attempted",
+    "previous_version_code": null,
+    "previous_version_name": null,
+    "rollback_attempted": false,
+    "reason": "local_adb_unavailable"
+  },
+  "recovery_action": {
+    "kind": "central_direct_adb_recovery",
+    "reason": "local_adb_unavailable",
+    "recommended": true,
+    "notes": "Use an external approved ADB route to restore or validate the local WiFi ADB lease."
+  },
+  "redactions_applied": false
+}

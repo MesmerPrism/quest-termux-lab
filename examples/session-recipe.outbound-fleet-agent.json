@@ -35,6 +35,11 @@
       "label": "queue-command",
       "command": "Queue an agent.status command through the central controller.",
       "operator_visible": true
+    },
+    {
+      "label": "queue-verified-update",
+      "command": "Queue an apk.update_verified command with a package/version/hash/signing-digest/rollout-ring manifest and requires_local_adb_shell=true.",
+      "operator_visible": true
     }
   ],
   "status": [
@@ -77,6 +82,7 @@
     "Fleet agent manifest.",
     "Heartbeat records.",
     "Command request and result records.",
+    "Verified APK update result records with idempotency, update report, rollback report, and recovery action.",
     "ADB shell lease state when local ADB is checked.",
     "Central controller summary.",
     "Agent-local JSONL evidence."
@@ -93,6 +99,10 @@
     {
       "risk": "An overly broad command allowlist can become remote shell control.",
       "recovery": "Keep command kinds explicit, bounded, and logged; reject arbitrary shell by default."
+    },
+    {
+      "risk": "Verified APK updates can fail safely when the ADB lease is missing.",
+      "recovery": "Report central_direct_adb_recovery and let the live Quest operations layer restore or validate ADB."
     }
   ],
   "notes": [

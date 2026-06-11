@@ -12,7 +12,28 @@
     "termux.exec_allowlisted",
     "file.hash",
     "file.list_evidence",
-    "adb.self_check"
+    "adb.self_check",
+    "apk.update_verified",
+    "app.launch_allowlisted",
+    "android.foreground_snapshot",
+    "android.logcat_slice"
+  ],
+  "allowed_update_packages": {
+    "org.questtermuxlab.synthetic.panel": {
+      "signing_cert_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "allowed_rollout_rings": [
+        "lab"
+      ],
+      "launch_components": [
+        "org.questtermuxlab.synthetic.panel/.MainActivity"
+      ]
+    }
+  },
+  "allowed_launch_components": [
+    "org.questtermuxlab.synthetic.panel/.MainActivity"
+  ],
+  "allowed_logcat_tags": [
+    "QuestTermuxLab"
   ],
   "local_workspace_root": "$HOME/rusty-termux-agent",
   "supports_local_adb": true,

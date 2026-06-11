@@ -9,6 +9,7 @@
     "fleet_id",
     "agent_id",
     "command_id",
+    "idempotency_key",
     "accepted",
     "status",
     "started_at",
@@ -32,6 +33,9 @@
     "command_id": {
       "type": "string",
       "minLength": 1
+    },
+    "idempotency_key": {
+      "type": ["string", "null"]
     },
     "accepted": {
       "type": "boolean"
@@ -92,6 +96,18 @@
     },
     "error_message": {
       "type": ["string", "null"]
+    },
+    "update_report": {
+      "type": ["object", "null"],
+      "additionalProperties": true
+    },
+    "rollback_report": {
+      "type": ["object", "null"],
+      "additionalProperties": true
+    },
+    "recovery_action": {
+      "type": ["object", "null"],
+      "additionalProperties": true
     },
     "redactions_applied": {
       "type": "boolean"

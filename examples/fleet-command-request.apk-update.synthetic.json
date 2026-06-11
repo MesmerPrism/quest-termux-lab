@@ -1,0 +1,32 @@
+{
+  "schema": "quest-termux-lab.fleet-command-request.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "command_id": "cmd-apk-update-verified-001",
+  "target_agent_id": "quest-agent-alpha",
+  "issued_at": "2026-06-11T09:01:20Z",
+  "expires_at": "2026-06-11T09:16:20Z",
+  "idempotency_key": "synthetic-panel-v2-lab",
+  "kind": "apk.update_verified",
+  "requires_local_adb_shell": true,
+  "timeout_ms": 120000,
+  "max_stdout_bytes": 8192,
+  "max_stderr_bytes": 8192,
+  "payload": {
+    "manifest": {
+      "schema": "quest-termux-lab.apk-update-manifest.v1",
+      "package_name": "org.questtermuxlab.synthetic.panel",
+      "version_code": 2,
+      "version_name": "0.2.0",
+      "apk_url": "https://example.invalid/quest-termux-lab/synthetic-panel.apk",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "signing_cert_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "rollout_ring": "lab",
+      "launch_after_install": true,
+      "launch_component": "org.questtermuxlab.synthetic.panel/.MainActivity",
+      "allow_downgrade": false
+    }
+  },
+  "sensitivity": "private_evidence",
+  "requested_by": "synthetic-command-center",
+  "reason": "Synthetic verified APK update command."
+}

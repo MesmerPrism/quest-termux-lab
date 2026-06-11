@@ -50,6 +50,7 @@ class FleetState:
     heartbeats: dict[str, dict[str, Any]] = field(default_factory=dict)
     commands: dict[str, list[dict[str, Any]]] = field(default_factory=dict)
     results: list[dict[str, Any]] = field(default_factory=list)
+    idempotency_index: dict[str, str] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if self.log_dir is not None:
@@ -75,8 +76,19 @@ class FleetState:
             raise ValueError("unsupported command schema")
         command_id = require_text(payload, "command_id")
         target_agent_id = require_text(payload, "target_agent_id")
+        idempotency_key = require_text(payload, "idempotency_key")
         if is_expired(payload):
             raise ValueError("command is already expired")
+        idempotency_id = f"{target_agent_id}:{idempotency_key}"
+        if idempotency_id in self.idempotency_index:
+            existing = self.idempotency_index[idempotency_id]
+            return response(
+                "duplicate",
+                command_id=command_id,
+                target_agent_id=target_agent_id,
+                existing_command_id=existing,
+            )
+        self.idempotency_index[idempotency_id] = command_id
         self.commands.setdefault(target_agent_id, []).append(dict(payload))
         self._append_jsonl("commands.jsonl", payload)
         return response("queued", command_id=command_id, target_agent_id=target_agent_id)
@@ -87,6 +99,9 @@ class FleetState:
         selected: dict[str, Any] | None = None
         for command in queue:
             if is_expired(command):
+                idempotency_key = command.get("idempotency_key")
+                if isinstance(idempotency_key, str):
+                    self.idempotency_index.pop(f"{agent_id}:{idempotency_key}", None)
                 self._append_jsonl(
                     "expired-commands.jsonl",
                     {
@@ -120,6 +135,35 @@ class FleetState:
         self._append_jsonl("results.jsonl", payload)
         return response("accepted", command_id=command_id, agent_id=agent_id)
 
+    def recovery_candidates(self) -> list[dict[str, Any]]:
+        candidates: list[dict[str, Any]] = []
+        latest_result_by_agent: dict[str, dict[str, Any]] = {}
+        for result in self.results:
+            agent_id = result.get("agent_id")
+            if isinstance(agent_id, str):
+                latest_result_by_agent[agent_id] = result
+
+        for agent_id, heartbeat in sorted(self.heartbeats.items()):
+            local_adb = heartbeat.get("local_adb", {})
+            reason = None
+            if isinstance(local_adb, dict):
+                if local_adb.get("checked") and not local_adb.get("available"):
+                    reason = local_adb.get("last_failure_reason") or "local_adb_unavailable"
+                elif not local_adb.get("checked"):
+                    reason = "local_adb_not_checked"
+            latest_result = latest_result_by_agent.get(agent_id)
+            if latest_result and latest_result.get("error_code") == "local_adb_unavailable":
+                reason = "local_adb_unavailable_after_command"
+            if reason:
+                candidates.append(
+                    {
+                        "agent_id": agent_id,
+                        "reason": reason,
+                        "recommended_action": "central_direct_adb_recovery",
+                    }
+                )
+        return candidates
+
     def summary(self) -> dict[str, Any]:
         queued = sum(len(commands) for commands in self.commands.values())
         latest_agents = sorted(self.heartbeats)
@@ -130,6 +174,7 @@ class FleetState:
             "agents": latest_agents,
             "queued_command_count": queued,
             "result_count": len(self.results),
+            "recovery_candidates": self.recovery_candidates(),
         }
 
 

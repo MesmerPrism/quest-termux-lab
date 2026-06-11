@@ -8,7 +8,11 @@
     "agent.status",
     "agent.capabilities",
     "termux.exec_allowlisted",
-    "adb.self_check"
+    "adb.self_check",
+    "apk.update_verified",
+    "app.launch_allowlisted",
+    "android.foreground_snapshot",
+    "android.logcat_slice"
   ],
   "command_aliases": {
     "python_version": [
@@ -17,5 +21,22 @@
     ]
   },
   "local_adb_enabled": false,
-  "local_adb_target": "127.0.0.1:5555"
+  "local_adb_target": "127.0.0.1:5555",
+  "allowed_update_packages": {
+    "org.questtermuxlab.synthetic.panel": {
+      "signing_cert_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "allowed_rollout_rings": [
+        "lab"
+      ],
+      "launch_components": [
+        "org.questtermuxlab.synthetic.panel/.MainActivity"
+      ]
+    }
+  },
+  "allowed_launch_components": [
+    "org.questtermuxlab.synthetic.panel/.MainActivity"
+  ],
+  "allowed_logcat_tags": [
+    "QuestTermuxLab"
+  ]
 }

@@ -208,6 +208,14 @@ agent. It does not touch ADB or a headset unless a later live run explicitly
 enables local ADB in the agent config. See
 `docs/outbound-fleet-control-plane.md`.
 
+The fleet-agent lane now includes a public-safe shape for
+`apk.update_verified`: a Termux agent can accept a signed update manifest,
+verify package/version/hash/signing digest/rollout ring against local
+allowlists, install through an already authorized loopback WiFi ADB lease, and
+report idempotency, rollback state, and central direct-ADB recovery needs. This
+is still not a WiFi ADB bootstrap, MDM replacement, root path, or generic
+remote shell.
+
 The first peer-mesh slice is also simulator-only: it defines gossip envelopes,
 peer summaries, a merge tool, and tests for stale-state and forbidden-message
 handling. It does not open peer sockets, relay commands, or use cross-headset
