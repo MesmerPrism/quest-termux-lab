@@ -216,6 +216,26 @@ report idempotency, rollback state, and central direct-ADB recovery needs. This
 is still not a WiFi ADB bootstrap, MDM replacement, root path, or generic
 remote shell.
 
+The repeatable off-LAN trigger model is documented in
+`docs/internet-triggered-self-update-workflow.md`: publish an update to HTTPS,
+queue a bounded command on an internet-reachable controller, and let each
+headset's Termux agent poll outbound and install locally if its loopback ADB
+gate passes. No same-WiFi operator device is required for the trigger.
+
+A later live Quest pass added two operational details for this lane. Termux
+ADB subprocesses need a writable temporary directory such as `$PREFIX/tmp`,
+because a non-interactive app context may not have `/tmp`. Also, APKs should be
+downloaded or staged in Termux-private storage or another path the Termux
+process can read; do not assume a host-pushed public shared-storage file is
+readable from every Termux execution context.
+
+A normal helper-app restart path is also now live-tested. A pre-granted helper
+Activity can call Termux's `RunCommandService` with `startForegroundService()`
+and restart the fixed fleet-agent command after `com.termux` was force-stopped.
+Fresh controller heartbeats then showed loopback ADB available with
+`uid=2000(shell)`. This is useful operator-visible recovery, not WiFi ADB
+bootstrap, reboot-durable management, or helper-owned install authority.
+
 The managed-device research note at `docs/managed-device-owner-options.md`
 summarizes the current production direction: Android phones should use fully
 managed / dedicated Android Enterprise device owner where possible. Quest
@@ -592,7 +612,10 @@ this repository unless license obligations are reviewed.
 47. Reboot ADB recovery: treat Termux:Boot and pre-granted normal helpers as
     status probes only unless the target OS proves an official user-authorized
     wireless-debugging route.
-48. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
+48. Termux agent restart helper: use a visible, pre-granted helper Activity
+    only to ask Termux to restart the fixed fleet-agent command; prove recovery
+    with fresh heartbeats and the loopback ADB `uid=2000(shell)` gate.
+49. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
     treat each as a separate high-risk gate.
 
 ## Validation

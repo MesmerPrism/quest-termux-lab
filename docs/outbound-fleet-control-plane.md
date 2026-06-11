@@ -28,6 +28,12 @@ The Termux agent remains a normal Android app sidecar. It does not create ADB
 authorization, become Android shell, replace HOME, own broker authority, or
 act as a hidden watchdog.
 
+For headsets that have internet but are not on the same WiFi as the operator's
+machine, use outbound polling as the trigger. The operator or CI queues an
+`apk.update_verified` command on an HTTPS controller; the headset polls from
+Termux, downloads the APK, and installs locally only after the loopback ADB
+gate passes. See `docs/internet-triggered-self-update-workflow.md`.
+
 ## Files
 
 - `tools/fleet_control_plane.py`: minimal standard-library HTTP controller.
@@ -107,6 +113,25 @@ records the previously installed version when it can, but it does not perform
 an automatic rollback unless a later private/live lane adds an explicit,
 separately allowlisted rollback command.
 
+Live Quest setup notes:
+
+- Set a Termux-readable temp directory before running ADB. The public agent
+  now does this for ADB subprocesses by using `adb_tmpdir`, `TMPDIR`, or
+  `$PREFIX/tmp`. This avoids failures from Android builds of `adb` trying to
+  write logs under `/tmp` in a non-interactive app context.
+- For update fleets, set `check_local_adb_on_heartbeat=true` so ordinary
+  polling heartbeats report whether the loopback ADB shell gate is currently
+  available before an update command is queued.
+- Download or stage the candidate APK where the Termux process can read it,
+  preferably Termux-private storage. Host-pushed public shared-storage files
+  may be visible to `adb shell` but still unreadable from a specific Termux
+  execution context.
+- Treat `/data/local/tmp` as a lab staging fallback owned by the external ADB
+  workflow, not as the fleet agent's default artifact store.
+- For connected-device lab tests only, `allow_insecure_loopback_apk_urls` can
+  permit `http://127.0.0.1` APK URLs through `adb reverse`. Production commands
+  should use HTTPS artifact URLs.
+
 ADB-backed commands are intentionally narrow:
 
 - `app.launch_allowlisted` runs only `am start -W -n <allowlisted component>`.
@@ -126,6 +151,15 @@ shows missing/stale local ADB or when the latest command result failed because
 local ADB was unavailable. That is the handoff point for a central direct-ADB
 recovery workflow owned by the live Quest operations layer.
 
+When the agent itself is stopped, the controller cannot cause it to self-wake.
+A live Quest probe showed that a visible normal helper APK can restart Termux's
+fixed fleet-agent command through `RunCommandService` after the helper is
+installed, launched, granted `com.termux.permission.RUN_COMMAND`, and Termux
+allows external commands. Treat that as an operator-visible recovery route and
+verify it with fresh heartbeats and the local ADB shell gate. It does not
+replace central direct ADB or a managed-device plane for WiFi ADB loss, reboot,
+or sleeping/offline headsets.
+
 ## Live Fleet Direction
 
 The live version should move in this order:
@@ -134,10 +168,14 @@ The live version should move in this order:
 2. One headset, local ADB lease after external authorization.
 3. One headset, `apk.update_verified` against a private test APK and HTTPS
    manifest.
-4. Three headsets with unique agent IDs and distinct rollout rings.
-5. Central direct ADB recovery loop for missing/stale agents.
-6. Broker and stream summaries.
-7. Transport upgrade from HTTP polling to WebSocket only if needed.
+4. One headset, local ADB install/launch from a Termux-readable artifact path,
+   with the agent's ADB temp directory verified.
+5. One headset, visible helper restart of a stopped Termux agent, verified by
+   fresh heartbeats and local ADB shell identity.
+6. Three headsets with unique agent IDs and distinct rollout rings.
+7. Central direct ADB recovery loop for missing/stale agents.
+8. Broker and stream summaries.
+9. Transport upgrade from HTTP polling to WebSocket only if needed.
 
 Keep real fleet logs, device names, serials, package IDs, LAN addresses, and
 ADB output in local evidence. Promote only synthetic examples or redacted

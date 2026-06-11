@@ -62,6 +62,8 @@ headset's own wireless-debugging pairing UI may enable the ADB TCP endpoint.
 Only after that should Termux run:
 
 ```sh
+export TMPDIR="${TMPDIR:-$PREFIX/tmp}"
+mkdir -p "$TMPDIR"
 adb connect 127.0.0.1:5555
 adb -s 127.0.0.1:5555 shell id
 ```
@@ -70,3 +72,14 @@ The pass condition is Android shell UID. If that gate passes, Termux may use
 the approved session for bounded install, launch, status, and temporary
 keep-awake tests. Record protected prompts and controller requirements as
 operator-gated readiness evidence.
+
+For install/update tests, keep artifact ownership explicit. Prefer a
+Termux-private download or workspace path for APKs. If the host workflow uses
+`/data/local/tmp` as a readable staging fallback, record it as external
+ADB-owned lab plumbing. Do not rely on public shared storage or Termux file
+drops as the product communication path.
+
+A visible, pre-granted helper APK may be used only to ask Termux to restart the
+fixed fleet-agent command after process stop. Treat success as fresh heartbeat
+plus loopback ADB `uid=2000(shell)` evidence, not as WiFi ADB recovery or
+managed-device authority.

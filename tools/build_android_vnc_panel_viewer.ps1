@@ -5,6 +5,7 @@ param(
     [string]$JavaHome = $env:JAVA_HOME,
     [string]$OutDir = '',
     [string]$PackageName = 'org.questtermuxlab.vncpanel',
+    [string]$OutputBase = 'termux-vnc-panel',
     [int]$MinSdk = 26,
     [switch]$Unsigned
 )
@@ -71,10 +72,10 @@ if (-not $Unsigned) {
 $genDir = New-Item -ItemType Directory -Force -Path (Join-Path $OutDir 'gen')
 $classesDir = New-Item -ItemType Directory -Force -Path (Join-Path $OutDir 'classes')
 $dexDir = New-Item -ItemType Directory -Force -Path (Join-Path $OutDir 'dex')
-$unsignedApk = Join-Path $OutDir 'termux-vnc-panel-unsigned.apk'
-$dexedApk = Join-Path $OutDir 'termux-vnc-panel-dexed.apk'
-$alignedApk = Join-Path $OutDir 'termux-vnc-panel-aligned.apk'
-$signedApk = Join-Path $OutDir 'termux-vnc-panel-debug.apk'
+$unsignedApk = Join-Path $OutDir "$OutputBase-unsigned.apk"
+$dexedApk = Join-Path $OutDir "$OutputBase-dexed.apk"
+$alignedApk = Join-Path $OutDir "$OutputBase-aligned.apk"
+$signedApk = Join-Path $OutDir "$OutputBase-debug.apk"
 
 Remove-Item -LiteralPath $unsignedApk, $dexedApk, $alignedApk, $signedApk -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath (Join-Path $classesDir.FullName '*') -Recurse -Force -ErrorAction SilentlyContinue

@@ -1,6 +1,7 @@
 __pycache__/
 *.pyc
 examples/android-vnc-panel-viewer/build/
+examples/termux-agent-launcher/build/
 *.apk
 
 # Local evidence and device output.

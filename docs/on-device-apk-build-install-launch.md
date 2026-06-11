@@ -73,6 +73,8 @@ versions in private run evidence; publish only the generalized result.
 From Termux, connect to the already enabled or paired ADB endpoint:
 
 ```sh
+export TMPDIR="${TMPDIR:-$PREFIX/tmp}"
+mkdir -p "$TMPDIR"
 adb connect 127.0.0.1:5555
 adb -s 127.0.0.1:5555 shell id
 ```
@@ -91,6 +93,28 @@ Do not substitute Termux:Boot or a pre-granted ordinary helper APK for this
 gate. Current public-safe lab evidence says those routes can at most provide
 status evidence after reboot; they did not reopen classic WiFi ADB or create a
 new shell lease.
+
+A later helper probe proved only a narrower stopped-process recovery case: a
+visible, pre-granted helper Activity can call Termux `RunCommandService` with
+`startForegroundService()` and restart a fixed fleet-agent command. Still run
+the same `uid=2000(shell)` ADB gate before install, launch, logcat, wake, or
+package-management commands.
+
+## Artifact Staging
+
+Keep APK artifacts on paths the Termux process itself can read. Good defaults
+are Termux-private workspace paths such as:
+
+```text
+$HOME/quest-lab/apks
+```
+
+Do not assume a host-pushed file under public shared storage is readable from
+every Termux execution context. In a live non-interactive probe, `adb shell`
+could see a public shared-storage file while the Termux app context could not
+read it. If an external ADB workflow stages an APK under `/data/local/tmp` and
+marks it readable, classify that as a lab fallback owned by the external
+workflow, not as the normal fleet-agent artifact store.
 
 ## Temporary Keep-Awake Loop
 

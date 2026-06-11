@@ -32,7 +32,7 @@ COMMAND_SCHEMA = "quest-termux-lab.fleet-command-request.v1"
 RESULT_SCHEMA = "quest-termux-lab.fleet-command-result.v1"
 NO_COMMAND_SCHEMA = "quest-termux-lab.fleet-no-command.v1"
 APK_UPDATE_MANIFEST_SCHEMA = "quest-termux-lab.apk-update-manifest.v1"
-AGENT_VERSION = "0.2.0"
+AGENT_VERSION = "0.2.4"
 SHA256_RE = re.compile(r"^[a-fA-F0-9]{64}$")
 
 
@@ -616,6 +616,17 @@ def mark_local_adb_unavailable(config: dict[str, Any], state: AgentState, reason
     state.local_adb_state["last_failure_reason"] = reason
 
 
+def adb_subprocess_env(config: dict[str, Any]) -> dict[str, str]:
+    env = os.environ.copy()
+    tmpdir = config.get("adb_tmpdir") or env.get("TMPDIR")
+    if not tmpdir and env.get("PREFIX"):
+        tmpdir = str(Path(env["PREFIX"]) / "tmp")
+    if tmpdir:
+        Path(str(tmpdir)).mkdir(parents=True, exist_ok=True)
+        env["TMPDIR"] = str(tmpdir)
+    return env
+
+
 def refresh_local_adb_state(
     config: dict[str, Any],
     state: AgentState,
@@ -625,9 +636,26 @@ def refresh_local_adb_state(
     target = str(config.get("local_adb_target", "127.0.0.1:5555"))
     state.local_adb_state["checked"] = True
     state.local_adb_state["adb_target"] = target
+    env = adb_subprocess_env(config)
     try:
-        connect = subprocess.run([adb, "connect", target], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout, check=False)
-        ident = subprocess.run([adb, "-s", target, "shell", "id"], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout, check=False)
+        connect = subprocess.run(
+            [adb, "connect", target],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout,
+            check=False,
+            env=env,
+        )
+        ident = subprocess.run(
+            [adb, "-s", target, "shell", "id"],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout,
+            check=False,
+            env=env,
+        )
     except (OSError, subprocess.TimeoutExpired) as exc:
         mark_local_adb_unavailable(config, state, str(exc))
         return False, "", str(exc)
@@ -660,6 +688,15 @@ def ensure_local_adb_for_command(
     )
 
 
+def refresh_local_adb_for_heartbeat(config: dict[str, Any], state: AgentState) -> None:
+    if not config.get("local_adb_enabled", False):
+        return
+    if not config.get("check_local_adb_on_heartbeat", False):
+        return
+    timeout = max(1.0, float(config.get("heartbeat_local_adb_timeout_ms", 5000)) / 1000.0)
+    refresh_local_adb_state(config, state, timeout=timeout)
+
+
 def run_adb_command(
     config: dict[str, Any],
     args: list[str],
@@ -676,6 +713,7 @@ def run_adb_command(
             stderr=subprocess.PIPE,
             timeout=timeout,
             check=False,
+            env=adb_subprocess_env(config),
         )
     except subprocess.TimeoutExpired as exc:
         return exc.stdout or "", exc.stderr or str(exc), 124
@@ -711,7 +749,7 @@ def normalize_update_manifest(config: dict[str, Any], payload: Any) -> dict[str,
     if not isinstance(version_code, int) or version_code <= 0:
         return "version_code_invalid"
     apk_url = manifest.get("apk_url")
-    if not isinstance(apk_url, str) or not is_https_url(apk_url):
+    if not isinstance(apk_url, str) or not is_allowed_apk_url(config, apk_url):
         return "apk_url_not_https"
     sha256 = manifest.get("sha256")
     if not isinstance(sha256, str) or not SHA256_RE.match(sha256):
@@ -752,6 +790,18 @@ def is_https_url(value: str) -> bool:
     except Exception:
         return False
     return parsed.scheme == "https" and bool(parsed.netloc)
+
+
+def is_allowed_apk_url(config: dict[str, Any], value: str) -> bool:
+    if is_https_url(value):
+        return True
+    if not config.get("allow_insecure_loopback_apk_urls", False):
+        return False
+    try:
+        parsed = urlparse(value)
+    except Exception:
+        return False
+    return parsed.scheme == "http" and parsed.hostname in {"127.0.0.1", "localhost", "::1"}
 
 
 def is_launch_component_allowed(config: dict[str, Any], component: str, package_name: str | None = None) -> bool:
@@ -928,11 +978,13 @@ def remember_idempotent_result(state: AgentState, command: dict[str, Any], resul
 
 
 def run_once(config: dict[str, Any], state: AgentState) -> None:
+    refresh_local_adb_for_heartbeat(config, state)
     heartbeat = make_heartbeat(config, state, central_reachable=False)
     try:
-        post_json(central_url(config, f"{API_PREFIX}/heartbeat"), heartbeat)
         heartbeat["central_reachable"] = True
+        post_json(central_url(config, f"{API_PREFIX}/heartbeat"), heartbeat)
     except URLError as exc:
+        heartbeat["central_reachable"] = False
         state.last_error_code = "heartbeat_failed"
         write_jsonl(config, "errors.jsonl", {"observed_at": utc_now(), "error": str(exc)})
         return

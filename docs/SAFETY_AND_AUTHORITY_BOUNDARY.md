@@ -31,10 +31,24 @@ enables or pairs WiFi ADB, that client can connect to the same headset and use
 the authorized Android shell session. Classify that as an operator-approved
 ADB shell lease, not as Termux becoming Android shell authority.
 
+Termux ADB clients also need ordinary app-environment hygiene. Set `TMPDIR` to
+a writable Termux path such as `$PREFIX/tmp` before starting ADB, and stage APK
+artifacts where Termux can read them. Public shared storage can be unreliable
+from non-interactive Termux execution contexts, even when `adb shell` can see
+the same path.
+
 Current reboot evidence keeps this boundary strict. Termux:Boot did not prove
 post-reboot ADB recovery, and a pre-granted normal helper app did not restore
 classic WiFi ADB after reboot. The helper could receive boot and write its own
 status, but it did not make Termux or the helper Android `shell`.
+
+A later stopped-process probe proved a narrower helper use case. A visible,
+pre-granted helper Activity can call Termux's `RunCommandService` with
+`startForegroundService()` and restart the fixed fleet-agent command after the
+Termux package was force-stopped. The proof condition is fresh fleet-agent
+heartbeats plus the same loopback ADB `uid=2000(shell)` gate. This is
+operator-visible process recovery only; it is not WiFi ADB setup, reboot
+recovery, arbitrary shell, or silent install authority for the helper.
 
 ## Safe Defaults
 

@@ -6,7 +6,9 @@
     "Termux remains a normal Android app sidecar.",
     "The fleet agent does not create ADB authorization, become Android shell, replace HOME, own broker authority, or act as a hidden watchdog.",
     "Local ADB commands are allowed only when an already authorized Wi-Fi ADB endpoint is available and the command explicitly requires it.",
-    "The first implementation uses outbound polling and exposes no inbound listener on the headset."
+    "The first implementation uses outbound polling and exposes no inbound listener on the headset.",
+    "The operator trigger is a queued controller command; the headset does not need to share Wi-Fi with the operator machine.",
+    "A normal helper APK may restart a stopped agent only after the helper is visible/launched, pre-granted, and configured for Termux RunCommand."
   ],
   "preflight": [
     {
@@ -16,12 +18,32 @@
     },
     {
       "label": "central-controller",
-      "command": "Start the central fleet controller on a controlled lab host or simulator.",
+      "command": "Start or select an HTTPS central fleet controller reachable from the headset's current internet connection.",
       "operator_visible": true
     },
     {
       "label": "termux-runtime",
       "command": "Confirm Termux can run Python 3 and write to the agent workspace.",
+      "operator_visible": true
+    },
+    {
+      "label": "adb-tempdir",
+      "command": "Confirm ADB subprocesses have a writable TMPDIR, normally $PREFIX/tmp or the configured adb_tmpdir.",
+      "operator_visible": true
+    },
+    {
+      "label": "apk-readable-staging",
+      "command": "Confirm update APKs are downloaded or staged in a path readable by the Termux process, not assumed from public shared storage.",
+      "operator_visible": true
+    },
+    {
+      "label": "heartbeat-adb-readiness",
+      "command": "Enable check_local_adb_on_heartbeat for update fleets so regular heartbeats report whether loopback ADB shell is currently available.",
+      "operator_visible": true
+    },
+    {
+      "label": "optional-helper-restart",
+      "command": "If stopped-process recovery is in scope, confirm the helper APK is installed, launched at least once, granted com.termux.permission.RUN_COMMAND, and Termux allows external commands.",
       "operator_visible": true
     }
   ],
@@ -38,7 +60,7 @@
     },
     {
       "label": "queue-verified-update",
-      "command": "Queue an apk.update_verified command with a package/version/hash/signing-digest/rollout-ring manifest and requires_local_adb_shell=true.",
+      "command": "Queue an apk.update_verified command on the controller with a package/version/hash/signing-digest/rollout-ring manifest and requires_local_adb_shell=true.",
       "operator_visible": true
     }
   ],
@@ -51,6 +73,11 @@
     {
       "label": "command-result",
       "command": "Confirm the central controller received a bounded command result with matching command_id and agent_id.",
+      "operator_visible": true
+    },
+    {
+      "label": "helper-restart-heartbeat",
+      "command": "After any helper restart, confirm the controller receives a fresh heartbeat and local_adb.shell_uid is 2000 before installing updates.",
       "operator_visible": true
     },
     {
@@ -90,7 +117,11 @@
   "risks": [
     {
       "risk": "Android may pause or kill long-running Termux processes.",
-      "recovery": "Treat stale heartbeat as recovery-needed and use central direct ADB or operator action to restore the agent."
+      "recovery": "Treat stale heartbeat as recovery-needed. If a visible pre-granted helper is available, launch it to restart the fixed agent command; otherwise use central direct ADB or operator action."
+    },
+    {
+      "risk": "A helper app can look like management authority if its boundary is not explicit.",
+      "recovery": "Use the helper only for the fixed Termux RunCommand starter path and prove readiness with fresh heartbeats plus the loopback ADB shell gate."
     },
     {
       "risk": "Wi-Fi ADB may be unavailable even when the agent is alive.",

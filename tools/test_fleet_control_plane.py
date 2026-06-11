@@ -10,6 +10,7 @@ import tempfile
 import threading
 import time
 import unittest
+from unittest import mock
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -241,6 +242,28 @@ class AgentTests(unittest.TestCase):
         self.assertEqual(result["update_report"]["package_name"], "org.questtermuxlab.synthetic.panel")
         self.assertEqual(result["recovery_action"]["kind"], "central_direct_adb_recovery")
 
+    def test_rejects_http_apk_url_by_default(self) -> None:
+        request = command(kind="apk.update_verified")
+        request["requires_local_adb_shell"] = True
+        manifest = update_manifest()
+        manifest["apk_url"] = "http://127.0.0.1:8790/synthetic-panel.apk"
+        request["payload"] = {"manifest": manifest}
+        result = self.agent.execute_command(self.config, self.state, request)
+        self.assertFalse(result["accepted"])
+        self.assertEqual(result["error_code"], "apk_url_not_https")
+
+    def test_allows_http_loopback_apk_url_only_when_enabled(self) -> None:
+        config = dict(self.config)
+        config["allow_insecure_loopback_apk_urls"] = True
+        manifest = update_manifest()
+        manifest["apk_url"] = "http://127.0.0.1:8790/synthetic-panel.apk"
+        accepted = self.agent.normalize_update_manifest(config, {"manifest": manifest})
+        self.assertIsInstance(accepted, dict)
+
+        manifest["apk_url"] = "http://example.invalid/synthetic-panel.apk"
+        rejected = self.agent.normalize_update_manifest(config, {"manifest": manifest})
+        self.assertEqual(rejected, "apk_url_not_https")
+
     def test_rejects_disallowed_launch_component(self) -> None:
         request = command(kind="app.launch_allowlisted")
         request["requires_local_adb_shell"] = True
@@ -256,6 +279,23 @@ class AgentTests(unittest.TestCase):
         result = self.agent.execute_command(self.config, self.state, request)
         self.assertFalse(result["accepted"])
         self.assertEqual(result["error_code"], "logcat_tag_not_allowed")
+
+    def test_adb_subprocess_env_creates_configured_tmpdir(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            adb_tmpdir = Path(tmp) / "termux-prefix" / "tmp"
+            config = dict(self.config)
+            config["adb_tmpdir"] = str(adb_tmpdir)
+            env = self.agent.adb_subprocess_env(config)
+            self.assertEqual(env["TMPDIR"], str(adb_tmpdir))
+            self.assertTrue(adb_tmpdir.is_dir())
+
+    def test_heartbeat_can_refresh_local_adb_state_when_enabled(self) -> None:
+        config = dict(self.config)
+        config["local_adb_enabled"] = True
+        config["check_local_adb_on_heartbeat"] = True
+        with mock.patch.object(self.agent, "refresh_local_adb_state", return_value=(True, "", "")) as refresh:
+            self.agent.refresh_local_adb_for_heartbeat(config, self.state)
+        refresh.assert_called_once()
 
 
 class EndToEndTests(unittest.TestCase):
@@ -281,6 +321,7 @@ class EndToEndTests(unittest.TestCase):
                 agent_state = agent.AgentState(started_at=time.monotonic())
                 agent.run_once(config, agent_state)
                 self.assertIn("quest-agent-alpha", state.heartbeats)
+                self.assertTrue(state.heartbeats["quest-agent-alpha"]["central_reachable"])
                 self.assertEqual(len(state.results), 1)
                 self.assertEqual(state.results[0]["command_id"], "cmd-agent-status-test")
             finally:
