@@ -216,6 +216,13 @@ report idempotency, rollback state, and central direct-ADB recovery needs. This
 is still not a WiFi ADB bootstrap, MDM replacement, root path, or generic
 remote shell.
 
+The managed-device research note at `docs/managed-device-owner-options.md`
+summarizes the current production direction: Android phones should use fully
+managed / dedicated Android Enterprise device owner where possible; Quest fleets
+should be treated as Meta-managed or XR-MDM-managed unless Meta or the MDM
+vendor confirms standard Android Enterprise device-owner support. The Termux
+fleet lane remains a lab and break-glass path.
+
 The first peer-mesh slice is also simulator-only: it defines gossip envelopes,
 peer summaries, a merge tool, and tests for stale-state and forbidden-message
 handling. It does not open peer sockets, relay commands, or use cross-headset

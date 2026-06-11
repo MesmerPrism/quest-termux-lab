@@ -4,6 +4,12 @@ This lane models a lightweight fleet of Quest Termux agents without requiring
 a visible Linux desktop. It is for public-safe control-plane development and
 simulator testing before any live headset run.
 
+For production fleet management, pair this with
+`docs/managed-device-owner-options.md`. The current recommendation is Android
+Enterprise fully managed / dedicated device owner for phones, and Meta-managed
+Quest enrollment plus a Quest-capable MDM for headsets. The Termux fleet agent
+is a lab and break-glass plane, not the primary 100-device management plane.
+
 Recommended shape:
 
 ```text
