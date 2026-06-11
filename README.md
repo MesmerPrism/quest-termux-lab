@@ -218,10 +218,12 @@ remote shell.
 
 The managed-device research note at `docs/managed-device-owner-options.md`
 summarizes the current production direction: Android phones should use fully
-managed / dedicated Android Enterprise device owner where possible; Quest fleets
-should be treated as Meta-managed or XR-MDM-managed unless Meta or the MDM
-vendor confirms standard Android Enterprise device-owner support. The Termux
-fleet lane remains a lab and break-glass path.
+managed / dedicated Android Enterprise device owner where possible. Quest
+fleets should use only a vendor-confirmed management path: Meta's 2026 update
+stops selling Horizon managed services and commercial Quest SKUs while support
+continues through 2030, and third-party XR MDM enrollment through HMS must be
+verified against the current Meta signup flow and vendor support terms. The
+Termux fleet lane remains a lab and break-glass path.
 
 The first peer-mesh slice is also simulator-only: it defines gossip envelopes,
 peer summaries, a merge tool, and tests for stale-state and forbidden-message
