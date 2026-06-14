@@ -50,15 +50,28 @@ gate passes. See `docs/internet-triggered-self-update-workflow.md`.
 - `tools/fleet_control_plane.py`: minimal standard-library HTTP controller.
 - `scripts/termux_fleet_agent.py`: outbound-only standard-library Python
   agent intended to run under Termux or a simulator.
+- `scripts/mirror_commander.py`: source-side CLI for submitting typed mirror
+  intents through the controller.
 - `schemas/fleet-agent-manifest.schema.json`
 - `schemas/fleet-agent-heartbeat.schema.json`
 - `schemas/fleet-command-request.schema.json`
 - `schemas/fleet-command-result.schema.json`
 - `schemas/remote-session-lease.schema.json`
+- `schemas/mirror-session-lease.schema.json`
+- `schemas/mirror-command-intent.schema.json`
+- `schemas/mirror-command-event.schema.json`
+- `schemas/mirror-binding-policy.schema.json`
+- `schemas/mirror-session-summary.schema.json`
 - `schemas/adb-shell-lease-state.schema.json`
+- `docs/mirror-protocol-boundary.md`
 - `examples/session-recipe.outbound-fleet-agent.json`
+- `examples/session-recipe.mirror-two-quest.json`
 - `examples/fleet-agent-config.synthetic.json`
 - `examples/remote-session-lease.synthetic.json`
+- `examples/mirror-session-lease.synthetic.json`
+- `examples/mirror-binding-policy.synthetic.json`
+- `examples/mirror-command-intent.launch.synthetic.json`
+- `examples/mirror-command-event.completed.synthetic.json`
 
 ## Simulator Run
 
@@ -260,6 +273,32 @@ commands are reported as duplicates rather than queued twice. Agent-side
 runtime idempotency also skips a repeated completed update command while the
 agent process remains alive.
 
+## Mirror Command Lane
+
+The mirror protocol adds a controller-mediated two-agent command path without
+turning peer gossip into a command transport. The source agent submits a
+`quest-termux-lab.mirror-command-intent.v1` under an active
+`quest-termux-lab.mirror-session-lease.v1`. The controller validates source,
+target, TTL, revocation, and allowed command kind, then converts the intent
+into the existing `quest-termux-lab.fleet-command-request.v1` for the target.
+
+The target agent treats mirror metadata as a local policy trigger. Its
+`mirror_bindings` config must allow the source, lease, command kind, TTL,
+visible-session state, and payload-specific fields such as launch component or
+UIAutomator scenario. Controller acceptance is not enough for execution.
+
+Use `scripts/mirror_commander.py` for the first source-side proof:
+
+```sh
+python scripts/mirror_commander.py --config examples/mirror-commander-config.synthetic.json create-lease --lease-file examples/mirror-session-lease.synthetic.json
+python scripts/mirror_commander.py --config examples/mirror-commander-config.synthetic.json status --target quest-agent-beta --no-poll
+```
+
+Start with passive `agent.status` and `agent.capabilities`, then
+`adb.lease_check`, before attempting `app.launch_allowlisted` or
+`uiautomator.run_allowlisted_scenario`. Do not mirror raw coordinates, raw
+ADB, shell text, package installs, VNC control, or raw logcat.
+
 The controller summary includes `recovery_candidates` when an agent heartbeat
 shows missing/stale local ADB or when the latest command result failed because
 local ADB was unavailable. That is the handoff point for a central direct-ADB
@@ -326,7 +365,8 @@ summaries to this repository.
 ## Validation
 
 ```sh
-python -m py_compile tools/fleet_control_plane.py scripts/termux_fleet_agent.py tools/test_fleet_control_plane.py
+python -m py_compile tools/fleet_control_plane.py scripts/termux_fleet_agent.py scripts/mirror_commander.py tools/test_fleet_control_plane.py tools/test_mirror_protocol.py
 python -m unittest tools.test_fleet_control_plane
+python -m unittest tools.test_mirror_protocol
 python tools/check_public_boundary.py --repo-root .
 ```

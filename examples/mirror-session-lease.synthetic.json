@@ -1,0 +1,23 @@
+{
+  "schema": "quest-termux-lab.mirror-session-lease.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "lease_id": "mirror-alpha-to-beta-001",
+  "source_agent_id": "quest-agent-alpha",
+  "target_agent_id": "quest-agent-beta",
+  "issued_at": "2026-06-14T18:00:00Z",
+  "expires_at": "2099-01-01T00:00:00Z",
+  "allowed_command_kinds": [
+    "agent.status",
+    "agent.capabilities",
+    "adb.lease_check",
+    "android.foreground_snapshot",
+    "app.launch_allowlisted",
+    "uiautomator.run_allowlisted_scenario",
+    "adb.lease_disconnect"
+  ],
+  "requires_target_consent": true,
+  "requires_local_adb_shell_for_adb_commands": true,
+  "sensitivity": "local_only",
+  "revoked": false,
+  "synthetic": true
+}

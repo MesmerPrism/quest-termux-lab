@@ -36,6 +36,12 @@ AGENT_VERSION = "0.2.5"
 SHA256_RE = re.compile(r"^[a-fA-F0-9]{64}$")
 SAFE_EXTRA_VALUE_RE = re.compile(r"^[A-Za-z0-9_.:, +@-]{0,128}$")
 PASSIVE_COMMAND_KINDS = {"agent.status", "agent.capabilities"}
+MIRROR_ADB_ACTION_KINDS = {
+    "android.foreground_snapshot",
+    "app.launch_allowlisted",
+    "uiautomator.run_allowlisted_scenario",
+    "adb.lease_disconnect",
+}
 
 
 def utc_now() -> str:
@@ -220,6 +226,17 @@ def execute_command(config: dict[str, Any], state: AgentState, command: dict[str
             "Command requires an active remote session lease.",
         )
 
+    mirror_error = validate_mirror_binding_policy(config, state, command, str(kind))
+    if mirror_error is not None:
+        return reject_result(
+            config,
+            command,
+            started_at,
+            start_monotonic,
+            mirror_error,
+            "Mirror command was rejected by the target agent policy.",
+        )
+
     if kind == "agent.status":
         return complete_text(config, command, started_at, start_monotonic, agent_status_text(config, state), "")
     if kind == "agent.capabilities":
@@ -302,6 +319,13 @@ def configured_remote_session_leases(config: dict[str, Any]) -> list[dict[str, A
     return [item for item in raw if isinstance(item, dict)]
 
 
+def configured_mirror_bindings(config: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    raw = config.get("mirror_bindings", {})
+    if not isinstance(raw, dict):
+        return {}
+    return {key: value for key, value in raw.items() if isinstance(key, str) and isinstance(value, dict)}
+
+
 def validate_remote_session_lease(config: dict[str, Any], command: dict[str, Any], kind: str) -> str | None:
     if kind in PASSIVE_COMMAND_KINDS:
         return None
@@ -338,6 +362,99 @@ def validate_remote_session_lease(config: dict[str, Any], command: dict[str, Any
 
     if command.get("requires_local_adb_shell") and lease.get("requires_local_adb_shell") is False:
         return "remote_session_lease_disallows_adb"
+    return None
+
+
+def validate_mirror_binding_policy(
+    config: dict[str, Any],
+    state: AgentState,
+    command: dict[str, Any],
+    kind: str,
+) -> str | None:
+    source_agent_id = command.get("source_agent_id")
+    mirror_intent_id = command.get("mirror_intent_id")
+    if source_agent_id is None and mirror_intent_id is None:
+        return None
+    if not isinstance(source_agent_id, str) or not source_agent_id:
+        return "mirror_source_missing"
+
+    bindings = configured_mirror_bindings(config)
+    policy = bindings.get(source_agent_id)
+    if policy is None:
+        return "mirror_source_not_allowed"
+    if policy.get("enabled") is not True:
+        return "mirror_binding_disabled"
+
+    lease_id = command.get("remote_session_lease_id")
+    allowed_lease_ids = policy.get("allowed_lease_ids", [])
+    if not isinstance(allowed_lease_ids, list) or not all(isinstance(item, str) for item in allowed_lease_ids):
+        return "mirror_policy_bad_lease_ids"
+    if not isinstance(lease_id, str) or lease_id not in set(allowed_lease_ids):
+        return "mirror_lease_not_allowed"
+
+    allowed_kinds = policy.get("allowed_command_kinds", [])
+    if not isinstance(allowed_kinds, list) or not all(isinstance(item, str) for item in allowed_kinds):
+        return "mirror_policy_bad_command_kinds"
+    if kind not in set(allowed_kinds):
+        return "mirror_kind_not_allowed"
+
+    ttl_error = validate_mirror_command_ttl(policy, command)
+    if ttl_error is not None:
+        return ttl_error
+
+    if policy.get("require_operator_visible_session") is True and config.get("operator_visible_session_active") is not True:
+        return "mirror_operator_consent_missing"
+
+    if (
+        policy.get("require_local_adb_shell") is True
+        and kind in MIRROR_ADB_ACTION_KINDS
+        and command.get("requires_local_adb_shell") is not True
+    ):
+        return "mirror_local_adb_not_required_by_command"
+    if (
+        policy.get("require_local_adb_shell") is True
+        and command.get("requires_local_adb_shell") is True
+        and not config.get("local_adb_enabled", False)
+    ):
+        mark_local_adb_unavailable(config, state, "local_adb_disabled")
+        return "local_adb_required_but_unavailable"
+
+    payload = command.get("payload", {})
+    if not isinstance(payload, dict):
+        return "mirror_payload_invalid"
+    if kind == "app.launch_allowlisted":
+        component = payload.get("component")
+        allowed_components = policy.get("allowed_launch_components", [])
+        if not isinstance(allowed_components, list) or not all(isinstance(item, str) for item in allowed_components):
+            return "mirror_policy_bad_launch_components"
+        if not isinstance(component, str) or component not in set(allowed_components):
+            return "mirror_launch_component_not_allowed"
+    if kind == "uiautomator.run_allowlisted_scenario":
+        scenario = payload.get("scenario")
+        allowed_scenarios = policy.get("allowed_uiautomator_scenarios", [])
+        if not isinstance(allowed_scenarios, list) or not all(isinstance(item, str) for item in allowed_scenarios):
+            return "mirror_policy_bad_uiautomator_scenarios"
+        if not isinstance(scenario, str) or scenario not in set(allowed_scenarios):
+            return "mirror_uiautomator_scenario_not_allowed"
+    return None
+
+
+def validate_mirror_command_ttl(policy: dict[str, Any], command: dict[str, Any]) -> str | None:
+    max_ttl = policy.get("max_command_ttl_seconds")
+    if max_ttl is None:
+        return None
+    if not isinstance(max_ttl, int) or max_ttl <= 0:
+        return "mirror_policy_bad_ttl"
+    issued_at = command.get("issued_at")
+    expires_at = command.get("expires_at")
+    if not isinstance(issued_at, str) or not isinstance(expires_at, str):
+        return "mirror_ttl_invalid"
+    try:
+        ttl = (parse_time(expires_at) - parse_time(issued_at)).total_seconds()
+    except ValueError:
+        return "mirror_ttl_invalid"
+    if ttl <= 0 or ttl > max_ttl:
+        return "mirror_ttl_exceeded"
     return None
 
 

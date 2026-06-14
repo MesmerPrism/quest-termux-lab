@@ -1,0 +1,33 @@
+{
+  "schema": "quest-termux-lab.mirror-binding-policy.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "target_agent_id": "quest-agent-beta",
+  "mirror_bindings": {
+    "quest-agent-alpha": {
+      "enabled": true,
+      "allowed_lease_ids": [
+        "mirror-alpha-to-beta-001"
+      ],
+      "allowed_command_kinds": [
+        "agent.status",
+        "agent.capabilities",
+        "adb.lease_check",
+        "android.foreground_snapshot",
+        "app.launch_allowlisted",
+        "uiautomator.run_allowlisted_scenario",
+        "adb.lease_disconnect"
+      ],
+      "allowed_launch_components": [
+        "org.questtermuxlab.synthetic.panel/.MainActivity"
+      ],
+      "allowed_uiautomator_scenarios": [
+        "settingsRecoveryProbe",
+        "systemSurfaceReachability"
+      ],
+      "max_command_ttl_seconds": 60,
+      "require_local_adb_shell": true,
+      "require_operator_visible_session": true
+    }
+  },
+  "synthetic": true
+}

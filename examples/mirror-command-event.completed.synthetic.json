@@ -1,0 +1,19 @@
+{
+  "schema": "quest-termux-lab.mirror-command-event.v1",
+  "mirror_intent_id": "alpha-launch-panel-001",
+  "lease_id": "mirror-alpha-to-beta-001",
+  "source_agent_id": "quest-agent-alpha",
+  "target_agent_id": "quest-agent-beta",
+  "command_id": "mirror-alpha-launch-panel-001",
+  "state": "completed",
+  "observed_at": "2026-06-14T18:05:03Z",
+  "target_result": {
+    "accepted": true,
+    "status": "completed",
+    "duration_ms": 842,
+    "local_adb_used": true,
+    "local_adb_shell_uid": "2000"
+  },
+  "controller_status": "accepted",
+  "synthetic": true
+}

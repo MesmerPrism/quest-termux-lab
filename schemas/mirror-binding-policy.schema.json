@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/mirror-binding-policy.schema.json",
+  "title": "Quest Termux Lab Mirror Binding Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "fleet_id", "target_agent_id", "mirror_bindings"],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.mirror-binding-policy.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "mirror_bindings": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "enabled",
+          "allowed_lease_ids",
+          "allowed_command_kinds",
+          "max_command_ttl_seconds",
+          "require_operator_visible_session"
+        ],
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "allowed_lease_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "allowed_command_kinds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "allowed_launch_components": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "allowed_uiautomator_scenarios": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "max_command_ttl_seconds": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3600
+          },
+          "require_local_adb_shell": {
+            "type": "boolean"
+          },
+          "require_operator_visible_session": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "synthetic": {
+      "type": "boolean"
+    }
+  }
+}

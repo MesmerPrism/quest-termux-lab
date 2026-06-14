@@ -1,0 +1,22 @@
+{
+  "schema": "quest-termux-lab.mirror-command-intent.v1",
+  "fleet_id": "synthetic-lab-fleet",
+  "mirror_intent_id": "alpha-launch-panel-001",
+  "lease_id": "mirror-alpha-to-beta-001",
+  "source_agent_id": "quest-agent-alpha",
+  "target_agent_id": "quest-agent-beta",
+  "issued_at": "2099-01-01T00:00:00Z",
+  "expires_at": "2099-01-01T00:00:30Z",
+  "idempotency_key": "alpha-launch-panel-v1",
+  "kind": "app.launch_allowlisted",
+  "requires_local_adb_shell": true,
+  "timeout_ms": 10000,
+  "max_stdout_bytes": 4096,
+  "max_stderr_bytes": 4096,
+  "payload": {
+    "component": "org.questtermuxlab.synthetic.panel/.MainActivity"
+  },
+  "sensitivity": "local_only",
+  "reason": "Mirror source launch action to target headset.",
+  "synthetic": true
+}

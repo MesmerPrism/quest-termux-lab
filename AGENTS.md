@@ -47,8 +47,9 @@ Before committing, run:
 ```powershell
 python tools/check_public_boundary.py --repo-root .
 python -m py_compile tools/capture_vnc_screenshot.py tools/stream_vnc_mjpeg.py tools/check_public_boundary.py
-python -m py_compile tools/fleet_control_plane.py scripts/termux_fleet_agent.py tools/test_fleet_control_plane.py
+python -m py_compile tools/fleet_control_plane.py scripts/termux_fleet_agent.py scripts/mirror_commander.py tools/test_fleet_control_plane.py tools/test_mirror_protocol.py
 python -m unittest tools.test_fleet_control_plane
+python -m unittest tools.test_mirror_protocol
 python -m py_compile tools/peer_mesh_gossip.py tools/test_peer_mesh_gossip.py
 python -m unittest tools.test_peer_mesh_gossip
 python -m py_compile tools/peer_mesh_round.py tools/test_peer_mesh_round.py

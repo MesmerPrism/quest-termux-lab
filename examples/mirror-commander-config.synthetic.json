@@ -1,0 +1,8 @@
+{
+  "synthetic": true,
+  "fleet_id": "synthetic-lab-fleet",
+  "source_agent_id": "quest-agent-alpha",
+  "target_agent_id": "quest-agent-beta",
+  "lease_id": "mirror-alpha-to-beta-001",
+  "central_url": "http://127.0.0.1:8787"
+}

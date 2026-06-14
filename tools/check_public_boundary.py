@@ -41,6 +41,11 @@ SYNTHETIC_MARKER_REQUIRED = {
     "fleet-command-request.uiautomator-system-surface.synthetic.json",
     "fleet-command-result.synthetic.json",
     "fleet-command-result.apk-update-recovery.synthetic.json",
+    "mirror-binding-policy.synthetic.json",
+    "mirror-command-event.completed.synthetic.json",
+    "mirror-command-intent.launch.synthetic.json",
+    "mirror-commander-config.synthetic.json",
+    "mirror-session-lease.synthetic.json",
     "remote-session-lease.synthetic.json",
 }
 

@@ -1,47 +1,47 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.invalid/quest-termux-lab/fleet-command-request.schema.json",
-  "title": "Quest Termux Lab Fleet Command Request",
+  "$id": "https://example.invalid/quest-termux-lab/mirror-command-intent.schema.json",
+  "title": "Quest Termux Lab Mirror Command Intent",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "schema",
     "fleet_id",
-    "command_id",
+    "mirror_intent_id",
+    "lease_id",
+    "source_agent_id",
     "target_agent_id",
     "issued_at",
     "expires_at",
     "idempotency_key",
     "kind",
     "requires_local_adb_shell",
-    "timeout_ms",
-    "max_stdout_bytes",
-    "max_stderr_bytes",
-    "payload"
+    "payload",
+    "reason"
   ],
   "properties": {
     "schema": {
-      "const": "quest-termux-lab.fleet-command-request.v1"
+      "const": "quest-termux-lab.mirror-command-intent.v1"
     },
     "fleet_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "command_id": {
-      "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9_.-]{2,120}$"
-    },
-    "target_agent_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "source_agent_id": {
       "type": "string",
       "minLength": 1
     },
     "mirror_intent_id": {
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9_.-]{2,100}$"
+    },
+    "lease_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]{2,100}$"
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_agent_id": {
+      "type": "string",
+      "minLength": 1
     },
     "issued_at": {
       "type": "string",
@@ -59,23 +59,12 @@
       "enum": [
         "agent.status",
         "agent.capabilities",
-        "termux.exec_allowlisted",
-        "adb.self_check",
-        "apk.update_verified",
         "adb.lease_check",
-        "adb.lease_disconnect",
         "android.foreground_snapshot",
-        "android.logcat_slice",
         "app.launch_allowlisted",
         "uiautomator.run_allowlisted_scenario",
-        "media_projection.preview_request",
-        "media_projection.preview_stop",
-        "termux.agent.restart_status"
+        "adb.lease_disconnect"
       ]
-    },
-    "remote_session_lease_id": {
-      "type": ["string", "null"],
-      "pattern": "^[a-z0-9][a-z0-9_.-]{2,120}$"
     },
     "requires_local_adb_shell": {
       "type": "boolean"
@@ -101,11 +90,9 @@
     "sensitivity": {
       "enum": ["public_safe", "local_only", "private_evidence"]
     },
-    "requested_by": {
-      "type": "string"
-    },
     "reason": {
-      "type": "string"
+      "type": "string",
+      "minLength": 1
     },
     "synthetic": {
       "type": "boolean"

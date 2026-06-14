@@ -1,0 +1,104 @@
+{
+  "schema": "quest-termux-lab.session-recipe.v1",
+  "id": "mirror-two-quest",
+  "purpose": "Rehearse typed command mirroring from one Quest Termux agent to another through the fleet controller.",
+  "authority_boundary": [
+    "Quest A submits typed mirror intents only.",
+    "Quest B remains the final execution authority through its local mirror binding policy.",
+    "The controller owns mirror leases, intent state, idempotency mapping, and result correlation.",
+    "Peer gossip remains status-only and does not carry commands, shell text, ADB targets, pairing data, install requests, or launch requests.",
+    "Both headsets initiate outbound controller traffic; no headset listener is exposed to the internet.",
+    "ADB-backed commands still require the target-side loopback ADB shell gate."
+  ],
+  "preflight": [
+    {
+      "label": "boundary",
+      "command": "Review docs/mirror-protocol-boundary.md and confirm the run is typed-command mirroring, not raw control.",
+      "operator_visible": true
+    },
+    {
+      "label": "controller",
+      "command": "Start the fleet controller with mirror routes enabled.",
+      "operator_visible": true
+    },
+    {
+      "label": "target-policy",
+      "command": "Review the target agent mirror_bindings config for source, lease, command kind, component, scenario, TTL, and visible-session settings.",
+      "operator_visible": true
+    }
+  ],
+  "start": [
+    {
+      "label": "create-lease",
+      "command": "POST examples/mirror-session-lease.synthetic.json to /api/mirror/v1/leases.",
+      "operator_visible": true
+    },
+    {
+      "label": "start-agents",
+      "command": "Run source and target Termux fleet agents against the controller.",
+      "operator_visible": true
+    },
+    {
+      "label": "submit-intent",
+      "command": "Submit a mirror-command-intent for agent.status before any ADB-backed action.",
+      "operator_visible": true
+    }
+  ],
+  "status": [
+    {
+      "label": "target-result",
+      "command": "Confirm the target posts a fleet-command-result and the controller maps it back to the mirror intent.",
+      "operator_visible": true
+    },
+    {
+      "label": "mirror-events",
+      "command": "Read /api/mirror/v1/sessions/{lease_id}/events and confirm queued and terminal states are present.",
+      "operator_visible": true
+    }
+  ],
+  "stop": [
+    {
+      "label": "revoke-lease",
+      "command": "POST to /api/mirror/v1/leases/{lease_id}/revoke and confirm later intents are rejected.",
+      "operator_visible": true
+    }
+  ],
+  "cleanup": [
+    {
+      "label": "no-listeners",
+      "command": "Confirm no headset-side ADB, VNC, HTTP, or Termux listener was exposed.",
+      "operator_visible": true
+    },
+    {
+      "label": "public-boundary",
+      "command": "Keep real headset names, serials, logs, screenshots, pairing data, package IDs, and network addresses out of public artifacts.",
+      "operator_visible": true
+    }
+  ],
+  "evidence": [
+    "Mirror session lease.",
+    "Mirror binding policy.",
+    "Mirror command intent.",
+    "Converted fleet command request.",
+    "Target fleet command result.",
+    "Mirror command events.",
+    "Controller summary."
+  ],
+  "risks": [
+    {
+      "risk": "Mirroring can drift into unrestricted remote control.",
+      "recovery": "Keep Quest A as an intent source, enforce Quest B local policy, and reject raw shell, raw ADB, and coordinate mirroring."
+    },
+    {
+      "risk": "Peer gossip could accidentally become a command transport.",
+      "recovery": "Keep gossip validators rejecting command-like fields and route mirror commands through the controller."
+    },
+    {
+      "risk": "ADB-backed mirror commands can execute without a current target shell lease.",
+      "recovery": "Require the target agent to verify uid=2000(shell) before bounded ADB-backed executors run."
+    }
+  ],
+  "notes": [
+    "The synthetic examples intentionally avoid real headset IDs, serials, LAN IPs, pairing material, logs, and screenshots."
+  ]
+}

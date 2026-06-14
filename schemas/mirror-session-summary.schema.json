@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/mirror-session-summary.schema.json",
+  "title": "Quest Termux Lab Mirror Session Summary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fleet_id",
+    "lease_id",
+    "observed_at",
+    "event_count",
+    "events"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.mirror-session-summary.v1"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lease_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "event_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "$ref": "mirror-command-event.schema.json"
+      }
+    },
+    "synthetic": {
+      "type": "boolean"
+    }
+  }
+}

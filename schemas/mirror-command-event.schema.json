@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/mirror-command-event.schema.json",
+  "title": "Quest Termux Lab Mirror Command Event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "mirror_intent_id",
+    "lease_id",
+    "source_agent_id",
+    "target_agent_id",
+    "command_id",
+    "state",
+    "observed_at"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.mirror-command-event.v1"
+    },
+    "mirror_intent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lease_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "command_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state": {
+      "enum": [
+        "submitted_by_source",
+        "accepted_by_controller",
+        "queued_for_target",
+        "delivered_to_target",
+        "accepted_by_target",
+        "completed",
+        "rejected",
+        "failed",
+        "timeout",
+        "skipped",
+        "acknowledged_by_source"
+      ]
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "target_result": {
+      "type": ["object", "null"],
+      "additionalProperties": true
+    },
+    "controller_status": {
+      "type": ["string", "null"]
+    },
+    "synthetic": {
+      "type": "boolean"
+    }
+  }
+}
