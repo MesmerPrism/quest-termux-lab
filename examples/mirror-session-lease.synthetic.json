@@ -2,10 +2,13 @@
   "schema": "quest-termux-lab.mirror-session-lease.v1",
   "fleet_id": "synthetic-lab-fleet",
   "lease_id": "mirror-alpha-to-beta-001",
+  "operator_id": "synthetic-operator",
   "source_agent_id": "quest-agent-alpha",
   "target_agent_id": "quest-agent-beta",
+  "purpose": "Synthetic two-Quest mirror rehearsal.",
   "issued_at": "2026-06-14T18:00:00Z",
   "expires_at": "2099-01-01T00:00:00Z",
+  "consent_mode": "operator_visible_lab",
   "allowed_command_kinds": [
     "agent.status",
     "agent.capabilities",
@@ -17,7 +20,11 @@
   ],
   "requires_target_consent": true,
   "requires_local_adb_shell_for_adb_commands": true,
+  "active_indicator_required": true,
+  "emergency_stop_supported": true,
   "sensitivity": "local_only",
   "revoked": false,
+  "revoked_at": null,
+  "revoked_by": null,
   "synthetic": true
 }

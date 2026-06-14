@@ -40,7 +40,6 @@ MIRROR_ADB_ACTION_KINDS = {
     "android.foreground_snapshot",
     "app.launch_allowlisted",
     "uiautomator.run_allowlisted_scenario",
-    "adb.lease_disconnect",
 }
 
 
@@ -371,12 +370,18 @@ def validate_mirror_binding_policy(
     command: dict[str, Any],
     kind: str,
 ) -> str | None:
+    origin = command.get("origin")
     source_agent_id = command.get("source_agent_id")
     mirror_intent_id = command.get("mirror_intent_id")
-    if source_agent_id is None and mirror_intent_id is None:
+    has_mirror_metadata = source_agent_id is not None or mirror_intent_id is not None
+    if origin != "mirror" and not has_mirror_metadata:
         return None
+    if origin != "mirror":
+        return "mirror_origin_missing"
     if not isinstance(source_agent_id, str) or not source_agent_id:
         return "mirror_source_missing"
+    if not isinstance(mirror_intent_id, str) or not mirror_intent_id:
+        return "mirror_intent_missing"
 
     bindings = configured_mirror_bindings(config)
     policy = bindings.get(source_agent_id)
@@ -386,10 +391,12 @@ def validate_mirror_binding_policy(
         return "mirror_binding_disabled"
 
     lease_id = command.get("remote_session_lease_id")
+    if not isinstance(lease_id, str) or not lease_id:
+        return "missing_remote_session_lease"
     allowed_lease_ids = policy.get("allowed_lease_ids", [])
     if not isinstance(allowed_lease_ids, list) or not all(isinstance(item, str) for item in allowed_lease_ids):
         return "mirror_policy_bad_lease_ids"
-    if not isinstance(lease_id, str) or lease_id not in set(allowed_lease_ids):
+    if lease_id not in set(allowed_lease_ids):
         return "mirror_lease_not_allowed"
 
     allowed_kinds = policy.get("allowed_command_kinds", [])
@@ -414,6 +421,7 @@ def validate_mirror_binding_policy(
     if (
         policy.get("require_local_adb_shell") is True
         and command.get("requires_local_adb_shell") is True
+        and kind in MIRROR_ADB_ACTION_KINDS
         and not config.get("local_adb_enabled", False)
     ):
         mark_local_adb_unavailable(config, state, "local_adb_disabled")
@@ -825,7 +833,7 @@ def run_adb_lease_check(
             "shell_uid": None,
             "reason": "local_adb_disabled",
         }
-        result = complete_text(config, command, started_at, start_monotonic, json.dumps(summary, sort_keys=True), "", 1)
+        result = complete_text(config, command, started_at, start_monotonic, json.dumps(summary, sort_keys=True), "", 0)
         result["redactions_applied"] = True
         return result
 
@@ -847,7 +855,7 @@ def run_adb_lease_check(
         start_monotonic,
         json.dumps(summary, sort_keys=True),
         "",
-        0 if available else 1,
+        0,
         local_adb_used=True,
         local_adb_shell_uid=state.local_adb_state.get("shell_uid"),
         recovery_action=None if available else central_recovery_action("local_adb_check_failed"),
@@ -865,14 +873,14 @@ def run_adb_lease_disconnect(
 ) -> dict[str, Any]:
     if not config.get("local_adb_enabled", False):
         mark_local_adb_unavailable(config, state, "local_adb_disabled")
-        return reject_result(
-            config,
-            command,
-            started_at,
-            start_monotonic,
-            "local_adb_disabled",
-            "Local ADB is disabled in agent config.",
-        )
+        summary = {
+            "attempted": False,
+            "configured_target": "redacted",
+            "reason": "local_adb_disabled",
+        }
+        result = complete_text(config, command, started_at, start_monotonic, json.dumps(summary, sort_keys=True), "", 0)
+        result["redactions_applied"] = True
+        return result
     target = str(config.get("local_adb_target", "127.0.0.1:5555"))
     stdout, stderr, code = run_adb_client_command(config, ["disconnect", target], command)
     mark_local_adb_unavailable(config, state, "disconnected_by_command")

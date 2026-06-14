@@ -237,6 +237,11 @@ executing anything. Peer gossip remains status-only. See
 `docs/mirror-protocol-boundary.md` and
 `examples/session-recipe.mirror-two-quest.json`.
 
+Mirror-derived fleet commands are explicitly marked with `origin: "mirror"`.
+Target agents reject mirror metadata without that marker. `adb.lease_check` and
+`adb.lease_disconnect` stay diagnostic or best-effort; launch, foreground
+snapshot, and UIAutomator actions still require the target-side ADB shell gate.
+
 The public agent now implements the bounded ADB lease check/disconnect
 commands, helper restart-status reporting, and an allowlisted UIAutomator
 scenario bridge. MediaProjection preview commands remain explicit

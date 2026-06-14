@@ -64,6 +64,12 @@
     "controller_status": {
       "type": ["string", "null"]
     },
+    "error_code": {
+      "type": ["string", "null"]
+    },
+    "error_message": {
+      "type": ["string", "null"]
+    },
     "synthetic": {
       "type": "boolean"
     }

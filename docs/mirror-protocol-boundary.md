@@ -15,6 +15,8 @@ Non-negotiable boundaries:
 6. All commands require TTL, idempotency, source identity, target identity, and
    a result.
 7. Every live session is revocable.
+8. Mirror-derived fleet commands must carry `origin: "mirror"`,
+   `source_agent_id`, `mirror_intent_id`, and `remote_session_lease_id`.
 
 ## Authority
 
@@ -34,6 +36,12 @@ mirror-command-intent
   -> fleet-command-result
   -> mirror-command-event
 ```
+
+Controller policy rejections for well-formed mirror intents are protocol
+events, not just transport errors. A malformed JSON body or unsupported schema
+can fail with HTTP 400 only, but a well-formed intent with a missing, expired,
+revoked, wrong-source, wrong-target, or disallowed lease should produce a
+`mirror-command-event` with `state = rejected`.
 
 ## Non-Scope
 
@@ -78,7 +86,24 @@ uiautomator.run_allowlisted_scenario
 adb.lease_disconnect
 ```
 
+ADB diagnostic commands have a narrower gate than ADB action commands:
+
+```text
+agent.status                 no ADB gate
+agent.capabilities           no ADB gate
+adb.lease_check              no passing ADB gate required; reports state
+android.foreground_snapshot  ADB gate required
+app.launch_allowlisted       ADB gate required
+uiautomator.run_allowlisted  ADB gate required
+adb.lease_disconnect         no passing ADB gate required; best-effort
+```
+
 Target rejection is normal. Common rejection reasons include missing or expired
 lease, revoked lease, source not allowed, wrong target, command kind not
 allowed, payload not allowed, local ADB unavailable, operator-visible session
 missing, duplicate idempotency, and timeout.
+
+Synthetic fixtures may use long-lived dates to stay stable in automated tests.
+Live mirror and remote-session leases should be short, operator-reviewed, and
+revoked at the end of the run; do not copy synthetic `2099` expiries into a
+live config.

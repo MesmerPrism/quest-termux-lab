@@ -8,13 +8,18 @@
     "schema",
     "fleet_id",
     "lease_id",
+    "operator_id",
     "source_agent_id",
     "target_agent_id",
+    "purpose",
     "issued_at",
     "expires_at",
+    "consent_mode",
     "allowed_command_kinds",
     "requires_target_consent",
     "requires_local_adb_shell_for_adb_commands",
+    "active_indicator_required",
+    "emergency_stop_supported",
     "sensitivity",
     "revoked"
   ],
@@ -30,11 +35,19 @@
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9_.-]{2,100}$"
     },
+    "operator_id": {
+      "type": "string",
+      "minLength": 1
+    },
     "source_agent_id": {
       "type": "string",
       "minLength": 1
     },
     "target_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "purpose": {
       "type": "string",
       "minLength": 1
     },
@@ -45,6 +58,13 @@
     "expires_at": {
       "type": "string",
       "format": "date-time"
+    },
+    "consent_mode": {
+      "enum": [
+        "operator_visible_lab",
+        "local_user_confirmed",
+        "managed_device_policy"
+      ]
     },
     "allowed_command_kinds": {
       "type": "array",
@@ -68,11 +88,24 @@
     "requires_local_adb_shell_for_adb_commands": {
       "type": "boolean"
     },
+    "active_indicator_required": {
+      "type": "boolean"
+    },
+    "emergency_stop_supported": {
+      "type": "boolean"
+    },
     "sensitivity": {
       "enum": ["public_safe", "local_only", "private_evidence"]
     },
     "revoked": {
       "type": "boolean"
+    },
+    "revoked_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "revoked_by": {
+      "type": ["string", "null"]
     },
     "synthetic": {
       "type": "boolean"

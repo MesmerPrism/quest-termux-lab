@@ -34,7 +34,6 @@ MIRROR_ADB_ACTION_KINDS = {
     "android.foreground_snapshot",
     "app.launch_allowlisted",
     "uiautomator.run_allowlisted_scenario",
-    "adb.lease_disconnect",
 }
 
 
@@ -159,11 +158,16 @@ class FleetState:
         if payload.get("schema") != MIRROR_LEASE_SCHEMA:
             raise ValueError("unsupported mirror lease schema")
         lease_id = require_text(payload, "lease_id")
+        require_text(payload, "operator_id")
         source_agent_id = require_text(payload, "source_agent_id")
         target_agent_id = require_text(payload, "target_agent_id")
         if source_agent_id == target_agent_id:
             raise ValueError("mirror source and target must differ")
         require_text(payload, "fleet_id")
+        require_text(payload, "purpose")
+        require_text(payload, "consent_mode")
+        require_bool(payload, "active_indicator_required")
+        require_bool(payload, "emergency_stop_supported")
         require_future_expiry(payload, "mirror lease")
         kinds = require_text_list(payload, "allowed_command_kinds")
         if not kinds:
@@ -184,11 +188,15 @@ class FleetState:
             raise ValueError("mirror lease missing")
         lease = dict(self.mirror_leases[lease_id])
         lease["revoked"] = True
+        lease["revoked_at"] = utc_now()
+        if isinstance(payload, dict) and isinstance(payload.get("revoked_by"), str):
+            lease["revoked_by"] = payload["revoked_by"]
         self.mirror_leases[lease_id] = lease
         record = {
             "schema": "quest-termux-lab.mirror-session-revocation.v1",
             "lease_id": lease_id,
-            "revoked_at": utc_now(),
+            "revoked_at": lease["revoked_at"],
+            "revoked_by": lease.get("revoked_by"),
             "reason": payload.get("reason") if isinstance(payload, dict) else None,
         }
         self._append_jsonl("mirror-lease-revocations.jsonl", record)
@@ -198,6 +206,8 @@ class FleetState:
         if payload.get("schema") != MIRROR_INTENT_SCHEMA:
             raise ValueError("unsupported mirror intent schema")
         mirror_intent_id = require_text(payload, "mirror_intent_id")
+        require_text(payload, "source_agent_id")
+        require_text(payload, "target_agent_id")
         if mirror_intent_id in self.mirror_intents:
             existing = self.mirror_intents[mirror_intent_id]
             return response(
@@ -206,17 +216,23 @@ class FleetState:
                 command_id=existing.get("command_id"),
                 state=existing.get("state"),
             )
-        require_future_expiry(payload, "mirror intent")
         lease_id = require_text(payload, "lease_id")
+        try:
+            require_future_expiry(payload, "mirror intent")
+        except ValueError as exc:
+            return self.reject_mirror_intent(payload, "mirror_intent_expired", str(exc))
         lease = self.mirror_leases.get(lease_id)
         if lease is None:
-            raise ValueError("mirror lease missing")
+            return self.reject_mirror_intent(payload, "mirror_lease_missing", "Mirror lease is missing.")
         lease_error = validate_mirror_lease_for_intent(lease, payload)
         if lease_error is not None:
-            raise ValueError(lease_error)
+            return self.reject_mirror_intent(payload, lease_error, lease_error.replace("_", " "))
 
         command = mirror_intent_to_fleet_command(payload)
-        queued = self.queue_command(command)
+        try:
+            queued = self.queue_command(command)
+        except ValueError as exc:
+            return self.reject_mirror_intent(payload, "mirror_queue_rejected", str(exc))
         command_id = str(queued.get("existing_command_id") or command["command_id"])
         event = mirror_event(payload, command_id, "queued_for_target", controller_status=str(queued.get("status")))
         intent_status = {
@@ -231,6 +247,8 @@ class FleetState:
             "submitted_at": utc_now(),
             "updated_at": event["observed_at"],
             "target_result": None,
+            "error_code": None,
+            "error_message": None,
         }
         self.mirror_intents[mirror_intent_id] = intent_status
         self.mirror_command_index.setdefault(command_id, []).append(mirror_intent_id)
@@ -243,6 +261,47 @@ class FleetState:
             lease_id=lease_id,
             command_id=command_id,
             controller_status=queued.get("status"),
+        )
+
+    def reject_mirror_intent(self, payload: dict[str, Any], code: str, message: str) -> dict[str, Any]:
+        mirror_intent_id = require_text(payload, "mirror_intent_id")
+        lease_id = require_text(payload, "lease_id")
+        command_id = mirror_command_id(mirror_intent_id)
+        event = mirror_event(
+            payload,
+            command_id,
+            "rejected",
+            controller_status="rejected",
+            error_code=code,
+            error_message=message,
+        )
+        intent_status = {
+            "schema": "quest-termux-lab.mirror-intent-status.v1",
+            "mirror_intent_id": mirror_intent_id,
+            "lease_id": lease_id,
+            "source_agent_id": payload.get("source_agent_id"),
+            "target_agent_id": payload.get("target_agent_id"),
+            "command_id": command_id,
+            "state": "rejected",
+            "controller_status": "rejected",
+            "submitted_at": utc_now(),
+            "updated_at": event["observed_at"],
+            "target_result": None,
+            "error_code": code,
+            "error_message": message,
+        }
+        self.mirror_intents[mirror_intent_id] = intent_status
+        self.mirror_events.setdefault(lease_id, []).append(event)
+        self._append_jsonl("mirror-intents.jsonl", payload)
+        self._append_jsonl("mirror-events.jsonl", event)
+        return response(
+            "rejected",
+            mirror_intent_id=mirror_intent_id,
+            lease_id=lease_id,
+            command_id=command_id,
+            state="rejected",
+            error_code=code,
+            error_message=message,
         )
 
     def mirror_intent_status(self, mirror_intent_id: str) -> dict[str, Any]:
@@ -289,6 +348,8 @@ class FleetState:
                 "observed_at": current["updated_at"],
                 "target_result": dict(result),
                 "controller_status": "accepted",
+                "error_code": None,
+                "error_message": None,
             }
             self.mirror_events.setdefault(str(current["lease_id"]), []).append(event)
             self._append_jsonl("mirror-events.jsonl", event)
@@ -350,6 +411,13 @@ def require_text_list(payload: dict[str, Any], key: str) -> list[str]:
     return list(value)
 
 
+def require_bool(payload: dict[str, Any], key: str) -> bool:
+    value = payload.get(key)
+    if not isinstance(value, bool):
+        raise ValueError(f"missing {key}")
+    return value
+
+
 def require_future_expiry(payload: dict[str, Any], label: str) -> None:
     expires_at = payload.get("expires_at")
     if not isinstance(expires_at, str):
@@ -371,27 +439,31 @@ def is_expired(command: dict[str, Any]) -> bool:
 
 def validate_mirror_lease_for_intent(lease: dict[str, Any], intent: dict[str, Any]) -> str | None:
     if lease.get("revoked"):
-        return "mirror lease revoked"
+        return "mirror_lease_revoked"
     if lease.get("fleet_id") != intent.get("fleet_id"):
-        return "mirror lease fleet mismatch"
+        return "mirror_lease_fleet_mismatch"
     if lease.get("source_agent_id") != intent.get("source_agent_id"):
-        return "mirror source not allowed"
+        return "mirror_source_not_allowed"
     if lease.get("target_agent_id") != intent.get("target_agent_id"):
-        return "mirror target not allowed"
+        return "mirror_target_not_allowed"
+    expires_at = lease.get("expires_at")
+    if not isinstance(expires_at, str):
+        return "mirror_lease_missing_expiry"
     try:
-        require_future_expiry(lease, "mirror lease")
-    except ValueError as exc:
-        return str(exc)
+        if parse_time(expires_at) <= datetime.now(timezone.utc):
+            return "mirror_lease_expired"
+    except ValueError:
+        return "mirror_lease_bad_expiry"
     kind = intent.get("kind")
     allowed = lease.get("allowed_command_kinds")
     if not isinstance(allowed, list) or kind not in set(allowed):
-        return "mirror command kind not allowed"
+        return "mirror_kind_not_allowed"
     if (
         kind in MIRROR_ADB_ACTION_KINDS
         and lease.get("requires_local_adb_shell_for_adb_commands") is True
         and intent.get("requires_local_adb_shell") is not True
     ):
-        return "mirror ADB-backed command must require local ADB shell"
+        return "mirror_adb_requirement_missing"
     return None
 
 
@@ -405,6 +477,7 @@ def mirror_intent_to_fleet_command(intent: dict[str, Any]) -> dict[str, Any]:
         "fleet_id": intent["fleet_id"],
         "command_id": mirror_command_id(str(intent["mirror_intent_id"])),
         "target_agent_id": intent["target_agent_id"],
+        "origin": "mirror",
         "issued_at": intent["issued_at"],
         "expires_at": intent["expires_at"],
         "idempotency_key": intent["idempotency_key"],
@@ -429,6 +502,8 @@ def mirror_event(
     state: str,
     controller_status: str | None = None,
     target_result: dict[str, Any] | None = None,
+    error_code: str | None = None,
+    error_message: str | None = None,
 ) -> dict[str, Any]:
     return {
         "schema": MIRROR_EVENT_SCHEMA,
@@ -441,6 +516,8 @@ def mirror_event(
         "observed_at": utc_now(),
         "target_result": target_result,
         "controller_status": controller_status,
+        "error_code": error_code,
+        "error_message": error_message,
     }
 
 

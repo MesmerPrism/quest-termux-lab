@@ -171,10 +171,12 @@ ADB-backed commands are intentionally narrow:
   window/activity lines.
 - `android.logcat_slice` reads a bounded logcat tail for an allowlisted tag.
 - `adb.lease_check` refreshes the configured loopback ADB target and returns a
-  redacted availability summary.
+  redacted availability summary. It is diagnostic, so it completes with an
+  available/unavailable report even when local ADB is disabled or unavailable.
 - `adb.lease_disconnect` disconnects only the configured target and marks the
-  local ADB state unavailable. It is a kill-switch/recovery command, not a raw
-  ADB client.
+  local ADB state unavailable when ADB is enabled. If local ADB is disabled, it
+  completes with a redacted best-effort summary rather than requiring a passing
+  shell gate. It is a kill-switch/recovery command, not a raw ADB client.
 - `uiautomator.run_allowlisted_scenario` is the implemented bridge into the
   Quest UI automation APK. It accepts only named scenarios from
   `allowed_uiautomator_scenarios`, small allowlisted extras, an active
@@ -286,6 +288,9 @@ The target agent treats mirror metadata as a local policy trigger. Its
 `mirror_bindings` config must allow the source, lease, command kind, TTL,
 visible-session state, and payload-specific fields such as launch component or
 UIAutomator scenario. Controller acceptance is not enough for execution.
+Mirror-derived fleet commands carry `origin: "mirror"`, `source_agent_id`,
+`mirror_intent_id`, and `remote_session_lease_id`; the target rejects mirror
+metadata that lacks the explicit origin marker.
 
 Use `scripts/mirror_commander.py` for the first source-side proof:
 
@@ -298,6 +303,10 @@ Start with passive `agent.status` and `agent.capabilities`, then
 `adb.lease_check`, before attempting `app.launch_allowlisted` or
 `uiautomator.run_allowlisted_scenario`. Do not mirror raw coordinates, raw
 ADB, shell text, package installs, VNC control, or raw logcat.
+
+The synthetic examples use long-lived fixture dates so tests remain stable.
+Live remote-session and mirror leases should be short, operator-visible, and
+revoked after the run.
 
 The controller summary includes `recovery_candidates` when an agent heartbeat
 shows missing/stale local ADB or when the latest command result failed because

@@ -375,8 +375,17 @@ class AgentTests(unittest.TestCase):
         request = command(kind="adb.lease_check")
         result = self.agent.execute_command(self.config, self.state, request)
         self.assertTrue(result["accepted"])
-        self.assertEqual(result["status"], "failed")
+        self.assertEqual(result["status"], "completed")
         self.assertTrue(result["redactions_applied"])
+        self.assertIn('"reason": "local_adb_disabled"', result["stdout_tail"])
+
+    def test_adb_lease_disconnect_reports_disabled_without_raw_adb(self) -> None:
+        request = command(kind="adb.lease_disconnect")
+        result = self.agent.execute_command(self.config, self.state, request)
+        self.assertTrue(result["accepted"])
+        self.assertEqual(result["status"], "completed")
+        self.assertTrue(result["redactions_applied"])
+        self.assertIn('"attempted": false', result["stdout_tail"])
         self.assertIn('"reason": "local_adb_disabled"', result["stdout_tail"])
 
     def test_adb_lease_disconnect_uses_configured_target(self) -> None:

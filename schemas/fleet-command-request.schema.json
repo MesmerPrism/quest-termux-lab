@@ -35,6 +35,9 @@
       "type": "string",
       "minLength": 1
     },
+    "origin": {
+      "enum": ["direct_controller", "mirror"]
+    },
     "source_agent_id": {
       "type": "string",
       "minLength": 1
