@@ -13,7 +13,13 @@
     "apk.update_verified",
     "app.launch_allowlisted",
     "android.foreground_snapshot",
-    "android.logcat_slice"
+    "android.logcat_slice",
+    "adb.lease_check",
+    "adb.lease_disconnect",
+    "uiautomator.run_allowlisted_scenario",
+    "termux.agent.restart_status",
+    "media_projection.preview_request",
+    "media_projection.preview_stop"
   ],
   "command_aliases": {
     "python_version": [
@@ -40,6 +46,27 @@
   "allowed_logcat_tags": [
     "QuestTermuxLab"
   ],
+  "allowed_uiautomator_scenarios": {
+    "settingsRecoveryProbe": {
+      "instrumentation": "io.github.mesmerprism.questquestionnaire.questuiautomation.test/androidx.test.runner.AndroidJUnitRunner",
+      "allowed_extras": [
+        "retryCount",
+        "retryWaitMs",
+        "dumpPassiveBaselines"
+      ],
+      "default_extras": {
+        "retryCount": 1,
+        "retryWaitMs": 1500,
+        "dumpPassiveBaselines": true
+      }
+    }
+  },
+  "helper_status": "synthetic_visible_helper_not_running",
+  "helper_can_restart_agent": false,
+  "helper_last_restart_attempt": null,
+  "termux_run_command_permission_granted": null,
+  "termux_allow_external_apps_observed": null,
+  "media_projection_preview_enabled": false,
   "active_remote_session_leases": [
     {
       "schema": "quest-termux-lab.remote-session-lease.v1",
@@ -58,7 +85,12 @@
         "app.launch_allowlisted",
         "android.foreground_snapshot",
         "android.logcat_slice",
-        "uiautomator.run_allowlisted_scenario"
+        "adb.lease_check",
+        "adb.lease_disconnect",
+        "uiautomator.run_allowlisted_scenario",
+        "termux.agent.restart_status",
+        "media_projection.preview_request",
+        "media_projection.preview_stop"
       ],
       "requires_visual_confirmation": false,
       "requires_local_adb_shell": true,

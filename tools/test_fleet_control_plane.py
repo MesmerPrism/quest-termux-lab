@@ -84,6 +84,11 @@ def remote_session_lease() -> dict:
             "app.launch_allowlisted",
             "android.foreground_snapshot",
             "android.logcat_slice",
+            "adb.lease_check",
+            "adb.lease_disconnect",
+            "uiautomator.run_allowlisted_scenario",
+            "termux.agent.restart_status",
+            "media_projection.preview_request",
         ],
         "requires_visual_confirmation": False,
         "requires_local_adb_shell": True,
@@ -215,6 +220,11 @@ class AgentTests(unittest.TestCase):
                 "app.launch_allowlisted",
                 "android.foreground_snapshot",
                 "android.logcat_slice",
+                "adb.lease_check",
+                "adb.lease_disconnect",
+                "uiautomator.run_allowlisted_scenario",
+                "termux.agent.restart_status",
+                "media_projection.preview_request",
             ],
             "command_aliases": {"python_version": ["python", "--version"]},
             "local_adb_enabled": False,
@@ -231,6 +241,13 @@ class AgentTests(unittest.TestCase):
                 "org.questtermuxlab.synthetic.panel/.MainActivity",
             ],
             "allowed_logcat_tags": ["QuestTermuxLab"],
+            "allowed_uiautomator_scenarios": {
+                "settingsRecoveryProbe": {
+                    "instrumentation": "io.github.mesmerprism.questquestionnaire.questuiautomation.test/androidx.test.runner.AndroidJUnitRunner",
+                    "allowed_extras": ["retryCount", "retryWaitMs", "dumpPassiveBaselines"],
+                    "default_extras": {"retryCount": 1},
+                }
+            },
             "active_remote_session_leases": [remote_session_lease()],
         }
         self.state = self.agent.AgentState(started_at=time.monotonic())
@@ -346,6 +363,87 @@ class AgentTests(unittest.TestCase):
             self.agent.refresh_local_adb_for_heartbeat(config, self.state)
         refresh.assert_called_once()
 
+    def test_adb_lease_check_reports_disabled_without_raw_adb(self) -> None:
+        request = command(kind="adb.lease_check")
+        result = self.agent.execute_command(self.config, self.state, request)
+        self.assertTrue(result["accepted"])
+        self.assertEqual(result["status"], "failed")
+        self.assertTrue(result["redactions_applied"])
+        self.assertIn('"reason": "local_adb_disabled"', result["stdout_tail"])
+
+    def test_adb_lease_disconnect_uses_configured_target(self) -> None:
+        config = dict(self.config)
+        config["local_adb_enabled"] = True
+        config["local_adb_target"] = "127.0.0.1:5555"
+        request = command(kind="adb.lease_disconnect")
+        with mock.patch.object(self.agent, "run_adb_client_command", return_value=("disconnected", "", 0)) as run_adb:
+            result = self.agent.execute_command(config, self.state, request)
+        self.assertTrue(result["accepted"])
+        self.assertEqual(result["status"], "completed")
+        self.assertTrue(result["redactions_applied"])
+        self.assertEqual(run_adb.call_args.args[1], ["disconnect", "127.0.0.1:5555"])
+        self.assertEqual(self.state.local_adb_state["last_failure_reason"], "disconnected_by_command")
+
+    def test_rejects_disallowed_uiautomator_scenario(self) -> None:
+        request = command(kind="uiautomator.run_allowlisted_scenario")
+        request["requires_local_adb_shell"] = True
+        request["payload"] = {"scenario": "rawShell", "extras": {}}
+        result = self.agent.execute_command(self.config, self.state, request)
+        self.assertFalse(result["accepted"])
+        self.assertEqual(result["error_code"], "uiautomator_scenario_not_allowed")
+
+    def test_runs_allowlisted_uiautomator_scenario_with_typed_extras(self) -> None:
+        config = dict(self.config)
+        config["local_adb_enabled"] = True
+        request = command(kind="uiautomator.run_allowlisted_scenario")
+        request["requires_local_adb_shell"] = True
+        request["payload"] = {
+            "scenario": "settingsRecoveryProbe",
+            "extras": {"retryWaitMs": 1500, "dumpPassiveBaselines": True},
+        }
+        self.state.local_adb_state["shell_uid"] = "2000"
+        with mock.patch.object(self.agent, "ensure_local_adb_for_command", return_value=(True, "", "")):
+            with mock.patch.object(self.agent, "run_adb_command", return_value=("OK (1 test)", "", 0)) as run_adb:
+                result = self.agent.execute_command(config, self.state, request)
+        self.assertTrue(result["accepted"])
+        self.assertEqual(result["status"], "completed")
+        self.assertTrue(result["redactions_applied"])
+        adb_args = run_adb.call_args.args[1]
+        self.assertEqual(adb_args[:4], ["shell", "am", "instrument", "-w"])
+        self.assertIn("settingsRecoveryProbe", adb_args)
+        self.assertIn("retryWaitMs", adb_args)
+        self.assertIn("dumpPassiveBaselines", adb_args)
+        self.assertIn('"evidence_mode": "summary_only"', result["stdout_tail"])
+
+    def test_rejects_unsafe_uiautomator_extra_value(self) -> None:
+        request = command(kind="uiautomator.run_allowlisted_scenario")
+        request["requires_local_adb_shell"] = True
+        request["payload"] = {
+            "scenario": "settingsRecoveryProbe",
+            "extras": {"retryWaitMs": "bad/value"},
+        }
+        result = self.agent.execute_command(self.config, self.state, request)
+        self.assertFalse(result["accepted"])
+        self.assertEqual(result["error_code"], "uiautomator_extra_value_unsafe")
+
+    def test_media_projection_preview_requires_consent_helper(self) -> None:
+        request = command(kind="media_projection.preview_request")
+        result = self.agent.execute_command(self.config, self.state, request)
+        self.assertFalse(result["accepted"])
+        self.assertEqual(result["error_code"], "media_projection_preview_not_configured")
+
+    def test_restart_status_reports_helper_boundary_fields(self) -> None:
+        config = dict(self.config)
+        config["helper_status"] = "configured_visible_helper"
+        config["helper_can_restart_agent"] = True
+        config["termux_run_command_permission_granted"] = True
+        config["termux_allow_external_apps_observed"] = True
+        request = command(kind="termux.agent.restart_status")
+        result = self.agent.execute_command(config, self.state, request)
+        self.assertTrue(result["accepted"])
+        self.assertEqual(result["status"], "completed")
+        self.assertIn('"helper_can_restart_agent": true', result["stdout_tail"])
+
 
 class EndToEndTests(unittest.TestCase):
     def test_agent_posts_heartbeat_gets_command_and_posts_result(self) -> None:
@@ -388,6 +486,7 @@ class ExampleTests(unittest.TestCase):
             "fleet-command-result.synthetic.json": "quest-termux-lab.fleet-command-result.v1",
             "apk-update-manifest.synthetic.json": "quest-termux-lab.apk-update-manifest.v1",
             "fleet-command-request.apk-update.synthetic.json": "quest-termux-lab.fleet-command-request.v1",
+            "fleet-command-request.uiautomator.synthetic.json": "quest-termux-lab.fleet-command-request.v1",
             "fleet-command-result.apk-update-recovery.synthetic.json": "quest-termux-lab.fleet-command-result.v1",
             "adb-shell-lease-state.synthetic.json": "quest-termux-lab.adb-shell-lease-state.v1",
             "remote-session-lease.synthetic.json": "quest-termux-lab.remote-session-lease.v1",

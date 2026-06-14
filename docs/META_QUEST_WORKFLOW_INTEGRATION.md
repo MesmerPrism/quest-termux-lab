@@ -111,7 +111,8 @@ normal answer channel.
 
 The `uiautomator.run_allowlisted_scenario` command kind is the bridge between
 the outbound control plane and the questionnaire panel automation APK. It
-should run only named scenarios, with small typed extras, under an active
-remote-session lease and local ADB shell gate. Public results should be
-exporter summaries, not raw XML, screenshots, logcat, recordings, device
-serials, or private package names.
+runs only configured named scenarios, with small allowlisted extras, under an
+active remote-session lease and local ADB shell gate. Public results default to
+redacted command summaries; raw instrumentation output, XML, screenshots,
+logcat, recordings, device serials, and private package names stay in local
+evidence unless a private live-run config explicitly opts in.

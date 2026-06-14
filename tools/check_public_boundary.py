@@ -37,6 +37,7 @@ SYNTHETIC_MARKER_REQUIRED = {
     "fleet-agent-manifest.synthetic.json",
     "fleet-command-request.synthetic.json",
     "fleet-command-request.apk-update.synthetic.json",
+    "fleet-command-request.uiautomator.synthetic.json",
     "fleet-command-result.synthetic.json",
     "fleet-command-result.apk-update-recovery.synthetic.json",
     "remote-session-lease.synthetic.json",

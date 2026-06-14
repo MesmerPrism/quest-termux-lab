@@ -32,8 +32,9 @@ COMMAND_SCHEMA = "quest-termux-lab.fleet-command-request.v1"
 RESULT_SCHEMA = "quest-termux-lab.fleet-command-result.v1"
 NO_COMMAND_SCHEMA = "quest-termux-lab.fleet-no-command.v1"
 APK_UPDATE_MANIFEST_SCHEMA = "quest-termux-lab.apk-update-manifest.v1"
-AGENT_VERSION = "0.2.4"
+AGENT_VERSION = "0.2.5"
 SHA256_RE = re.compile(r"^[a-fA-F0-9]{64}$")
+SAFE_EXTRA_VALUE_RE = re.compile(r"^[A-Za-z0-9_.:, +@-]{0,128}$")
 PASSIVE_COMMAND_KINDS = {"agent.status", "agent.capabilities"}
 
 
@@ -235,6 +236,16 @@ def execute_command(config: dict[str, Any], state: AgentState, command: dict[str
         return run_foreground_snapshot(config, state, command, started_at, start_monotonic)
     if kind == "android.logcat_slice":
         return run_logcat_slice(config, state, command, started_at, start_monotonic)
+    if kind == "adb.lease_check":
+        return run_adb_lease_check(config, state, command, started_at, start_monotonic)
+    if kind == "adb.lease_disconnect":
+        return run_adb_lease_disconnect(config, state, command, started_at, start_monotonic)
+    if kind == "uiautomator.run_allowlisted_scenario":
+        return run_uiautomator_allowlisted_scenario(config, state, command, started_at, start_monotonic)
+    if kind == "termux.agent.restart_status":
+        return run_termux_agent_restart_status(config, state, command, started_at, start_monotonic)
+    if kind in {"media_projection.preview_request", "media_projection.preview_stop"}:
+        return run_media_projection_preview_boundary(config, command, started_at, start_monotonic, str(kind))
 
     return reject_result(config, command, started_at, start_monotonic, "kind_unimplemented", "Command kind is recognized but not implemented in this prototype.")
 
@@ -263,6 +274,9 @@ def agent_capabilities_text(config: dict[str, Any]) -> str:
             "allowed_update_packages": sorted(dict(config.get("allowed_update_packages", {}))),
             "allowed_launch_components": sorted(config.get("allowed_launch_components", [])),
             "allowed_logcat_tags": sorted(config.get("allowed_logcat_tags", [])),
+            "allowed_uiautomator_scenarios": sorted(dict(config.get("allowed_uiautomator_scenarios", {}))),
+            "media_projection_preview_configured": bool(config.get("media_projection_preview_enabled", False)),
+            "helper_can_restart_agent": bool(config.get("helper_can_restart_agent", False)),
             "requires_remote_session_lease": True,
             "active_remote_session_lease_ids": active_remote_session_lease_ids(config),
         },
@@ -679,6 +693,259 @@ def run_logcat_slice(
     return complete_text(config, command, started_at, start_monotonic, stdout, stderr, code, True, state.local_adb_state.get("shell_uid"))
 
 
+def run_adb_lease_check(
+    config: dict[str, Any],
+    state: AgentState,
+    command: dict[str, Any],
+    started_at: str,
+    start_monotonic: float,
+) -> dict[str, Any]:
+    if not config.get("local_adb_enabled", False):
+        mark_local_adb_unavailable(config, state, "local_adb_disabled")
+        summary = {
+            "checked": True,
+            "available": False,
+            "shell_uid": None,
+            "reason": "local_adb_disabled",
+        }
+        result = complete_text(config, command, started_at, start_monotonic, json.dumps(summary, sort_keys=True), "", 1)
+        result["redactions_applied"] = True
+        return result
+
+    available, _, _ = refresh_local_adb_state(
+        config,
+        state,
+        timeout=max(1.0, float(command.get("timeout_ms", 10000)) / 1000.0),
+    )
+    summary = {
+        "checked": True,
+        "available": available,
+        "shell_uid": state.local_adb_state.get("shell_uid"),
+        "reason": state.local_adb_state.get("last_failure_reason"),
+    }
+    result = complete_text(
+        config,
+        command,
+        started_at,
+        start_monotonic,
+        json.dumps(summary, sort_keys=True),
+        "",
+        0 if available else 1,
+        local_adb_used=True,
+        local_adb_shell_uid=state.local_adb_state.get("shell_uid"),
+        recovery_action=None if available else central_recovery_action("local_adb_check_failed"),
+    )
+    result["redactions_applied"] = True
+    return result
+
+
+def run_adb_lease_disconnect(
+    config: dict[str, Any],
+    state: AgentState,
+    command: dict[str, Any],
+    started_at: str,
+    start_monotonic: float,
+) -> dict[str, Any]:
+    if not config.get("local_adb_enabled", False):
+        mark_local_adb_unavailable(config, state, "local_adb_disabled")
+        return reject_result(
+            config,
+            command,
+            started_at,
+            start_monotonic,
+            "local_adb_disabled",
+            "Local ADB is disabled in agent config.",
+        )
+    target = str(config.get("local_adb_target", "127.0.0.1:5555"))
+    stdout, stderr, code = run_adb_client_command(config, ["disconnect", target], command)
+    mark_local_adb_unavailable(config, state, "disconnected_by_command")
+    summary = {
+        "attempted": True,
+        "configured_target": "redacted",
+        "exit_code": code,
+    }
+    result = complete_text(
+        config,
+        command,
+        started_at,
+        start_monotonic,
+        json.dumps(summary, sort_keys=True),
+        "" if code == 0 else "ADB disconnect failed; inspect private local evidence for raw client output.",
+        code,
+        local_adb_used=True,
+        local_adb_shell_uid=None,
+    )
+    result["redactions_applied"] = True
+    return result
+
+
+def run_uiautomator_allowlisted_scenario(
+    config: dict[str, Any],
+    state: AgentState,
+    command: dict[str, Any],
+    started_at: str,
+    start_monotonic: float,
+) -> dict[str, Any]:
+    payload = command.get("payload", {})
+    if not isinstance(payload, dict):
+        return reject_result(config, command, started_at, start_monotonic, "invalid_payload", "Payload must be an object.")
+    scenario = payload.get("scenario")
+    scenarios = config.get("allowed_uiautomator_scenarios", {})
+    if not isinstance(scenario, str) or not isinstance(scenarios, dict) or scenario not in scenarios:
+        return reject_result(config, command, started_at, start_monotonic, "uiautomator_scenario_not_allowed", "UIAutomator scenario is not allowlisted.")
+    scenario_config = scenarios.get(scenario)
+    if not isinstance(scenario_config, dict):
+        return reject_result(config, command, started_at, start_monotonic, "bad_uiautomator_scenario_config", "UIAutomator scenario config must be an object.")
+    instrumentation = scenario_config.get("instrumentation")
+    if not isinstance(instrumentation, str) or "/" not in instrumentation or len(instrumentation) > 240:
+        return reject_result(config, command, started_at, start_monotonic, "bad_uiautomator_instrumentation", "UIAutomator instrumentation target is invalid.")
+
+    extras_result = normalize_uiautomator_extras(scenario, scenario_config, payload.get("extras", {}))
+    if isinstance(extras_result, str):
+        return reject_result(config, command, started_at, start_monotonic, extras_result, "UIAutomator extras were rejected.")
+    extras = extras_result
+
+    available, _, _ = ensure_local_adb_for_command(config, state, command)
+    if not available:
+        return reject_result(
+            config,
+            command,
+            started_at,
+            start_monotonic,
+            "local_adb_unavailable",
+            "Local ADB shell is not available for UIAutomator scenario.",
+            local_adb_used=True,
+            local_adb_shell_uid=state.local_adb_state.get("shell_uid"),
+            recovery_action=central_recovery_action("local_adb_unavailable"),
+        )
+
+    args = ["shell", "am", "instrument", "-w", "-e", "scenario", scenario]
+    for key in sorted(extras):
+        args.extend(["-e", key, extras[key]])
+    args.append(instrumentation)
+    raw_stdout, raw_stderr, code = run_adb_command(config, args, command)
+    if config.get("return_raw_uiautomator_output") is True:
+        return complete_text(
+            config,
+            command,
+            started_at,
+            start_monotonic,
+            raw_stdout,
+            raw_stderr,
+            code,
+            local_adb_used=True,
+            local_adb_shell_uid=state.local_adb_state.get("shell_uid"),
+        )
+
+    summary = {
+        "scenario": scenario,
+        "extra_keys": sorted(extras),
+        "instrumentation": "configured",
+        "exit_code": code,
+        "evidence_mode": "summary_only",
+    }
+    stderr = "" if code == 0 else "UIAutomator scenario failed; inspect private local evidence for raw instrumentation output."
+    result = complete_text(
+        config,
+        command,
+        started_at,
+        start_monotonic,
+        json.dumps(summary, sort_keys=True),
+        stderr,
+        code,
+        local_adb_used=True,
+        local_adb_shell_uid=state.local_adb_state.get("shell_uid"),
+    )
+    result["redactions_applied"] = True
+    return result
+
+
+def normalize_uiautomator_extras(
+    scenario: str,
+    scenario_config: dict[str, Any],
+    requested: Any,
+) -> dict[str, str] | str:
+    if not isinstance(requested, dict):
+        return "invalid_uiautomator_extras"
+    allowed = scenario_config.get("allowed_extras", [])
+    if not isinstance(allowed, list) or not all(isinstance(item, str) for item in allowed):
+        return "bad_uiautomator_allowed_extras"
+    allowed_set = set(allowed)
+    defaults = scenario_config.get("default_extras", {})
+    if not isinstance(defaults, dict):
+        return "bad_uiautomator_default_extras"
+    merged: dict[str, Any] = dict(defaults)
+    merged.update(requested)
+    merged["scenario"] = scenario
+
+    result: dict[str, str] = {}
+    for key, value in merged.items():
+        if key == "scenario":
+            continue
+        if key not in allowed_set:
+            return "uiautomator_extra_not_allowed"
+        if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,48}", key):
+            return "uiautomator_extra_key_invalid"
+        if isinstance(value, bool):
+            normalized = "true" if value else "false"
+        elif isinstance(value, int):
+            normalized = str(value)
+        elif isinstance(value, str):
+            normalized = value
+        else:
+            return "uiautomator_extra_value_invalid"
+        if not SAFE_EXTRA_VALUE_RE.fullmatch(normalized):
+            return "uiautomator_extra_value_unsafe"
+        result[key] = normalized
+    return result
+
+
+def run_termux_agent_restart_status(
+    config: dict[str, Any],
+    state: AgentState,
+    command: dict[str, Any],
+    started_at: str,
+    start_monotonic: float,
+) -> dict[str, Any]:
+    status = {
+        "agent_process_status": "running",
+        "agent_version": AGENT_VERSION,
+        "agent_uptime_seconds": round(time.monotonic() - state.started_at, 3),
+        "helper_status": str(config.get("helper_status", "unknown")),
+        "helper_can_restart_agent": bool(config.get("helper_can_restart_agent", False)),
+        "helper_last_restart_attempt": config.get("helper_last_restart_attempt"),
+        "termux_run_command_permission_granted": config.get("termux_run_command_permission_granted"),
+        "termux_allow_external_apps_observed": config.get("termux_allow_external_apps_observed"),
+    }
+    return complete_text(config, command, started_at, start_monotonic, json.dumps(status, sort_keys=True), "")
+
+
+def run_media_projection_preview_boundary(
+    config: dict[str, Any],
+    command: dict[str, Any],
+    started_at: str,
+    start_monotonic: float,
+    kind: str,
+) -> dict[str, Any]:
+    if not config.get("media_projection_preview_enabled", False):
+        return reject_result(
+            config,
+            command,
+            started_at,
+            start_monotonic,
+            "media_projection_preview_not_configured",
+            "MediaProjection preview requires a consented helper app and visible active-session indicator.",
+        )
+    return reject_result(
+        config,
+        command,
+        started_at,
+        start_monotonic,
+        "media_projection_preview_helper_required",
+        f"{kind} must be delegated to an app-owned MediaProjection helper; the Termux agent does not fabricate or bypass consent tokens.",
+    )
+
+
 def mark_local_adb_unavailable(config: dict[str, Any], state: AgentState, reason: str) -> None:
     state.local_adb_state["checked"] = True
     state.local_adb_state["adb_target"] = config.get("local_adb_target", "127.0.0.1:5555")
@@ -780,6 +1047,30 @@ def run_adb_command(
     try:
         completed = subprocess.run(
             [adb, "-s", target, *args],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout,
+            check=False,
+            env=adb_subprocess_env(config),
+        )
+    except subprocess.TimeoutExpired as exc:
+        return exc.stdout or "", exc.stderr or str(exc), 124
+    except OSError as exc:
+        return "", str(exc), 127
+    return completed.stdout, completed.stderr, completed.returncode
+
+
+def run_adb_client_command(
+    config: dict[str, Any],
+    args: list[str],
+    command: dict[str, Any],
+) -> tuple[str, str, int]:
+    adb = str(config.get("adb_executable", "adb"))
+    timeout = max(1.0, float(command.get("timeout_ms", 30000)) / 1000.0)
+    try:
+        completed = subprocess.run(
+            [adb, *args],
             text=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,

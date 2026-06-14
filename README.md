@@ -229,6 +229,12 @@ visual-preview commands require a current lease ID plus their normal local
 allowlists and ADB shell gates. The controller remains a typed-command
 simulator, not an ADB proxy or browser shell.
 
+The public agent now implements the bounded ADB lease check/disconnect
+commands, helper restart-status reporting, and an allowlisted UIAutomator
+scenario bridge. MediaProjection preview commands remain explicit
+consent-gated placeholders until a separate app-owned helper supplies the user
+consent flow and visible active-session indicator.
+
 A later live Quest pass added two operational details for this lane. Termux
 ADB subprocesses need a writable temporary directory such as `$PREFIX/tmp`,
 because a non-interactive app context may not have `/tmp`. Also, APKs should be

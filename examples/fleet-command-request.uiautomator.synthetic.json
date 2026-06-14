@@ -1,0 +1,27 @@
+{
+  "schema": "quest-termux-lab.fleet-command-request.v1",
+  "synthetic": true,
+  "fleet_id": "synthetic-lab-fleet",
+  "command_id": "cmd-uiautomator-settings-recovery-001",
+  "target_agent_id": "quest-agent-alpha",
+  "issued_at": "2026-06-14T09:01:20Z",
+  "expires_at": "2026-06-14T09:06:20Z",
+  "idempotency_key": "synthetic-uiautomator-settings-recovery-001",
+  "kind": "uiautomator.run_allowlisted_scenario",
+  "remote_session_lease_id": "lease-synthetic-operator-001",
+  "requires_local_adb_shell": true,
+  "timeout_ms": 60000,
+  "max_stdout_bytes": 4096,
+  "max_stderr_bytes": 1024,
+  "payload": {
+    "scenario": "settingsRecoveryProbe",
+    "extras": {
+      "retryCount": 2,
+      "retryWaitMs": 1500,
+      "dumpPassiveBaselines": true
+    }
+  },
+  "sensitivity": "public_safe",
+  "requested_by": "synthetic-command-center",
+  "reason": "Synthetic allowlisted Quest Settings recovery probe."
+}

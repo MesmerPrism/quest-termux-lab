@@ -157,16 +157,50 @@ ADB-backed commands are intentionally narrow:
 - `android.foreground_snapshot` reads `dumpsys window` and returns only focused
   window/activity lines.
 - `android.logcat_slice` reads a bounded logcat tail for an allowlisted tag.
-- `uiautomator.run_allowlisted_scenario` is the planned bridge into the Quest
-  UI automation APK. It should accept only named scenarios and small typed
-  extras, check the remote-session lease plus loopback ADB shell gate, and
-  return redacted summary JSONL rather than raw XML, screenshots, or logcat.
+- `adb.lease_check` refreshes the configured loopback ADB target and returns a
+  redacted availability summary.
+- `adb.lease_disconnect` disconnects only the configured target and marks the
+  local ADB state unavailable. It is a kill-switch/recovery command, not a raw
+  ADB client.
+- `uiautomator.run_allowlisted_scenario` is the implemented bridge into the
+  Quest UI automation APK. It accepts only named scenarios from
+  `allowed_uiautomator_scenarios`, small allowlisted extras, an active
+  remote-session lease, and a passing loopback ADB shell gate. By default it
+  returns only a redacted command summary; raw instrumentation output remains
+  private local evidence unless a live private config explicitly opts in.
+- `termux.agent.restart_status` reports whether the current agent is alive and
+  echoes configured helper-readiness fields such as fixed-helper availability,
+  `RUN_COMMAND` permission observation, and Termux external-command
+  observation. It cannot restart itself.
 - `media_projection.preview_request` and `media_projection.preview_stop` are
-  future visual-feedback commands. They require an app-owned consent flow and a
-  visible active-session indicator; they are not substitutes for user consent
-  or privileged screen-capture permissions.
+  consent-gated placeholders. They reject unless a separate app-owned
+  MediaProjection helper and visible active-session indicator are configured;
+  the Termux agent does not fabricate or bypass MediaProjection tokens.
 
 There is no generic remote shell command in this lane.
+
+Minimal UIAutomator scenario config:
+
+```json
+{
+  "allowed_uiautomator_scenarios": {
+    "settingsRecoveryProbe": {
+      "instrumentation": "io.github.mesmerprism.questquestionnaire.questuiautomation.test/androidx.test.runner.AndroidJUnitRunner",
+      "allowed_extras": ["retryCount", "retryWaitMs", "dumpPassiveBaselines"],
+      "default_extras": {
+        "retryCount": 1,
+        "retryWaitMs": 1500,
+        "dumpPassiveBaselines": true
+      }
+    }
+  }
+}
+```
+
+Example command: `examples/fleet-command-request.uiautomator.synthetic.json`.
+The scenario implementation and exporter live in the Quest Questionnaire Panel
+repo's `examples/quest-ui-automation` module; this repo only queues and gates
+the run.
 
 ## Remote Session Lease
 
@@ -227,6 +261,34 @@ allows external commands. Treat that as an operator-visible recovery route and
 verify it with fresh heartbeats and the local ADB shell gate. It does not
 replace central direct ADB or a managed-device plane for WiFi ADB loss, reboot,
 or sleeping/offline headsets.
+
+## Source-Backed Constraints
+
+These external sources support the boundaries above:
+
+- Android ADB is a developer/debugging channel. USB debugging requires user
+  authorization of the host RSA key, and wireless debugging can turn off or
+  need reconnect after network changes:
+  <https://developer.android.com/tools/adb>
+- Termux `RUN_COMMAND` requires the caller permission and Termux's external
+  command setting, and Termux warns that returned transcripts/stdout/stderr can
+  expose private data:
+  <https://github.com/termux/termux-app/wiki/RUN_COMMAND-Intent>
+- Android foreground services are for work noticeable to the user and show a
+  notification:
+  <https://developer.android.com/develop/background-work/services/foreground-services>
+- Android and Meta MediaProjection require user consent and a token. Meta says
+  Quest uses the Android MediaProjection API for casting, live streaming, and
+  screen sharing, with Horizon OS compositor-specific surface behavior:
+  <https://developer.android.com/media/grow/media-projection>
+  <https://developers.meta.com/horizon/documentation/native/native-media-projection/>
+- WebSocket is reasonable for lower-latency browser/controller or
+  agent/controller sessions when polling is too slow, but it does not replace
+  command authorization or backpressure planning:
+  <https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API>
+- WebRTC data channels are encrypted and useful for interactive preview/control
+  lanes, but they add signaling and message-size concerns:
+  <https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Using_data_channels>
 
 ## Live Fleet Direction
 
