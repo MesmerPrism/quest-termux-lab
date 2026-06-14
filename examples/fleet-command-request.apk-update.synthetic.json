@@ -1,5 +1,6 @@
 {
   "schema": "quest-termux-lab.fleet-command-request.v1",
+  "synthetic": true,
   "fleet_id": "synthetic-lab-fleet",
   "command_id": "cmd-apk-update-verified-001",
   "target_agent_id": "quest-agent-alpha",
@@ -7,6 +8,7 @@
   "expires_at": "2026-06-11T09:16:20Z",
   "idempotency_key": "synthetic-panel-v2-lab",
   "kind": "apk.update_verified",
+  "remote_session_lease_id": "lease-synthetic-operator-001",
   "requires_local_adb_shell": true,
   "timeout_ms": 120000,
   "max_stdout_bytes": 8192,

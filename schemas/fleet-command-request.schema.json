@@ -61,12 +61,22 @@
         "adb.self_check",
         "apk.update_verified",
         "adb.shell_allowlisted",
+        "adb.lease_check",
+        "adb.lease_disconnect",
         "android.foreground_snapshot",
         "android.logcat_slice",
         "android.dumpsys_snapshot",
         "app.launch_allowlisted",
-        "app.force_stop_allowlisted"
+        "app.force_stop_allowlisted",
+        "uiautomator.run_allowlisted_scenario",
+        "media_projection.preview_request",
+        "media_projection.preview_stop",
+        "termux.agent.restart_status"
       ]
+    },
+    "remote_session_lease_id": {
+      "type": ["string", "null"],
+      "pattern": "^[a-z0-9][a-z0-9_.-]{2,120}$"
     },
     "requires_local_adb_shell": {
       "type": "boolean"
@@ -97,6 +107,9 @@
     },
     "reason": {
       "type": "string"
+    },
+    "synthetic": {
+      "type": "boolean"
     }
   }
 }

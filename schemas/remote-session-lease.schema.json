@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/remote-session-lease.schema.json",
+  "title": "Quest Termux Lab Remote Session Lease",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "lease_id",
+    "fleet_id",
+    "agent_id",
+    "operator_id",
+    "purpose",
+    "created_at",
+    "expires_at",
+    "consent_mode",
+    "command_scopes",
+    "requires_visual_confirmation",
+    "requires_local_adb_shell",
+    "active_indicator_required",
+    "emergency_stop_supported"
+  ],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.remote-session-lease.v1"
+    },
+    "lease_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]{2,120}$"
+    },
+    "fleet_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "operator_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "consent_mode": {
+      "enum": [
+        "operator_visible_lab",
+        "local_user_confirmed",
+        "managed_device_policy"
+      ]
+    },
+    "command_scopes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "requires_visual_confirmation": {
+      "type": "boolean"
+    },
+    "requires_local_adb_shell": {
+      "type": "boolean"
+    },
+    "active_indicator_required": {
+      "type": "boolean"
+    },
+    "emergency_stop_supported": {
+      "type": "boolean"
+    },
+    "revoked": {
+      "type": "boolean",
+      "default": false
+    },
+    "synthetic": {
+      "type": "boolean"
+    }
+  }
+}

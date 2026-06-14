@@ -222,6 +222,13 @@ queue a bounded command on an internet-reachable controller, and let each
 headset's Termux agent poll outbound and install locally if its loopback ADB
 gate passes. No same-WiFi operator device is required for the trigger.
 
+Remote operation commands are now scoped by
+`quest-termux-lab.remote-session-lease.v1`. Only passive `agent.status` and
+`agent.capabilities` are lease-free; update, launch, logcat, UIAutomator, and
+visual-preview commands require a current lease ID plus their normal local
+allowlists and ADB shell gates. The controller remains a typed-command
+simulator, not an ADB proxy or browser shell.
+
 A later live Quest pass added two operational details for this lane. Termux
 ADB subprocesses need a writable temporary directory such as `$PREFIX/tmp`,
 because a non-interactive app context may not have `/tmp`. Also, APKs should be

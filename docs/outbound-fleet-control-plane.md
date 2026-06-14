@@ -28,6 +28,17 @@ The Termux agent remains a normal Android app sidecar. It does not create ADB
 authorization, become Android shell, replace HOME, own broker authority, or
 act as a hidden watchdog.
 
+The internet-facing product should be a remote operations console, not a
+browser terminal. The browser talks to the controller. The controller queues
+typed commands with TTLs, idempotency keys, operator identity, and an optional
+remote-session lease. The headset agent continues to initiate outbound traffic,
+verify the command against its local allowlists and lease state, run a bounded
+action, and return redacted evidence.
+
+Do not expose ADB, Termux listeners, VNC, or headset-local HTTP services to the
+internet. Do not tunnel `127.0.0.1:5555`. Use inbound device access only for
+local setup and recovery through the live Quest operations workflow.
+
 For headsets that have internet but are not on the same WiFi as the operator's
 machine, use outbound polling as the trigger. The operator or CI queues an
 `apk.update_verified` command on an HTTPS controller; the headset polls from
@@ -43,9 +54,11 @@ gate passes. See `docs/internet-triggered-self-update-workflow.md`.
 - `schemas/fleet-agent-heartbeat.schema.json`
 - `schemas/fleet-command-request.schema.json`
 - `schemas/fleet-command-result.schema.json`
+- `schemas/remote-session-lease.schema.json`
 - `schemas/adb-shell-lease-state.schema.json`
 - `examples/session-recipe.outbound-fleet-agent.json`
 - `examples/fleet-agent-config.synthetic.json`
+- `examples/remote-session-lease.synthetic.json`
 
 ## Simulator Run
 
@@ -77,6 +90,12 @@ apk.update_verified
 app.launch_allowlisted
 android.foreground_snapshot
 android.logcat_slice
+uiautomator.run_allowlisted_scenario
+media_projection.preview_request
+media_projection.preview_stop
+termux.agent.restart_status
+adb.lease_check
+adb.lease_disconnect
 ```
 
 `termux.exec_allowlisted` does not accept arbitrary shell text. It accepts an
@@ -138,8 +157,57 @@ ADB-backed commands are intentionally narrow:
 - `android.foreground_snapshot` reads `dumpsys window` and returns only focused
   window/activity lines.
 - `android.logcat_slice` reads a bounded logcat tail for an allowlisted tag.
+- `uiautomator.run_allowlisted_scenario` is the planned bridge into the Quest
+  UI automation APK. It should accept only named scenarios and small typed
+  extras, check the remote-session lease plus loopback ADB shell gate, and
+  return redacted summary JSONL rather than raw XML, screenshots, or logcat.
+- `media_projection.preview_request` and `media_projection.preview_stop` are
+  future visual-feedback commands. They require an app-owned consent flow and a
+  visible active-session indicator; they are not substitutes for user consent
+  or privileged screen-capture permissions.
 
 There is no generic remote shell command in this lane.
+
+## Remote Session Lease
+
+Any command beyond passive `agent.status` and `agent.capabilities` must carry a
+`remote_session_lease_id`. The active lease object is separate and uses
+`quest-termux-lab.remote-session-lease.v1`.
+
+The lease records:
+
+- fleet, agent, operator, purpose, creation time, and expiry;
+- consent mode and active indicator requirements;
+- allowed command scopes;
+- whether local ADB shell is required;
+- whether emergency stop/revocation is supported.
+
+The public simulator now rejects missing lease IDs for non-passive commands at
+queue time. The agent then checks whether the referenced lease is active,
+unexpired, targeted at the current agent/fleet, not revoked, and scoped to the
+command kind. This is still a prototype. A live internet controller must add
+operator authentication, agent authentication, signed or integrity-checked
+commands, replay protection, append-only audit, and revocation checks before
+deployment.
+
+The lease is a human-visible consent and audit primitive. It is not the same as
+the loopback ADB shell lease. A command can have a valid remote-session lease
+and still fail if `adb shell id` does not report `uid=2000(shell)`.
+
+## Controller UI Boundary
+
+The web client should be a controller UI with panels such as:
+
+- fleet overview;
+- lease start/revoke status;
+- typed command queue;
+- redacted evidence;
+- recovery candidates;
+- emergency stop.
+
+Do not add a terminal textarea. Do not add raw `adb shell`, raw `input`, or
+generic `termux.exec` commands. Keep `termux.exec_allowlisted` as alias-only
+and prefer purpose-specific command kinds once a command has enough structure.
 
 The controller indexes `idempotency_key` per target agent. Duplicate queued
 commands are reported as duplicates rather than queued twice. Agent-side

@@ -1,9 +1,11 @@
 {
   "schema": "quest-termux-lab.fleet-command-result.v1",
+  "synthetic": true,
   "fleet_id": "synthetic-lab-fleet",
   "agent_id": "quest-agent-alpha",
   "command_id": "cmd-apk-update-verified-001",
   "idempotency_key": "synthetic-panel-v2-lab",
+  "remote_session_lease_id": "lease-synthetic-operator-001",
   "accepted": false,
   "status": "rejected",
   "started_at": "2026-06-11T09:01:21Z",

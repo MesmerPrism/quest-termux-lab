@@ -1,5 +1,6 @@
 {
   "schema": "quest-termux-lab.fleet-agent-manifest.v1",
+  "synthetic": true,
   "fleet_id": "synthetic-lab-fleet",
   "agent_id": "quest-agent-alpha",
   "agent_label": "Synthetic Quest Agent Alpha",
@@ -16,7 +17,13 @@
     "apk.update_verified",
     "app.launch_allowlisted",
     "android.foreground_snapshot",
-    "android.logcat_slice"
+    "android.logcat_slice",
+    "uiautomator.run_allowlisted_scenario",
+    "media_projection.preview_request",
+    "media_projection.preview_stop",
+    "termux.agent.restart_status",
+    "adb.lease_check",
+    "adb.lease_disconnect"
   ],
   "allowed_update_packages": {
     "org.questtermuxlab.synthetic.panel": {

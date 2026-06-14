@@ -99,6 +99,7 @@ not make the install authority app-owned.
 ```json
 {
   "kind": "apk.update_verified",
+  "remote_session_lease_id": "lease-synthetic-operator-001",
   "requires_local_adb_shell": true,
   "idempotency_key": "panel-0.2.0-lab",
   "payload": {
@@ -294,8 +295,8 @@ Recommended trigger:
    internet over TLS.
 2. The headset polls outbound on its normal internet connection.
 3. The controller returns at most one queued command for that agent.
-4. The agent executes only if command kind, package, ring, signing digest,
-   launch component, and ADB shell gate all pass.
+4. The agent executes only if the remote-session lease, command kind, package,
+   ring, signing digest, launch component, and ADB shell gate all pass.
 
 Acceptable future refinements:
 
@@ -336,10 +337,15 @@ the Termux agent.
 
 - Internet-exposed controllers must add authentication and authorization before
   live use. The public prototype is a schema/simulator, not a secure service.
+- Any non-passive remote command must carry an active remote-session lease ID;
+  only `agent.status` and `agent.capabilities` may be lease-free.
 - Commands must have TTLs and idempotency keys.
 - Keep command kinds explicit. Do not add a generic remote shell.
 - Keep package/signing/ring/launch allowlists on the agent, not only on the
   controller.
+- Keep operator web auth, agent auth, command integrity, replay protection,
+  append-only audit, and revocation checks in scope before any public internet
+  controller is used with real devices.
 - Download into a Termux-readable workspace and verify before install.
 - Set `TMPDIR` or `adb_tmpdir` to a writable Termux path before invoking ADB.
 - Keep private device names, package IDs, logs, IPs, and fleet endpoints out of

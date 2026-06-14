@@ -302,6 +302,8 @@ APKs.
 
 ## Related Docs
 
+- Quest Questionnaire Panel:
+  https://github.com/MesmerPrism/quest-questionnaire-panel/blob/main/docs/remote-operations-relationship.md
 - `docs/META_QUEST_WORKFLOW_INTEGRATION.md`
 - `docs/SAFETY_AND_AUTHORITY_BOUNDARY.md`
 - `docs/on-device-apk-build-install-launch.md`

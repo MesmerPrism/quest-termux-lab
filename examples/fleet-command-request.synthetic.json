@@ -1,5 +1,6 @@
 {
   "schema": "quest-termux-lab.fleet-command-request.v1",
+  "synthetic": true,
   "fleet_id": "synthetic-lab-fleet",
   "command_id": "cmd-agent-status-001",
   "target_agent_id": "quest-agent-alpha",

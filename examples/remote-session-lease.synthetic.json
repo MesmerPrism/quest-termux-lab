@@ -1,0 +1,31 @@
+{
+  "schema": "quest-termux-lab.remote-session-lease.v1",
+  "synthetic": true,
+  "lease_id": "lease-synthetic-operator-001",
+  "fleet_id": "synthetic-lab-fleet",
+  "agent_id": "quest-agent-alpha",
+  "operator_id": "synthetic-command-center",
+  "purpose": "Synthetic bounded update and UI automation rehearsal.",
+  "created_at": "2026-06-11T09:00:00Z",
+  "expires_at": "2099-01-01T00:00:00Z",
+  "consent_mode": "operator_visible_lab",
+  "command_scopes": [
+    "termux.exec_allowlisted",
+    "adb.self_check",
+    "apk.update_verified",
+    "app.launch_allowlisted",
+    "android.foreground_snapshot",
+    "android.logcat_slice",
+    "uiautomator.run_allowlisted_scenario",
+    "media_projection.preview_request",
+    "media_projection.preview_stop",
+    "termux.agent.restart_status",
+    "adb.lease_check",
+    "adb.lease_disconnect"
+  ],
+  "requires_visual_confirmation": false,
+  "requires_local_adb_shell": true,
+  "active_indicator_required": true,
+  "emergency_stop_supported": true,
+  "revoked": false
+}

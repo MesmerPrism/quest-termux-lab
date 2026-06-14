@@ -17,6 +17,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CONTROL_PATH = REPO_ROOT / "tools" / "fleet_control_plane.py"
 AGENT_PATH = REPO_ROOT / "scripts" / "termux_fleet_agent.py"
+REMOTE_SESSION_LEASE_ID = "lease-synthetic-operator-001"
 
 
 def load_module(name: str, path: Path):
@@ -42,7 +43,7 @@ def future_time(seconds: int = 300) -> str:
 
 
 def command(agent_id: str = "quest-agent-alpha", kind: str = "agent.status") -> dict:
-    return {
+    payload = {
         "schema": "quest-termux-lab.fleet-command-request.v1",
         "fleet_id": "synthetic-lab-fleet",
         "command_id": f"cmd-{kind.replace('.', '-')}-test",
@@ -59,6 +60,37 @@ def command(agent_id: str = "quest-agent-alpha", kind: str = "agent.status") -> 
         "sensitivity": "public_safe",
         "requested_by": "unit-test",
         "reason": "unit test command",
+    }
+    if kind not in {"agent.status", "agent.capabilities"}:
+        payload["remote_session_lease_id"] = REMOTE_SESSION_LEASE_ID
+    return payload
+
+
+def remote_session_lease() -> dict:
+    return {
+        "schema": "quest-termux-lab.remote-session-lease.v1",
+        "lease_id": REMOTE_SESSION_LEASE_ID,
+        "fleet_id": "synthetic-lab-fleet",
+        "agent_id": "quest-agent-alpha",
+        "operator_id": "synthetic-operator",
+        "purpose": "Unit-test bounded remote operation.",
+        "created_at": future_time(-1),
+        "expires_at": future_time(300),
+        "consent_mode": "operator_visible_lab",
+        "command_scopes": [
+            "termux.exec_allowlisted",
+            "adb.self_check",
+            "apk.update_verified",
+            "app.launch_allowlisted",
+            "android.foreground_snapshot",
+            "android.logcat_slice",
+        ],
+        "requires_visual_confirmation": False,
+        "requires_local_adb_shell": True,
+        "active_indicator_required": True,
+        "emergency_stop_supported": True,
+        "revoked": False,
+        "synthetic": True,
     }
 
 
@@ -199,6 +231,7 @@ class AgentTests(unittest.TestCase):
                 "org.questtermuxlab.synthetic.panel/.MainActivity",
             ],
             "allowed_logcat_tags": ["QuestTermuxLab"],
+            "active_remote_session_leases": [remote_session_lease()],
         }
         self.state = self.agent.AgentState(started_at=time.monotonic())
 
@@ -223,6 +256,22 @@ class AgentTests(unittest.TestCase):
         result = self.agent.execute_command(self.config, self.state, request)
         self.assertFalse(result["accepted"])
         self.assertEqual(result["error_code"], "local_adb_disabled")
+
+    def test_rejects_non_passive_command_without_remote_session_lease(self) -> None:
+        request = command(kind="termux.exec_allowlisted")
+        request.pop("remote_session_lease_id")
+        request["payload"] = {"alias": "python_version"}
+        result = self.agent.execute_command(self.config, self.state, request)
+        self.assertFalse(result["accepted"])
+        self.assertEqual(result["error_code"], "missing_remote_session_lease")
+
+    def test_controller_rejects_non_passive_command_without_remote_session_lease(self) -> None:
+        state = fleet_control_plane.FleetState()
+        request = command(kind="termux.exec_allowlisted")
+        request.pop("remote_session_lease_id")
+        request["payload"] = {"alias": "python_version"}
+        with self.assertRaises(ValueError):
+            state.queue_command(request)
 
     def test_update_manifest_rejects_unallowed_package(self) -> None:
         request = command(kind="apk.update_verified")
@@ -341,6 +390,7 @@ class ExampleTests(unittest.TestCase):
             "fleet-command-request.apk-update.synthetic.json": "quest-termux-lab.fleet-command-request.v1",
             "fleet-command-result.apk-update-recovery.synthetic.json": "quest-termux-lab.fleet-command-result.v1",
             "adb-shell-lease-state.synthetic.json": "quest-termux-lab.adb-shell-lease-state.v1",
+            "remote-session-lease.synthetic.json": "quest-termux-lab.remote-session-lease.v1",
             "session-recipe.outbound-fleet-agent.json": "quest-termux-lab.session-recipe.v1",
         }
         for name, schema in expected.items():

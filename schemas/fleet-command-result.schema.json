@@ -37,6 +37,9 @@
     "idempotency_key": {
       "type": ["string", "null"]
     },
+    "remote_session_lease_id": {
+      "type": ["string", "null"]
+    },
     "accepted": {
       "type": "boolean"
     },
@@ -110,6 +113,9 @@
       "additionalProperties": true
     },
     "redactions_applied": {
+      "type": "boolean"
+    },
+    "synthetic": {
       "type": "boolean"
     }
   }

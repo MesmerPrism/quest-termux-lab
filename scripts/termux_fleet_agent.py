@@ -34,6 +34,7 @@ NO_COMMAND_SCHEMA = "quest-termux-lab.fleet-no-command.v1"
 APK_UPDATE_MANIFEST_SCHEMA = "quest-termux-lab.apk-update-manifest.v1"
 AGENT_VERSION = "0.2.4"
 SHA256_RE = re.compile(r"^[a-fA-F0-9]{64}$")
+PASSIVE_COMMAND_KINDS = {"agent.status", "agent.capabilities"}
 
 
 def utc_now() -> str:
@@ -143,6 +144,7 @@ def result_base(config: dict[str, Any], command: dict[str, Any], started_at: str
         "agent_id": config["agent_id"],
         "command_id": command.get("command_id", "unknown-command"),
         "idempotency_key": command.get("idempotency_key"),
+        "remote_session_lease_id": command.get("remote_session_lease_id"),
         "accepted": False,
         "status": "rejected",
         "started_at": started_at,
@@ -206,6 +208,17 @@ def execute_command(config: dict[str, Any], state: AgentState, command: dict[str
     if kind not in allowed:
         return reject_result(config, command, started_at, start_monotonic, "kind_not_allowed", "Command kind is not in the allowlist.")
 
+    lease_error = validate_remote_session_lease(config, command, str(kind))
+    if lease_error is not None:
+        return reject_result(
+            config,
+            command,
+            started_at,
+            start_monotonic,
+            lease_error,
+            "Command requires an active remote session lease.",
+        )
+
     if kind == "agent.status":
         return complete_text(config, command, started_at, start_monotonic, agent_status_text(config, state), "")
     if kind == "agent.capabilities":
@@ -250,9 +263,68 @@ def agent_capabilities_text(config: dict[str, Any]) -> str:
             "allowed_update_packages": sorted(dict(config.get("allowed_update_packages", {}))),
             "allowed_launch_components": sorted(config.get("allowed_launch_components", [])),
             "allowed_logcat_tags": sorted(config.get("allowed_logcat_tags", [])),
+            "requires_remote_session_lease": True,
+            "active_remote_session_lease_ids": active_remote_session_lease_ids(config),
         },
         sort_keys=True,
     )
+
+
+def active_remote_session_lease_ids(config: dict[str, Any]) -> list[str]:
+    ids: list[str] = []
+    for lease in configured_remote_session_leases(config):
+        lease_id = lease.get("lease_id")
+        if isinstance(lease_id, str):
+            ids.append(lease_id)
+    return sorted(ids)
+
+
+def configured_remote_session_leases(config: dict[str, Any]) -> list[dict[str, Any]]:
+    raw = config.get("active_remote_session_leases", [])
+    if isinstance(raw, dict):
+        raw = list(raw.values())
+    if not isinstance(raw, list):
+        return []
+    return [item for item in raw if isinstance(item, dict)]
+
+
+def validate_remote_session_lease(config: dict[str, Any], command: dict[str, Any], kind: str) -> str | None:
+    if kind in PASSIVE_COMMAND_KINDS:
+        return None
+
+    lease_id = command.get("remote_session_lease_id")
+    if not isinstance(lease_id, str) or not lease_id:
+        return "missing_remote_session_lease"
+
+    matching = [lease for lease in configured_remote_session_leases(config) if lease.get("lease_id") == lease_id]
+    if not matching:
+        return "remote_session_lease_inactive"
+    lease = matching[0]
+    if lease.get("revoked"):
+        return "remote_session_lease_revoked"
+    if lease.get("fleet_id") not in (None, config.get("fleet_id")):
+        return "remote_session_lease_wrong_fleet"
+    if lease.get("agent_id") not in (None, config.get("agent_id")):
+        return "remote_session_lease_wrong_agent"
+
+    expires_at = lease.get("expires_at")
+    if not isinstance(expires_at, str):
+        return "remote_session_lease_missing_expiry"
+    try:
+        if parse_time(expires_at) <= datetime.now(timezone.utc):
+            return "remote_session_lease_expired"
+    except ValueError:
+        return "remote_session_lease_bad_expiry"
+
+    scopes = lease.get("command_scopes", [])
+    if not isinstance(scopes, list) or not all(isinstance(scope, str) for scope in scopes):
+        return "remote_session_lease_bad_scopes"
+    if "*" not in scopes and kind not in set(scopes):
+        return "remote_session_lease_scope_denied"
+
+    if command.get("requires_local_adb_shell") and lease.get("requires_local_adb_shell") is False:
+        return "remote_session_lease_disallows_adb"
+    return None
 
 
 def complete_text(

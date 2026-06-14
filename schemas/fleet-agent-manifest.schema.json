@@ -106,6 +106,9 @@
       "type": "boolean",
       "default": true
     },
+    "synthetic": {
+      "type": "boolean"
+    },
     "created_at": {
       "type": "string",
       "format": "date-time"

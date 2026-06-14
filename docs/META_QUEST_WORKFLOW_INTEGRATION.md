@@ -26,6 +26,9 @@ proximity state unless the test explicitly changes it, and verify cleanup.
 | --- | --- |
 | Device coordination, ADB, installs, launches, screenshots, logcat | Meta Quest workflow |
 | Termux CLI, X11, Proot, VNC, local dashboard recipes | Quest Termux Lab |
+| Outbound remote operations leases, typed command simulator, Termux agent fixtures | Quest Termux Lab |
+| Cross-app questionnaire request/result IPC | Quest Questionnaire Panel |
+| Quest Settings and recorder UI exploration through UIAutomator | Quest Questionnaire Panel automation example plus Meta Quest workflow evidence rules |
 | Rusty Morphospace sidecar intake and Manifold handoff proposals | `rusty-quest-sidecar-mesh` |
 | Raw device evidence and private artifacts | Local/private workspace, not this repo |
 | Public reusable findings | Sanitized docs, schemas, and synthetic fixtures in this repo |
@@ -83,3 +86,32 @@ A visible, pre-granted helper APK may be used only to ask Termux to restart the
 fixed fleet-agent command after process stop. Treat success as fresh heartbeat
 plus loopback ADB `uid=2000(shell)` evidence, not as WiFi ADB recovery or
 managed-device authority.
+
+## Remote Operations Relationship
+
+The off-LAN lane should remain outbound-only and typed:
+
+```text
+operator web console
+  -> authenticated controller
+  -> queued command with TTL, idempotency, operator reason, and lease id
+Quest Termux agent
+  -> outbound poll/WebSocket
+  -> local allowlist and remote-session lease check
+  -> optional loopback ADB shell gate
+  -> bounded result plus redacted evidence
+```
+
+This repo owns the command schemas, remote-session lease schema, simulator, and
+synthetic fixtures. The Meta Quest workflow owns live headset evidence,
+capture labeling, protected prompts, and ADB/hzdb provider choice. The Quest
+Questionnaire Panel owns the production questionnaire IPC contract; Termux,
+ADB, and UIAutomator can test or recover it but must not become part of the
+normal answer channel.
+
+The `uiautomator.run_allowlisted_scenario` command kind is the bridge between
+the outbound control plane and the questionnaire panel automation APK. It
+should run only named scenarios, with small typed extras, under an active
+remote-session lease and local ADB shell gate. Public results should be
+exporter summaries, not raw XML, screenshots, logcat, recordings, device
+serials, or private package names.

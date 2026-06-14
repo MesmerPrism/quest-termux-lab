@@ -24,6 +24,7 @@ NO_COMMAND_SCHEMA = "quest-termux-lab.fleet-no-command.v1"
 HEARTBEAT_SCHEMA = "quest-termux-lab.fleet-agent-heartbeat.v1"
 COMMAND_SCHEMA = "quest-termux-lab.fleet-command-request.v1"
 RESULT_SCHEMA = "quest-termux-lab.fleet-command-result.v1"
+PASSIVE_COMMAND_KINDS = {"agent.status", "agent.capabilities"}
 
 
 def utc_now() -> str:
@@ -79,6 +80,9 @@ class FleetState:
         idempotency_key = require_text(payload, "idempotency_key")
         if is_expired(payload):
             raise ValueError("command is already expired")
+        kind = require_text(payload, "kind")
+        if kind not in PASSIVE_COMMAND_KINDS:
+            require_text(payload, "remote_session_lease_id")
         idempotency_id = f"{target_agent_id}:{idempotency_key}"
         if idempotency_id in self.idempotency_index:
             existing = self.idempotency_index[idempotency_id]
