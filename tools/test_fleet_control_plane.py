@@ -246,6 +246,14 @@ class AgentTests(unittest.TestCase):
                     "instrumentation": "io.github.mesmerprism.questquestionnaire.questuiautomation.test/androidx.test.runner.AndroidJUnitRunner",
                     "allowed_extras": ["retryCount", "retryWaitMs", "dumpPassiveBaselines"],
                     "default_extras": {"retryCount": 1},
+                },
+                "systemSurfaceReachability": {
+                    "instrumentation": "io.github.mesmerprism.questquestionnaire.questuiautomation.test/androidx.test.runner.AndroidJUnitRunner",
+                    "allowed_extras": ["surfaces", "waitAfterSurfaceMs"],
+                    "default_extras": {
+                        "surfaces": "current,quickSettings,notifications,androidSettings,metacamPanel",
+                        "waitAfterSurfaceMs": 1000,
+                    },
                 }
             },
             "active_remote_session_leases": [remote_session_lease()],
@@ -415,6 +423,30 @@ class AgentTests(unittest.TestCase):
         self.assertIn("dumpPassiveBaselines", adb_args)
         self.assertIn('"evidence_mode": "summary_only"', result["stdout_tail"])
 
+    def test_runs_system_surface_uiautomator_scenario_with_safe_extras(self) -> None:
+        config = dict(self.config)
+        config["local_adb_enabled"] = True
+        request = command(kind="uiautomator.run_allowlisted_scenario")
+        request["requires_local_adb_shell"] = True
+        request["payload"] = {
+            "scenario": "systemSurfaceReachability",
+            "extras": {
+                "surfaces": "current,quickSettings,notifications,androidSettings,metacamPanel",
+                "waitAfterSurfaceMs": 1000,
+            },
+        }
+        self.state.local_adb_state["shell_uid"] = "2000"
+        with mock.patch.object(self.agent, "ensure_local_adb_for_command", return_value=(True, "", "")):
+            with mock.patch.object(self.agent, "run_adb_command", return_value=("OK (1 test)", "", 0)) as run_adb:
+                result = self.agent.execute_command(config, self.state, request)
+        self.assertTrue(result["accepted"])
+        self.assertEqual(result["status"], "completed")
+        self.assertTrue(result["redactions_applied"])
+        adb_args = run_adb.call_args.args[1]
+        self.assertIn("systemSurfaceReachability", adb_args)
+        self.assertIn("surfaces", adb_args)
+        self.assertIn("waitAfterSurfaceMs", adb_args)
+
     def test_rejects_unsafe_uiautomator_extra_value(self) -> None:
         request = command(kind="uiautomator.run_allowlisted_scenario")
         request["requires_local_adb_shell"] = True
@@ -487,6 +519,7 @@ class ExampleTests(unittest.TestCase):
             "apk-update-manifest.synthetic.json": "quest-termux-lab.apk-update-manifest.v1",
             "fleet-command-request.apk-update.synthetic.json": "quest-termux-lab.fleet-command-request.v1",
             "fleet-command-request.uiautomator.synthetic.json": "quest-termux-lab.fleet-command-request.v1",
+            "fleet-command-request.uiautomator-system-surface.synthetic.json": "quest-termux-lab.fleet-command-request.v1",
             "fleet-command-result.apk-update-recovery.synthetic.json": "quest-termux-lab.fleet-command-result.v1",
             "adb-shell-lease-state.synthetic.json": "quest-termux-lab.adb-shell-lease-state.v1",
             "remote-session-lease.synthetic.json": "quest-termux-lab.remote-session-lease.v1",

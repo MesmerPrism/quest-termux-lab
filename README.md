@@ -235,6 +235,12 @@ scenario bridge. MediaProjection preview commands remain explicit
 consent-gated placeholders until a separate app-owned helper supplies the user
 consent flow and visible active-session indicator.
 
+The UIAutomator bridge points at the Quest Questionnaire Panel automation APK.
+The panel repo owns the instrumented scenarios and redacted report exporter;
+this repo owns the outbound lease, allowlist, local ADB shell gate, and
+synthetic command fixtures. The current public fixtures include the Settings
+recovery probe and the passive system-surface reachability probe.
+
 A later live Quest pass added two operational details for this lane. Termux
 ADB subprocesses need a writable temporary directory such as `$PREFIX/tmp`,
 because a non-interactive app context may not have `/tmp`. Also, APKs should be

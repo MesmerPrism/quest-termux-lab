@@ -1,0 +1,26 @@
+{
+  "schema": "quest-termux-lab.fleet-command-request.v1",
+  "synthetic": true,
+  "fleet_id": "synthetic-lab-fleet",
+  "command_id": "cmd-uiautomator-system-surface-001",
+  "target_agent_id": "quest-agent-alpha",
+  "issued_at": "2026-06-14T10:05:00Z",
+  "expires_at": "2026-06-14T10:10:00Z",
+  "idempotency_key": "synthetic-uiautomator-system-surface-001",
+  "kind": "uiautomator.run_allowlisted_scenario",
+  "remote_session_lease_id": "lease-synthetic-operator-001",
+  "requires_local_adb_shell": true,
+  "timeout_ms": 60000,
+  "max_stdout_bytes": 4096,
+  "max_stderr_bytes": 1024,
+  "payload": {
+    "scenario": "systemSurfaceReachability",
+    "extras": {
+      "surfaces": "current,quickSettings,notifications,androidSettings,metacamPanel",
+      "waitAfterSurfaceMs": 1000
+    }
+  },
+  "sensitivity": "public_safe",
+  "requested_by": "synthetic-command-center",
+  "reason": "Synthetic passive Quest system-surface reachability probe."
+}

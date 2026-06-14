@@ -59,6 +59,17 @@
         "retryWaitMs": 1500,
         "dumpPassiveBaselines": true
       }
+    },
+    "systemSurfaceReachability": {
+      "instrumentation": "io.github.mesmerprism.questquestionnaire.questuiautomation.test/androidx.test.runner.AndroidJUnitRunner",
+      "allowed_extras": [
+        "surfaces",
+        "waitAfterSurfaceMs"
+      ],
+      "default_extras": {
+        "surfaces": "current,quickSettings,notifications,androidSettings,metacamPanel",
+        "waitAfterSurfaceMs": 1000
+      }
     }
   },
   "helper_status": "synthetic_visible_helper_not_running",

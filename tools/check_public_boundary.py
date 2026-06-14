@@ -38,6 +38,7 @@ SYNTHETIC_MARKER_REQUIRED = {
     "fleet-command-request.synthetic.json",
     "fleet-command-request.apk-update.synthetic.json",
     "fleet-command-request.uiautomator.synthetic.json",
+    "fleet-command-request.uiautomator-system-surface.synthetic.json",
     "fleet-command-result.synthetic.json",
     "fleet-command-result.apk-update-recovery.synthetic.json",
     "remote-session-lease.synthetic.json",

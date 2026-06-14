@@ -11,8 +11,6 @@
     "agent.status",
     "agent.capabilities",
     "termux.exec_allowlisted",
-    "file.hash",
-    "file.list_evidence",
     "adb.self_check",
     "apk.update_verified",
     "app.launch_allowlisted",
@@ -42,6 +40,32 @@
   "allowed_logcat_tags": [
     "QuestTermuxLab"
   ],
+  "allowed_uiautomator_scenarios": {
+    "settingsRecoveryProbe": {
+      "instrumentation": "io.github.mesmerprism.questquestionnaire.questuiautomation.test/androidx.test.runner.AndroidJUnitRunner",
+      "allowed_extras": [
+        "retryCount",
+        "retryWaitMs",
+        "dumpPassiveBaselines"
+      ],
+      "default_extras": {
+        "retryCount": 1,
+        "retryWaitMs": 1500,
+        "dumpPassiveBaselines": true
+      }
+    },
+    "systemSurfaceReachability": {
+      "instrumentation": "io.github.mesmerprism.questquestionnaire.questuiautomation.test/androidx.test.runner.AndroidJUnitRunner",
+      "allowed_extras": [
+        "surfaces",
+        "waitAfterSurfaceMs"
+      ],
+      "default_extras": {
+        "surfaces": "current,quickSettings,notifications,androidSettings,metacamPanel",
+        "waitAfterSurfaceMs": 1000
+      }
+    }
+  },
   "local_workspace_root": "$HOME/rusty-termux-agent",
   "supports_local_adb": true,
   "public_safe_profile": true,

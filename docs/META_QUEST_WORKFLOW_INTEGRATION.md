@@ -116,3 +116,14 @@ active remote-session lease and local ADB shell gate. Public results default to
 redacted command summaries; raw instrumentation output, XML, screenshots,
 logcat, recordings, device serials, and private package names stay in local
 evidence unless a private live-run config explicitly opts in.
+
+The current public fixtures include two safe scenario shapes:
+
+- `settingsRecoveryProbe`, which characterizes invisible or zero-node Quest
+  Settings launches through passive baselines and bounded retries;
+- `systemSurfaceReachability`, which compares known Android-backed Quest
+  system entry points such as current window, quick settings, notifications,
+  Android settings, and the Metacam sharing panel using structural counts only.
+
+Use the Quest Questionnaire Panel exporter to summarize either raw JSONL report
+before promoting findings into public notes.

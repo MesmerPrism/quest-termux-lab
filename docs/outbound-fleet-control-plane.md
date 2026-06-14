@@ -192,12 +192,24 @@ Minimal UIAutomator scenario config:
         "retryWaitMs": 1500,
         "dumpPassiveBaselines": true
       }
+    },
+    "systemSurfaceReachability": {
+      "instrumentation": "io.github.mesmerprism.questquestionnaire.questuiautomation.test/androidx.test.runner.AndroidJUnitRunner",
+      "allowed_extras": ["surfaces", "waitAfterSurfaceMs"],
+      "default_extras": {
+        "surfaces": "current,quickSettings,notifications,androidSettings,metacamPanel",
+        "waitAfterSurfaceMs": 1000
+      }
     }
   }
 }
 ```
 
-Example command: `examples/fleet-command-request.uiautomator.synthetic.json`.
+Example commands:
+`examples/fleet-command-request.uiautomator.synthetic.json` for the Settings
+recovery probe and
+`examples/fleet-command-request.uiautomator-system-surface.synthetic.json` for
+the passive system-surface reachability probe.
 The scenario implementation and exporter live in the Quest Questionnaire Panel
 repo's `examples/quest-ui-automation` module; this repo only queues and gates
 the run.

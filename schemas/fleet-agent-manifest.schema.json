@@ -96,6 +96,34 @@
       },
       "uniqueItems": true
     },
+    "allowed_uiautomator_scenarios": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["instrumentation", "allowed_extras"],
+        "properties": {
+          "instrumentation": {
+            "type": "string",
+            "minLength": 1
+          },
+          "allowed_extras": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_]{0,48}$"
+            },
+            "uniqueItems": true
+          },
+          "default_extras": {
+            "type": "object",
+            "additionalProperties": {
+              "type": ["string", "integer", "boolean"]
+            }
+          }
+        }
+      }
+    },
     "local_workspace_root": {
       "type": "string"
     },
