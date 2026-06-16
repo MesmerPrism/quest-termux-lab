@@ -505,6 +505,13 @@ the equivalent team workflow before touching ADB, installing APKs, launching
 apps, taking screenshots, collecting logcat, forwarding ports, or relying on
 headset-visible state.
 
+Current pairing note: new manual Meta MCP setup examples should use Meta VR
+CLI (`npx -y metavr`), while older MQDH/editor routes may still expose
+`hzdb`. Record the selected route and version in live-run evidence. On Horizon
+OS 2.x, also record Navigator/Home state, restored or snapped panels, privacy
+indicators, and exact PTC/non-PTC OS version because those system surfaces can
+change how Termux-sidecar evidence should be interpreted.
+
 The split is intentional:
 
 - `meta-quest-workflow`: device-operation discipline, provider choice,

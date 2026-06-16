@@ -20,6 +20,27 @@ before running a live Quest test. If it does not, apply the same rule manually:
 identify the operation class, prefer read-only probes first, preserve power and
 proximity state unless the test explicitly changes it, and verify cleanup.
 
+## Current Quest Workflow Baseline
+
+As of the 2026-06 public workflow update, new manual Meta MCP setup examples
+should use Meta VR CLI via `npx -y metavr`. Existing MQDH or editor-extension
+setups may still expose the same tool family as `hzdb`; record which route and
+version produced each screenshot, logcat window, Perfetto trace, or device
+status result.
+
+Horizon OS 2.x also changes what a Termux-sidecar run should record. Capture
+the exact OS version and PTC/non-PTC state, then note Navigator/Home state,
+restored panels, window snapping/rescale, virtual hands in Home, and privacy
+indicators. These are Meta system context signals. They do not grant Termux
+additional app, shell, HOME, or runtime authority.
+
+For Unity-linked runs, the Quest workflow should verify the target project's
+Meta XR SDK/Unity pin against the current public SDK line before drawing
+compatibility conclusions. Meta XR SDK 203.0 raises minimum Unity support to
+6000.0.66f2 for several packages, adds `XR_META_temporal_pixel_synthesis`, and
+includes Meta's AI Runtime Optimizer; Spatial SDK 0.13.1 adds `EntityPath` and
+`VisibilityState`.
+
 ## Division Of Responsibility
 
 | Area | Owner |
@@ -104,7 +125,8 @@ Quest Termux agent
 
 This repo owns the command schemas, remote-session lease schema, simulator, and
 synthetic fixtures. The Meta Quest workflow owns live headset evidence,
-capture labeling, protected prompts, and ADB/hzdb provider choice. The Quest
+capture labeling, protected prompts, and ADB / Meta VR CLI / `hzdb` provider
+choice. The Quest
 Questionnaire Panel owns the production questionnaire IPC contract; Termux,
 ADB, and UIAutomator can test or recover it but must not become part of the
 normal answer channel.
