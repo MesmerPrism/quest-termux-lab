@@ -39,6 +39,20 @@ Do not expose ADB, Termux listeners, VNC, or headset-local HTTP services to the
 internet. Do not tunnel `127.0.0.1:5555`. Use inbound device access only for
 local setup and recovery through the live Quest operations workflow.
 
+## Streaming Orchestration Boundary
+
+The fleet control plane can coordinate streaming-adjacent work only as typed
+control/status and evidence intake. Suitable payloads are route-health summaries,
+lease state, scorecard envelopes, command acknowledgements, redacted foreground
+snapshots, and bounded UIAutomation results.
+
+Do not send raw camera frames, H.264 payloads, RTP packets, hidden ADB targets,
+raw logcat, or private endpoint values through this lane. Do not use a Termux
+agent to claim Wi-Fi Direct, LocalOnlyHotspot, Bluetooth, or Wi-Fi ADB product
+readiness. Live direct-link topology, media-plane counters, renderer adoption,
+and native/system fatal-line gates belong under the live Quest workflow and the
+runtime app that owns the route.
+
 For headsets that have internet but are not on the same WiFi as the operator's
 machine, use outbound polling as the trigger. The operator or CI queues an
 `apk.update_verified` command on an HTTPS controller; the headset polls from

@@ -43,6 +43,10 @@ to the right owner:
   input lessons belong in Rusty Lattice.
 - Host recovery and validation descriptors belong in Rusty Hostess or another
   explicit operator workflow lane.
+- Streaming-adjacent sidecar lessons may flow only as sanitized route-health,
+  lease, scorecard, command/status, and evidence-intake contracts. Media-plane
+  ownership, Wi-Fi Direct lifecycle, and renderer adoption stay with the runtime
+  app and live Quest workflow that produced the evidence.
 
 ## What Should Not Flow Directly
 
@@ -58,6 +62,7 @@ Do not turn Termux into:
 - recovery authority;
 - a hidden watchdog;
 - a cross-headset ADB router;
+- a high-rate media relay;
 - an XR runtime, compositor, or tracked-space authority;
 - the primary operational control plane.
 

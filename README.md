@@ -528,9 +528,16 @@ Data-pipeline relationship:
   evidence: localhost-only diagnostics, broker-feedback sidecars, outbound
   polling agents, peer gossip simulation, route-health summaries, trust gates,
   scorecards, and sanitized evidence intake.
+- For streaming-adjacent work, use this repository to model leases, heartbeats,
+  route-health summaries, scorecard envelopes, UIAutomation bridges, and
+  outbound control requests. It can help rehearse orchestration and evidence
+  intake; it is not the media plane.
 - Do not use this repository to prove or productize Quest LocalOnlyHotspot,
   Wi-Fi Direct, Bluetooth, Wi-Fi ADB, high-rate media streams, or hidden
   background services. Those need private live-device topology probes first.
+- Do not treat a Termux route, shell route, or peer-gossip result as proof that
+  a native Quest app owns the same Android `Network`, media receiver, or
+  renderer adoption path.
 - Sanitized lessons can later inform public recipes, but live headset work
   should stay under `meta-quest-workflow` discipline and must not commit
   private paths, headset serials, pairing material, raw logs, or unsanitized
