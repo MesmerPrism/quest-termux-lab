@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "quest-termux-lab.peer-workflow-source-profile.v1",
+  "title": "Quest Termux Lab Peer Workflow Source Profile",
+  "type": "object",
+  "required": ["schema", "profile_id", "owner", "contributes_phases", "source_artifacts", "privacy_boundary", "authority_boundary", "compatibility"],
+  "properties": {
+    "schema": {"const": "quest-termux-lab.peer-workflow-source-profile.v1"},
+    "profile_id": {"const": "public-lab-peer-evidence-v1"},
+    "owner": {"const": "quest-termux-lab"},
+    "contributes_phases": {"const": ["source", "privacy"]},
+    "source_artifacts": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["path", "schema", "role"],
+        "properties": {
+          "path": {"type": "string"},
+          "schema": {"type": "string"},
+          "role": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "privacy_boundary": {
+      "type": "object",
+      "required": ["synthetic_only", "contains_endpoints", "contains_commands", "contains_credentials", "contains_pairing_material", "contains_private_device_ids", "contains_raw_logs", "contains_visual_captures", "allows_high_rate_payloads"],
+      "properties": {
+        "synthetic_only": {"const": true},
+        "contains_endpoints": {"const": false},
+        "contains_commands": {"const": false},
+        "contains_credentials": {"const": false},
+        "contains_pairing_material": {"const": false},
+        "contains_private_device_ids": {"const": false},
+        "contains_raw_logs": {"const": false},
+        "contains_visual_captures": {"const": false},
+        "allows_high_rate_payloads": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "authority_boundary": {
+      "type": "object",
+      "required": ["role", "runtime_authority", "accepted_state_owner", "command_authority"],
+      "properties": {
+        "role": {"const": "public_evidence_source"},
+        "runtime_authority": {"const": false},
+        "accepted_state_owner": {"const": "rusty.manifold"},
+        "command_authority": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "compatibility": {
+      "type": "object",
+      "required": ["legacy_schemas_preserved", "legacy_tools_preserved", "new_execution_stage"],
+      "properties": {
+        "legacy_schemas_preserved": {"const": true},
+        "legacy_tools_preserved": {"const": true},
+        "new_execution_stage": {"const": false}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

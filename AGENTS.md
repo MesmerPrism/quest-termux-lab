@@ -11,6 +11,12 @@ findings can inform `rusty-quest-sidecar-mesh`, which translates selected
 sanitized artifacts into `rusty.quest.sidecar.*` proposals and future
 Manifold-facing handoffs.
 
+For consolidated workflow intake, export only
+`quest-termux-lab.peer-workflow-source-profile.v1`. It contributes sanitized
+`source` and `privacy` evidence to the sidecar DAG; it is not another execution
+stage and does not replace any existing peer-mesh schema or tool. See
+`docs/peer-workflow-source-profile.md`.
+
 Do not introduce `rusty.*` schema IDs, AGPL Morphospace ownership claims, or
 runtime authority here by default. Keep this repository's schemas in the
 `quest-termux-lab.*` namespace. Promote reusable lessons into Morphospace
@@ -121,6 +127,8 @@ python -m py_compile tools/peer_mesh_private_result_placeholder.py tools/test_pe
 python -m unittest tools.test_peer_mesh_private_result_placeholder
 python -m py_compile tools/peer_mesh_private_result_acceptance.py tools/test_peer_mesh_private_result_acceptance.py
 python -m unittest tools.test_peer_mesh_private_result_acceptance
+python tools/peer_mesh_workflow_profile.py examples/peer-workflow-source-profile.synthetic.json
+python -m unittest tools.test_peer_mesh_workflow_profile
 powershell -NoProfile -Command "[scriptblock]::Create((Get-Content -Raw tools/capture_x11_surface_metrics.ps1)) | Out-Null"
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/build_android_vnc_panel_viewer.ps1 -Unsigned
 bash -n scripts/build-minimal-android-apk-on-device.sh scripts/wifi-adb-keepawake-watchdog.sh scripts/quest-x11-wide-prefs.sh scripts/start-quest-x11-wide.sh

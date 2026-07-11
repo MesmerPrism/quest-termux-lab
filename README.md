@@ -1,5 +1,11 @@
 # Quest Termux Lab
 
+The public peer-mesh lane now exposes a single sanitized workflow source
+profile for Rusty Quest Sidecar Mesh. The profile contributes only source and
+privacy evidence, preserves all existing v1 tools and fixtures, and cannot
+carry commands, endpoints, credentials, device identifiers, logs, captures, or
+runtime authority. See [docs/peer-workflow-source-profile.md](docs/peer-workflow-source-profile.md).
+
 Quest Termux Lab is a public, MIT-licensed place to explore Termux, Termux:X11,
 Proot, local dashboards, and localhost-only VNC as developer lab sidecars on
 Meta Quest headsets.

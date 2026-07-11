@@ -1,0 +1,33 @@
+{
+  "schema": "quest-termux-lab.peer-workflow-source-profile.v1",
+  "profile_id": "public-lab-peer-evidence-v1",
+  "owner": "quest-termux-lab",
+  "contributes_phases": ["source", "privacy"],
+  "source_artifacts": [
+    {"path": "examples/peer-fixture-index-report.synthetic.json", "schema": "quest-termux-lab.peer-fixture-index-report.v1", "role": "fixture_compatibility_index"},
+    {"path": "examples/peer-review-bundle-preflight-clear-report.synthetic.json", "schema": "quest-termux-lab.peer-review-bundle-report.v1", "role": "synthetic_preflight_review"},
+    {"path": "examples/peer-private-evidence-redaction-report.synthetic.json", "schema": "quest-termux-lab.peer-private-evidence-redaction-report.v1", "role": "redaction_policy_evidence"}
+  ],
+  "privacy_boundary": {
+    "synthetic_only": true,
+    "contains_endpoints": false,
+    "contains_commands": false,
+    "contains_credentials": false,
+    "contains_pairing_material": false,
+    "contains_private_device_ids": false,
+    "contains_raw_logs": false,
+    "contains_visual_captures": false,
+    "allows_high_rate_payloads": false
+  },
+  "authority_boundary": {
+    "role": "public_evidence_source",
+    "runtime_authority": false,
+    "accepted_state_owner": "rusty.manifold",
+    "command_authority": false
+  },
+  "compatibility": {
+    "legacy_schemas_preserved": true,
+    "legacy_tools_preserved": true,
+    "new_execution_stage": false
+  }
+}
