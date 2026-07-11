@@ -1,0 +1,152 @@
+{
+  "schema": "quest-termux-lab.peer-authority-source-handoff.v1",
+  "handoff_id": "handoff.peer-authority.synthetic.001",
+  "synthetic": true,
+  "target_contracts": {
+    "credential_record": "rusty.manifold.peer.credential_record.v1",
+    "enrollment_request": "rusty.manifold.peer.enrollment_request.v1",
+    "enrollment_receipt": "rusty.manifold.peer.enrollment_receipt.v1",
+    "signed_rendezvous_evidence": "rusty.manifold.peer.signed_rendezvous_evidence.v1",
+    "rendezvous_review_request": "rusty.manifold.peer.rendezvous_review_request.v1",
+    "rendezvous_receipt": "rusty.manifold.peer.rendezvous_receipt.v1",
+    "signed_session_review": "rusty.manifold.peer.signed_session_review.v1",
+    "signed_topology_authorization": "rusty.manifold.peer.signed_topology_authorization.v1",
+    "direct_lane_lease_request": "rusty.manifold.peer.direct_lane_lease_request.v1",
+    "direct_lane_lease_receipt": "rusty.manifold.peer.direct_lane_lease_receipt.v1"
+  },
+  "enrollment_requests": [
+    {
+      "proposal_id": "proposal.enrollment.peer.alpha.001",
+      "target_schema": "rusty.manifold.peer.enrollment_request.v1",
+      "credential_schema": "rusty.manifold.peer.credential_record.v1",
+      "action": "enroll",
+      "operator_id": "operator.peer.enrollment.synthetic",
+      "operator_request_ref": "operator-request.synthetic.alpha.001",
+      "expected_enrollment_authority_revision": 1,
+      "credential_id": "credential.peer.alpha.001",
+      "peer_id": "peer.alpha",
+      "trust_domain": "trust.morphospace.peer",
+      "key_id": "key.peer.alpha.001",
+      "key_generation": 1,
+      "public_key_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "public_key_sha256": "sha256:02d449a31fbb267c8f352e9968a79e3e5fc95c1bbeaa502fd6454ebde5a4bedc",
+      "valid_from_ms": 1000,
+      "expires_at_ms": 61000,
+      "proposed_only": true
+    },
+    {
+      "proposal_id": "proposal.enrollment.peer.beta.001",
+      "target_schema": "rusty.manifold.peer.enrollment_request.v1",
+      "credential_schema": "rusty.manifold.peer.credential_record.v1",
+      "action": "enroll",
+      "operator_id": "operator.peer.enrollment.synthetic",
+      "operator_request_ref": "operator-request.synthetic.beta.001",
+      "expected_enrollment_authority_revision": 2,
+      "credential_id": "credential.peer.beta.001",
+      "peer_id": "peer.beta",
+      "trust_domain": "trust.morphospace.peer",
+      "key_id": "key.peer.beta.001",
+      "key_generation": 1,
+      "public_key_hex": "2222222222222222222222222222222222222222222222222222222222222222",
+      "public_key_sha256": "sha256:9f72ea0cf49536e3c66c787f705186df9a4378083753ae9536d65b3ad7fcddc4",
+      "valid_from_ms": 1000,
+      "expires_at_ms": 61000,
+      "proposed_only": true
+    }
+  ],
+  "signed_evidence_proposals": [
+    {
+      "proposal_id": "proposal.evidence.peer.alpha.001",
+      "target_schema": "rusty.manifold.peer.signed_rendezvous_evidence.v1",
+      "review_request_schema": "rusty.manifold.peer.rendezvous_review_request.v1",
+      "review_request_ref": "request.rendezvous.alpha-beta.synthetic.001",
+      "expected_rendezvous_authority_revision": 1,
+      "expected_enrollment_authority_revision": 3,
+      "evidence_id": "evidence.peer.alpha.001",
+      "signer_peer_id": "peer.alpha",
+      "signer_key_id": "key.peer.alpha.001",
+      "counterparty_peer_id": "peer.beta",
+      "nonce_hex": "abababababababababababababababababababababababababababababababab",
+      "coordinator_epoch": 7,
+      "role": "group_owner",
+      "topology_contract_id": "rusty.quest.product_wifi_direct_topology.v1",
+      "issued_at_ms": 2000,
+      "expires_at_ms": 32000,
+      "signature_hex": "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
+      "provenance_refs": ["provenance.synthetic.alpha.001"],
+      "proposed_only": true,
+      "cryptographic_verification_performed": false
+    },
+    {
+      "proposal_id": "proposal.evidence.peer.beta.001",
+      "target_schema": "rusty.manifold.peer.signed_rendezvous_evidence.v1",
+      "review_request_schema": "rusty.manifold.peer.rendezvous_review_request.v1",
+      "review_request_ref": "request.rendezvous.alpha-beta.synthetic.001",
+      "expected_rendezvous_authority_revision": 1,
+      "expected_enrollment_authority_revision": 3,
+      "evidence_id": "evidence.peer.beta.001",
+      "signer_peer_id": "peer.beta",
+      "signer_key_id": "key.peer.beta.001",
+      "counterparty_peer_id": "peer.alpha",
+      "nonce_hex": "abababababababababababababababababababababababababababababababab",
+      "coordinator_epoch": 7,
+      "role": "client",
+      "topology_contract_id": "rusty.quest.product_wifi_direct_topology.v1",
+      "issued_at_ms": 2000,
+      "expires_at_ms": 32000,
+      "signature_hex": "22222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222",
+      "provenance_refs": ["provenance.synthetic.beta.001"],
+      "proposed_only": true,
+      "cryptographic_verification_performed": false
+    }
+  ],
+  "configured_peers": [
+    {
+      "peer_id": "peer.alpha",
+      "enrollment_proposal_id": "proposal.enrollment.peer.alpha.001",
+      "reciprocal_evidence_proposal_ids": ["proposal.evidence.peer.alpha.001"],
+      "conformance_status": "eligible_for_manifold_review",
+      "advisory_only": true,
+      "direct_media_eligible": false,
+      "topology_authorized": false,
+      "media_authorized": false
+    },
+    {
+      "peer_id": "peer.beta",
+      "enrollment_proposal_id": "proposal.enrollment.peer.beta.001",
+      "reciprocal_evidence_proposal_ids": ["proposal.evidence.peer.beta.001"],
+      "conformance_status": "eligible_for_manifold_review",
+      "advisory_only": true,
+      "direct_media_eligible": false,
+      "topology_authorized": false,
+      "media_authorized": false
+    },
+    {
+      "peer_id": "peer.gamma",
+      "enrollment_proposal_id": null,
+      "reciprocal_evidence_proposal_ids": [],
+      "conformance_status": "advisory_pending_independent_enrollment",
+      "advisory_only": true,
+      "direct_media_eligible": false,
+      "topology_authorized": false,
+      "media_authorized": false
+    }
+  ],
+  "authority_boundary": {
+    "role": "public_evidence_proposer",
+    "performs_ed25519_verification": false,
+    "owns_accepted_state": false,
+    "owns_coordinator": false,
+    "owns_direct_lane_lease": false,
+    "owns_media_authority": false
+  },
+  "privacy_boundary": {
+    "contains_private_key_material": false,
+    "contains_pairing_material": false,
+    "contains_endpoint_values": false,
+    "contains_commands": false,
+    "contains_private_device_ids": false,
+    "contains_raw_logs": false,
+    "contains_media_payloads": false
+  }
+}

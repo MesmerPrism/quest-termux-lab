@@ -22,6 +22,14 @@ describe a sanitized three-peer configured graph, but cannot elect a
 coordinator, accept membership, rank a product route, authorize a direct media
 lane, or mutate Manifold state.
 
+For NET-017 peer-authority conformance, route through
+`quest-termux-lab.peer-authority-source-handoff.v1` and
+`docs/peer-authority-source-handoff.md`. It is a public proposal envelope only:
+public keys, signatures, and provenance references are allowed; private keys,
+pairing material, endpoints, commands, accepted state, coordinator decisions,
+leases, and media authority are forbidden. The configured third peer remains
+advisory until it has its own enrollment and reciprocal signed evidence.
+
 Do not introduce `rusty.*` schema IDs, AGPL Morphospace ownership claims, or
 runtime authority here by default. Keep this repository's schemas in the
 `quest-termux-lab.*` namespace. Promote reusable lessons into Morphospace
@@ -134,6 +142,8 @@ python -m py_compile tools/peer_mesh_private_result_acceptance.py tools/test_pee
 python -m unittest tools.test_peer_mesh_private_result_acceptance
 python tools/peer_mesh_workflow_profile.py examples/peer-workflow-source-profile.synthetic.json
 python -m unittest tools.test_peer_mesh_workflow_profile
+python tools/peer_authority_source_handoff.py examples/peer-authority-source-handoff.synthetic.json
+python -m unittest tools.test_peer_authority_source_handoff
 powershell -NoProfile -Command "[scriptblock]::Create((Get-Content -Raw tools/capture_x11_surface_metrics.ps1)) | Out-Null"
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/build_android_vnc_panel_viewer.ps1 -Unsigned
 bash -n scripts/build-minimal-android-apk-on-device.sh scripts/wifi-adb-keepawake-watchdog.sh scripts/quest-x11-wide-prefs.sh scripts/start-quest-x11-wide.sh

@@ -1,0 +1,10 @@
+{
+  "schema": "quest-termux-lab.peer-authority-source-handoff.v1",
+  "synthetic": true,
+  "target_contracts": {"enrollment_request": "rusty.manifold.peer.enrollment_request.v2"},
+  "enrollment_requests": [],
+  "signed_evidence_proposals": [],
+  "configured_peers": [],
+  "authority_boundary": {},
+  "privacy_boundary": {}
+}

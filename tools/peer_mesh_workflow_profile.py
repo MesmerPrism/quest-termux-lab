@@ -67,6 +67,13 @@ def validate_profile(profile: dict[str, Any]) -> list[str]:
         ]
         if len(topology) != 1:
             errors.append("source_artifacts must contain exactly one N-peer advisory topology")
+        authority_handoffs = [
+            artifact for artifact in artifacts
+            if artifact.get("schema") == "quest-termux-lab.peer-authority-source-handoff.v1"
+            and artifact.get("role") == "peer_authority_proposal_source"
+        ]
+        if len(authority_handoffs) != 1:
+            errors.append("source_artifacts must contain exactly one peer-authority proposal source")
     privacy = profile.get("privacy_boundary", {})
     if privacy.get("synthetic_only") is not True:
         errors.append("privacy boundary must be synthetic_only")

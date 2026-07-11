@@ -1,0 +1,14 @@
+{
+  "schema": "quest-termux-lab.peer-authority-source-handoff.v1",
+  "synthetic": true,
+  "target_contracts": {},
+  "enrollment_requests": [],
+  "signed_evidence_proposals": [],
+  "configured_peers": [
+    {"peer_id": "peer.alpha", "conformance_status": "advisory_pending_independent_enrollment", "advisory_only": true, "direct_media_eligible": false, "topology_authorized": false, "media_authorized": false},
+    {"peer_id": "peer.beta", "conformance_status": "advisory_pending_independent_enrollment", "advisory_only": true, "direct_media_eligible": false, "topology_authorized": false, "media_authorized": false},
+    {"peer_id": "peer.gamma", "conformance_status": "eligible_for_manifold_review", "advisory_only": false, "direct_media_eligible": true, "topology_authorized": true, "media_authorized": true}
+  ],
+  "authority_boundary": {},
+  "privacy_boundary": {}
+}

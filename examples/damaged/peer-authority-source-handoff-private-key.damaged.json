@@ -1,0 +1,11 @@
+{
+  "schema": "quest-termux-lab.peer-authority-source-handoff.v1",
+  "synthetic": true,
+  "target_contracts": {},
+  "enrollment_requests": [],
+  "signed_evidence_proposals": [],
+  "configured_peers": [],
+  "authority_boundary": {},
+  "privacy_boundary": {},
+  "private_key_hex": "forbidden"
+}

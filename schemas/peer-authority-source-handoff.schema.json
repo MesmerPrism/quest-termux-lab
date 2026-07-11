@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "quest-termux-lab.peer-authority-source-handoff.v1",
+  "title": "Quest Termux Lab Peer Authority Source Handoff",
+  "type": "object",
+  "required": ["schema", "handoff_id", "synthetic", "target_contracts", "enrollment_requests", "signed_evidence_proposals", "configured_peers", "authority_boundary", "privacy_boundary"],
+  "properties": {
+    "schema": {"const": "quest-termux-lab.peer-authority-source-handoff.v1"},
+    "handoff_id": {"type": "string", "minLength": 1},
+    "synthetic": {"const": true},
+    "target_contracts": {
+      "type": "object",
+      "required": ["credential_record", "enrollment_request", "enrollment_receipt", "signed_rendezvous_evidence", "rendezvous_review_request", "rendezvous_receipt", "signed_session_review", "signed_topology_authorization", "direct_lane_lease_request", "direct_lane_lease_receipt"],
+      "properties": {
+        "credential_record": {"const": "rusty.manifold.peer.credential_record.v1"},
+        "enrollment_request": {"const": "rusty.manifold.peer.enrollment_request.v1"},
+        "enrollment_receipt": {"const": "rusty.manifold.peer.enrollment_receipt.v1"},
+        "signed_rendezvous_evidence": {"const": "rusty.manifold.peer.signed_rendezvous_evidence.v1"},
+        "rendezvous_review_request": {"const": "rusty.manifold.peer.rendezvous_review_request.v1"},
+        "rendezvous_receipt": {"const": "rusty.manifold.peer.rendezvous_receipt.v1"},
+        "signed_session_review": {"const": "rusty.manifold.peer.signed_session_review.v1"},
+        "signed_topology_authorization": {"const": "rusty.manifold.peer.signed_topology_authorization.v1"},
+        "direct_lane_lease_request": {"const": "rusty.manifold.peer.direct_lane_lease_request.v1"},
+        "direct_lane_lease_receipt": {"const": "rusty.manifold.peer.direct_lane_lease_receipt.v1"}
+      },
+      "additionalProperties": false
+    },
+    "enrollment_requests": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["proposal_id", "target_schema", "credential_schema", "action", "operator_id", "operator_request_ref", "expected_enrollment_authority_revision", "credential_id", "peer_id", "trust_domain", "key_id", "key_generation", "public_key_hex", "public_key_sha256", "valid_from_ms", "expires_at_ms", "proposed_only"],
+        "properties": {
+          "proposal_id": {"type": "string"},
+          "target_schema": {"const": "rusty.manifold.peer.enrollment_request.v1"},
+          "credential_schema": {"const": "rusty.manifold.peer.credential_record.v1"},
+          "action": {"const": "enroll"},
+          "operator_id": {"type": "string"},
+          "operator_request_ref": {"type": "string"},
+          "expected_enrollment_authority_revision": {"type": "integer", "minimum": 1},
+          "credential_id": {"type": "string"},
+          "peer_id": {"type": "string"},
+          "trust_domain": {"type": "string"},
+          "key_id": {"type": "string"},
+          "key_generation": {"type": "integer", "minimum": 1},
+          "public_key_hex": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "public_key_sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+          "valid_from_ms": {"type": "integer", "minimum": 0},
+          "expires_at_ms": {"type": "integer", "minimum": 1},
+          "proposed_only": {"const": true}
+        },
+        "additionalProperties": false
+      }
+    },
+    "signed_evidence_proposals": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["proposal_id", "target_schema", "review_request_schema", "review_request_ref", "expected_rendezvous_authority_revision", "expected_enrollment_authority_revision", "evidence_id", "signer_peer_id", "signer_key_id", "counterparty_peer_id", "nonce_hex", "coordinator_epoch", "role", "topology_contract_id", "issued_at_ms", "expires_at_ms", "signature_hex", "provenance_refs", "proposed_only", "cryptographic_verification_performed"],
+        "properties": {
+          "proposal_id": {"type": "string"},
+          "target_schema": {"const": "rusty.manifold.peer.signed_rendezvous_evidence.v1"},
+          "review_request_schema": {"const": "rusty.manifold.peer.rendezvous_review_request.v1"},
+          "review_request_ref": {"type": "string"},
+          "expected_rendezvous_authority_revision": {"type": "integer", "minimum": 1},
+          "expected_enrollment_authority_revision": {"type": "integer", "minimum": 1},
+          "evidence_id": {"type": "string"},
+          "signer_peer_id": {"type": "string"},
+          "signer_key_id": {"type": "string"},
+          "counterparty_peer_id": {"type": "string"},
+          "nonce_hex": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "coordinator_epoch": {"type": "integer", "minimum": 1},
+          "role": {"enum": ["group_owner", "client"]},
+          "topology_contract_id": {"const": "rusty.quest.product_wifi_direct_topology.v1"},
+          "issued_at_ms": {"type": "integer", "minimum": 0},
+          "expires_at_ms": {"type": "integer", "minimum": 1},
+          "signature_hex": {"type": "string", "pattern": "^[0-9a-f]{128}$"},
+          "provenance_refs": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "proposed_only": {"const": true},
+          "cryptographic_verification_performed": {"const": false}
+        },
+        "additionalProperties": false
+      }
+    },
+    "configured_peers": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["peer_id", "enrollment_proposal_id", "reciprocal_evidence_proposal_ids", "conformance_status", "advisory_only", "direct_media_eligible", "topology_authorized", "media_authorized"],
+        "properties": {
+          "peer_id": {"type": "string"},
+          "enrollment_proposal_id": {"type": ["string", "null"]},
+          "reciprocal_evidence_proposal_ids": {"type": "array", "items": {"type": "string"}},
+          "conformance_status": {"enum": ["eligible_for_manifold_review", "advisory_pending_independent_enrollment"]},
+          "advisory_only": {"const": true},
+          "direct_media_eligible": {"const": false},
+          "topology_authorized": {"const": false},
+          "media_authorized": {"const": false}
+        },
+        "additionalProperties": false
+      }
+    },
+    "authority_boundary": {"type": "object"},
+    "privacy_boundary": {"type": "object"}
+  },
+  "additionalProperties": false
+}

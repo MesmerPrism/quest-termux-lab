@@ -15,6 +15,11 @@ The source list includes exactly one sanitized three-peer topology report as
 blocked; it is evidence for proposal construction only. It does not select a
 route, authenticate a direct lane, mutate membership, or carry media.
 
+The source list also includes exactly one
+`peer_authority_proposal_source`, which points to the sanitized enrollment and
+signed-evidence handoff. This remains source/privacy evidence in the existing
+DAG; it is not a new execution stage or an accepted Manifold request.
+
 Validate it with:
 
 ```powershell

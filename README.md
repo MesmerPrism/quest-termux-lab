@@ -6,6 +6,12 @@ privacy evidence, preserves all existing v1 tools and fixtures, and cannot
 carry commands, endpoints, credentials, device identifiers, logs, captures, or
 runtime authority. See [docs/peer-workflow-source-profile.md](docs/peer-workflow-source-profile.md).
 
+The [peer-authority source handoff](docs/peer-authority-source-handoff.md)
+adds a sanitized NET-017 conformance fixture for public enrollment requests
+and reciprocal signed-evidence proposals. It pins Manifold's v1 contract names
+but cannot verify signatures, accept peers, elect a coordinator, issue a lease,
+or authorize topology/media; the un-enrolled third peer stays advisory.
+
 Quest Termux Lab is a public, MIT-licensed place to explore Termux, Termux:X11,
 Proot, local dashboards, and localhost-only VNC as developer lab sidecars on
 Meta Quest headsets.
@@ -35,6 +41,8 @@ full boundary.
 ## Current Scope
 
 - Data-only session recipe and evidence schemas.
+- Public-key/signature-only peer-authority proposal handoffs with exact
+  Manifold v1 schema expectations and damaged anti-escalation fixtures.
 - Synthetic examples for Termux:X11, Proot, and localhost VNC flows.
 - Public-safe runbooks for capability testing and cleanup.
 - Small host-side helper tools that do not require private project state.

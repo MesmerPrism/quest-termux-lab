@@ -18,6 +18,8 @@ class WorkflowSourceProfileTests(unittest.TestCase):
         self.assertEqual(peer_mesh_workflow_profile.validate_profile(profile), [])
         topology = [artifact for artifact in profile["source_artifacts"] if artifact["role"] == "n_peer_advisory_topology"]
         self.assertEqual(len(topology), 1)
+        authority = [artifact for artifact in profile["source_artifacts"] if artifact["role"] == "peer_authority_proposal_source"]
+        self.assertEqual(len(authority), 1)
 
     def test_command_and_endpoint_fields_fail_closed(self):
         for field in ["command", "endpoint", "pairing_material", "private_device_id"]:
