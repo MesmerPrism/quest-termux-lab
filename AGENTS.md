@@ -17,6 +17,11 @@ For consolidated workflow intake, export only
 stage and does not replace any existing peer-mesh schema or tool. See
 `docs/peer-workflow-source-profile.md`.
 
+The profile's N-peer topology artifact is advisory evidence only. It may
+describe a sanitized three-peer configured graph, but cannot elect a
+coordinator, accept membership, rank a product route, authorize a direct media
+lane, or mutate Manifold state.
+
 Do not introduce `rusty.*` schema IDs, AGPL Morphospace ownership claims, or
 runtime authority here by default. Keep this repository's schemas in the
 `quest-termux-lab.*` namespace. Promote reusable lessons into Morphospace

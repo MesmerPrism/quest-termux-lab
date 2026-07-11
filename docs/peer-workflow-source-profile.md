@@ -10,6 +10,11 @@ their schemas, and their tools remain independently usable. Rusty Quest Sidecar
 Mesh owns integration-DAG composition. Rusty Manifold remains the future
 decision, receipt, audit, and accepted-state authority.
 
+The source list includes exactly one sanitized three-peer topology report as
+`n_peer_advisory_topology`. Its route health may be reachable, degraded, or
+blocked; it is evidence for proposal construction only. It does not select a
+route, authenticate a direct lane, mutate membership, or carry media.
+
 Validate it with:
 
 ```powershell

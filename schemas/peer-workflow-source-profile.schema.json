@@ -11,7 +11,7 @@
     "contributes_phases": {"const": ["source", "privacy"]},
     "source_artifacts": {
       "type": "array",
-      "minItems": 3,
+      "minItems": 4,
       "items": {
         "type": "object",
         "required": ["path", "schema", "role"],

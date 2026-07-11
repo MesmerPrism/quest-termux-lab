@@ -49,8 +49,8 @@ def validate_profile(profile: dict[str, Any]) -> list[str]:
     if profile.get("contributes_phases") != PHASES:
         errors.append("public profile must contribute source and privacy only")
     artifacts = profile.get("source_artifacts")
-    if not isinstance(artifacts, list) or len(artifacts) < 3:
-        errors.append("source_artifacts must contain at least three compatibility artifacts")
+    if not isinstance(artifacts, list) or len(artifacts) < 4:
+        errors.append("source_artifacts must contain at least four compatibility artifacts")
     else:
         for artifact in artifacts:
             if not isinstance(artifact, dict) or set(artifact) != {"path", "schema", "role"}:
@@ -60,6 +60,13 @@ def validate_profile(profile: dict[str, Any]) -> list[str]:
                 errors.append("source artifact paths must stay inside examples")
             if not str(artifact["schema"]).startswith("quest-termux-lab."):
                 errors.append("source artifact schemas must stay in the public-lab namespace")
+        topology = [
+            artifact for artifact in artifacts
+            if artifact.get("schema") == "quest-termux-lab.peer-topology-report.v1"
+            and artifact.get("role") == "n_peer_advisory_topology"
+        ]
+        if len(topology) != 1:
+            errors.append("source_artifacts must contain exactly one N-peer advisory topology")
     privacy = profile.get("privacy_boundary", {})
     if privacy.get("synthetic_only") is not True:
         errors.append("privacy boundary must be synthetic_only")

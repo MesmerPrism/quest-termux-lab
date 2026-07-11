@@ -6,7 +6,8 @@
   "source_artifacts": [
     {"path": "examples/peer-fixture-index-report.synthetic.json", "schema": "quest-termux-lab.peer-fixture-index-report.v1", "role": "fixture_compatibility_index"},
     {"path": "examples/peer-review-bundle-preflight-clear-report.synthetic.json", "schema": "quest-termux-lab.peer-review-bundle-report.v1", "role": "synthetic_preflight_review"},
-    {"path": "examples/peer-private-evidence-redaction-report.synthetic.json", "schema": "quest-termux-lab.peer-private-evidence-redaction-report.v1", "role": "redaction_policy_evidence"}
+    {"path": "examples/peer-private-evidence-redaction-report.synthetic.json", "schema": "quest-termux-lab.peer-private-evidence-redaction-report.v1", "role": "redaction_policy_evidence"},
+    {"path": "examples/peer-topology-report.synthetic.json", "schema": "quest-termux-lab.peer-topology-report.v1", "role": "n_peer_advisory_topology"}
   ],
   "privacy_boundary": {
     "synthetic_only": true,
