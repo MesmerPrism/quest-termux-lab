@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MesmerPrism/quest-termux-lab/schemas/spatial-desktop-session-evidence.schema.json",
+  "title": "quest-termux-lab.spatial-desktop-session-evidence.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "session", "transport", "framebuffer", "input_gates", "cleanup", "result"],
+  "properties": {
+    "schema": {"const": "quest-termux-lab.spatial-desktop-session-evidence.v1"},
+    "session": {"type": "string", "pattern": "^[a-z0-9-]{2,64}$"},
+    "transport": {"const": "android-device-loopback-rfb-none"},
+    "framebuffer": {"type": "object", "additionalProperties": false, "required": ["width", "height", "generations", "updates"], "properties": {"width":{"type":"integer","minimum":1,"maximum":4096},"height":{"type":"integer","minimum":1,"maximum":4096},"generations":{"type":"integer","minimum":1},"updates":{"type":"integer","minimum":1}}},
+    "input_gates": {"type":"object","additionalProperties":{"enum":["pass","fail","not-run"]},"required":["center","corners","letterbox_rejection","focus_release","double_click","drag","right_click","scroll","physical_keyboard","latency","frame_budget"]},
+    "cleanup": {"type":"object","additionalProperties":false,"required":["app_disconnected","x11vnc_stopped","ports_released"],"properties":{"app_disconnected":{"type":"boolean"},"x11vnc_stopped":{"type":"boolean"},"ports_released":{"type":"boolean"}}},
+    "result": {"enum":["pass","partial","fail","source-only"]},
+    "notes": {"type":"array","maxItems":16,"items":{"type":"string","maxLength":256}}
+  }
+}

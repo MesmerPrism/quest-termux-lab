@@ -1,0 +1,10 @@
+{
+  "schema": "quest-termux-lab.spatial-desktop-session-evidence.v1",
+  "session": "synthetic-source-validation",
+  "transport": "android-device-loopback-rfb-none",
+  "framebuffer": {"width": 1280, "height": 720, "generations": 3, "updates": 20},
+  "input_gates": {"center":"not-run","corners":"not-run","letterbox_rejection":"not-run","focus_release":"not-run","double_click":"not-run","drag":"not-run","right_click":"not-run","scroll":"not-run","physical_keyboard":"not-run","latency":"not-run","frame_budget":"not-run"},
+  "cleanup": {"app_disconnected":true,"x11vnc_stopped":true,"ports_released":true},
+  "result": "source-only",
+  "notes": ["Synthetic example only; it contains no device identity or captured evidence."]
+}
