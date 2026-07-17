@@ -1,0 +1,97 @@
+package io.github.mesmerprism.questtermuxlab.spatialdesktop
+
+import java.io.File
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+class SpatialArchitectureStaticTest {
+  private fun source(relative: String): String {
+    val candidates = listOf(File(relative), File("app", relative))
+    return candidates.firstOrNull { it.isFile }?.readText()
+      ?: error("Missing source fixture: $relative from ${File(".").absolutePath}")
+  }
+
+  @Test fun activityRegistersVrFeatureViewerPoseLayerModeAndZIndex() {
+    val activity = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/SpatialDesktopActivity.kt")
+    assertTrue(activity.contains("VRFeature(this, LocomotionControls.Right, false, VrInputSystemType.INTERACTION_SDK)"))
+    assertTrue(activity.contains("scene.getViewerPose()"))
+    assertTrue(activity.contains("Quaternion.fromDirection"))
+    assertTrue(activity.contains("UIPanelRenderOptions(PanelRenderMode.Layer())"))
+    assertTrue(activity.contains("layer?.setZIndex(SpatialPresentationContract.PANEL_LAYER_Z_INDEX)"))
+    assertTrue(activity.contains("Entity.createPanelEntity"))
+    assertTrue(activity.contains("Grabbable(enabled = true, type = GrabbableType.PIVOT_Y, minHeight = 0.5f, maxHeight = 2.5f)"))
+    assertTrue(!activity.contains("Isdk"))
+    assertTrue(!activity.contains("setOnTouchListener"))
+    assertTrue(!activity.contains("R.id.grab_label"))
+    assertTrue(!activity.contains("movePanel"))
+    assertTrue(!activity.contains("MotionEvent"))
+    assertTrue(activity.contains("SPATIAL_DESKTOP_PANEL_RECENTERED"))
+    assertTrue(activity.contains("require(BuildConfig.DEBUG) { \"panel recenter disabled in release build\" }"))
+    assertTrue(activity.contains("scalePreserved=true"))
+    assertTrue(activity.contains("check(scaleAfter == scaleBefore)"))
+    assertEquals(2, Regex("setComponent\\(Transform\\(").findAll(activity).count() + Regex("Transform\\(pose\\)").findAll(activity).count())
+  }
+
+  @Test fun manifestHasMinimalHorizonOpenXrAndVrScaffolding() {
+    val manifest = source("src/main/AndroidManifest.xml")
+    listOf(
+      "uses-horizonos-sdk",
+      "org.khronos.openxr.permission.OPENXR",
+      "org.khronos.openxr.permission.OPENXR_SYSTEM",
+      "com.oculus.supportedDevices",
+      "com.oculus.vr.focusaware",
+      "libossdk.oculus.so",
+      "android:screenOrientation=\"landscape\"",
+      "keyboard|navigation|uiMode",
+    ).forEach { assertTrue("missing manifest marker $it", manifest.contains(it)) }
+  }
+
+  @Test fun panelThemeIsExplicitlyOpaqueAndVrDependenciesArePinned() {
+    val styles = source("src/main/res/values/styles.xml")
+    val build = source("build.gradle.kts")
+    assertTrue(styles.contains("android:windowIsTranslucent\">false</item>"))
+    assertTrue(build.contains("meta-spatial-sdk-vr:0.13.2"))
+    assertTrue(build.contains("meta-spatial-sdk-isdk:0.13.2"))
+  }
+
+  @Test fun buttonsAndDebugIntentShareTypedDispatcher() {
+    val activity = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/SpatialDesktopActivity.kt")
+    assertTrue(activity.contains("override fun onNewIntent(intent: Intent)"))
+    assertTrue(activity.contains("BuildConfig.DEBUG"))
+    assertTrue(activity.contains("dispatchHuman(if (client.isActive) PanelAction.Disconnect else PanelAction.Connect)"))
+    assertTrue(activity.contains("dispatchPanelAction(request.action, request.requestId)"))
+    assertTrue(activity.contains("SPATIAL_DESKTOP_RFB_STATUS"))
+    assertTrue(activity.contains("SPATIAL_DESKTOP_RFB_FRAME"))
+    assertTrue(activity.contains("postDelayed(deferredPauseDisconnect, PAUSE_DISCONNECT_DELAY_MS)"))
+    assertTrue(activity.contains("lifecycleHandler.removeCallbacks(deferredPauseDisconnect)"))
+    val rfb = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/RfbProtocol.kt")
+    assertTrue(rfb.indexOf("negotiate(input, out)") < rfb.indexOf("s.soTimeout = 0"))
+    assertTrue(rfb.contains("newSingleThreadExecutor"))
+    assertTrue(rfb.contains("loopback-rfb-writer"))
+    assertTrue(rfb.contains("input.readFully(raw)"))
+    assertTrue(rfb.contains("System.arraycopy"))
+    assertTrue(rfb.contains("RfbPixelFormat.BGRA32"))
+    assertTrue(rfb.contains("RfbPixelFormat.RGB565"))
+    assertTrue(rfb.contains("copyRect"))
+    val view = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/FramebufferView.kt")
+    assertTrue(view.contains("ArrayBlockingQueue<DecodedFrame>"))
+    assertTrue(view.contains("target.setPixels"))
+    assertTrue(view.contains("backpressureBlocks"))
+    assertTrue(!view.contains("framebuffer.snapshot()"))
+    assertTrue(view.contains("PrimaryPointerGestureClassifier"))
+    assertTrue(view.contains("primaryGesture.down(id, point, e.eventTime)"))
+    assertTrue(!view.contains("input?.press(1, point)"))
+    assertTrue(view.contains("PrimaryPointerGestureEvent.Click -> lifecycle.click(1, event.point)"))
+    val sidecar = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/TermuxSidecarLauncher.kt")
+    assertTrue(sidecar.contains("termux-x11"))
+    assertTrue(sidecar.contains("\"termux-x11-nightly\", \"xfce4\", \"xorg-xrandr\""))
+    assertTrue(sidecar.contains("arrayOf(\"install\", \"-y\", \"x11-repo\")"))
+    assertTrue(sidecar.contains("\"-localhost\""))
+    assertTrue(!sidecar.contains("-lc"))
+    val witness = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/TermuxWitnessLauncher.kt")
+    assertTrue(witness.contains("xfce4-terminal"))
+    assertTrue(witness.contains("^\$PREFIX/bin/xfce4-terminal .*--title=SpatialDesktopWitness$"))
+    assertTrue(!witness.contains("-lc"))
+  }
+}
