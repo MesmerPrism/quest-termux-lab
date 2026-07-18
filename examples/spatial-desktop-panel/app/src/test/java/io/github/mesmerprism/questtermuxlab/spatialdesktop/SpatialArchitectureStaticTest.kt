@@ -60,6 +60,8 @@ class SpatialArchitectureStaticTest {
     assertTrue(activity.contains("override fun onNewIntent(intent: Intent)"))
     assertTrue(activity.contains("BuildConfig.DEBUG"))
     assertTrue(activity.contains("dispatchHuman(if (client.isActive) PanelAction.Disconnect else PanelAction.Connect)"))
+    assertTrue(activity.contains("dispatchHuman(PanelAction.Camera50)"))
+    assertTrue(activity.contains("dispatchHuman(PanelAction.Camera51)"))
     assertTrue(activity.contains("dispatchPanelAction(request.action, request.requestId)"))
     assertTrue(activity.contains("SPATIAL_DESKTOP_RFB_STATUS"))
     assertTrue(activity.contains("SPATIAL_DESKTOP_RFB_FRAME"))

@@ -11,6 +11,8 @@ sealed interface PanelAction {
   data object RightClick : PanelAction
   data object ScrollUp : PanelAction
   data object ScrollDown : PanelAction
+  data object Camera50 : PanelAction
+  data object Camera51 : PanelAction
   data class PointerMove(val point: DesktopPoint) : PanelAction
   data class PointerDown(val point: DesktopPoint) : PanelAction
   data class PointerUp(val point: DesktopPoint) : PanelAction
@@ -40,7 +42,7 @@ object DebugPanelActionContract {
   const val MARKER_REJECTED = "SPATIAL_DESKTOP_DEBUG_ACTION_REJECTED"
   const val MARKER_COMPLETED = "SPATIAL_DESKTOP_DEBUG_ACTION_COMPLETED"
 
-  val actionNames = setOf("connect", "disconnect", "size-up", "size-down", "recenter-panel", "right-click", "scroll-up", "scroll-down", "pointer-move", "pointer-down", "pointer-up", "tap", "drag", "type-text", "enter", "start-sidecar", "start-witness", "stop-witness")
+  val actionNames = setOf("connect", "disconnect", "size-up", "size-down", "recenter-panel", "right-click", "scroll-up", "scroll-down", "camera-50", "camera-51", "pointer-move", "pointer-down", "pointer-up", "tap", "drag", "type-text", "enter", "start-sidecar", "start-witness", "stop-witness")
 
   fun parse(isDebug: Boolean, intentAction: String?, requestId: String?, actionName: String?, x: Int?, y: Int?, text: String?, x2: Int? = null, y2: Int? = null): Result<PanelActionRequest> =
     runCatching {
@@ -71,6 +73,8 @@ object DebugPanelActionContract {
         "right-click" -> PanelAction.RightClick
         "scroll-up" -> PanelAction.ScrollUp
         "scroll-down" -> PanelAction.ScrollDown
+        "camera-50" -> PanelAction.Camera50
+        "camera-51" -> PanelAction.Camera51
         "pointer-move" -> PanelAction.PointerMove(point())
         "pointer-down" -> PanelAction.PointerDown(point())
         "pointer-up" -> PanelAction.PointerUp(point())

@@ -3,6 +3,8 @@
     <TextView android:id="@+id/grab_label" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:gravity="center_vertical" android:text="SPATIAL DESKTOP • grab panel" android:textColor="#101010" android:textSize="24sp" android:textStyle="bold" />
     <Button android:id="@+id/size_down" android:layout_width="48dp" android:layout_height="match_parent" android:text="−" />
     <Button android:id="@+id/size_up" android:layout_width="48dp" android:layout_height="match_parent" android:text="+" />
+    <Button android:id="@+id/camera_50" android:layout_width="88dp" android:layout_height="match_parent" android:text="CAM 50" />
+    <Button android:id="@+id/camera_51" android:layout_width="88dp" android:layout_height="match_parent" android:text="CAM 51" />
     <Button android:id="@+id/connect" android:layout_width="110dp" android:layout_height="match_parent" android:text="Connect" />
   </LinearLayout>
   <io.github.mesmerprism.questtermuxlab.spatialdesktop.FramebufferView android:id="@+id/framebuffer" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:focusable="true" android:focusableInTouchMode="true" />
