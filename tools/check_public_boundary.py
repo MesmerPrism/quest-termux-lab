@@ -49,7 +49,16 @@ SYNTHETIC_MARKER_REQUIRED = {
     "remote-session-lease.synthetic.json",
 }
 
-SKIP_DIRS = {".git", "__pycache__", "runs", "artifacts", "captures", "logs"}
+GENERATED_DIRS = {".gradle", ".kotlin", "build"}
+SKIP_DIRS = {
+    ".git",
+    "__pycache__",
+    "runs",
+    "artifacts",
+    "captures",
+    "logs",
+    *GENERATED_DIRS,
+}
 TEXT_SUFFIXES = {
     ".md",
     ".txt",
@@ -112,6 +121,8 @@ def main() -> int:
 
     for rel_text in tracked:
         rel = Path(rel_text)
+        if any(part in GENERATED_DIRS for part in rel.parts):
+            findings.append(f"{rel}: forbidden tracked generated build state")
         if rel.suffix.lower() in FORBIDDEN_TRACKED_SUFFIXES:
             findings.append(f"{rel}: forbidden tracked generated/binary artifact")
 
