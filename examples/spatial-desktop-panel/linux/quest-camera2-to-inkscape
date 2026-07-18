@@ -1,0 +1,210 @@
+#!/data/data/com.termux/files/usr/bin/python
+"""Consume one authenticated Quest-loopback JPEG and open an embedded SVG in Inkscape."""
+
+from __future__ import annotations
+
+import argparse
+import base64
+import io
+import os
+from pathlib import Path
+import re
+import subprocess
+import sys
+import tempfile
+from datetime import datetime, timezone
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlsplit
+from urllib.request import ProxyHandler, Request, build_opener
+
+from PIL import Image, UnidentifiedImageError
+
+
+MAX_JPEG_BYTES = 16 * 1024 * 1024
+MAX_IMAGE_PIXELS = 40_000_000
+TOKEN_PATTERN = re.compile(r"[0-9a-f]{64}")
+CAMERA_IDS = {"50", "51"}
+
+
+class CameraImportError(RuntimeError):
+    pass
+
+
+def validate_snapshot_url(value: str) -> str:
+    parsed = urlsplit(value)
+    try:
+        port = parsed.port
+    except ValueError as exc:
+        raise CameraImportError("snapshot URL has an invalid port") from exc
+    if (
+        parsed.scheme != "http"
+        or parsed.hostname != "127.0.0.1"
+        or port is None
+        or not 1024 <= port <= 65535
+        or parsed.path != "/snapshot.jpg"
+        or parsed.query
+        or parsed.fragment
+        or parsed.username
+        or parsed.password
+    ):
+        raise CameraImportError("snapshot URL must be an uncredentialed Quest-loopback /snapshot.jpg endpoint")
+    return value
+
+
+def validate_token(value: str) -> str:
+    if not TOKEN_PATTERN.fullmatch(value):
+        raise CameraImportError("snapshot token must be 64 lowercase hexadecimal characters")
+    return value
+
+
+def download_snapshot(url: str, token: str, timeout_seconds: float = 12.0) -> bytes:
+    validate_snapshot_url(url)
+    validate_token(token)
+    request = Request(
+        url,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "image/jpeg",
+            "Connection": "close",
+        },
+        method="GET",
+    )
+    try:
+        # Never let environment proxy settings move a device-loopback camera frame.
+        with build_opener(ProxyHandler({})).open(request, timeout=timeout_seconds) as response:
+            if response.headers.get_content_type() != "image/jpeg":
+                raise CameraImportError("snapshot endpoint did not return image/jpeg")
+            declared = response.headers.get("Content-Length")
+            if declared is not None:
+                try:
+                    declared_size = int(declared)
+                except ValueError as exc:
+                    raise CameraImportError("snapshot Content-Length is invalid") from exc
+                if not 4 <= declared_size <= MAX_JPEG_BYTES:
+                    raise CameraImportError("snapshot Content-Length is outside the bounded size")
+            payload = response.read(MAX_JPEG_BYTES + 1)
+    except CameraImportError:
+        raise
+    except (HTTPError, URLError, TimeoutError, OSError) as exc:
+        raise CameraImportError(f"snapshot request failed ({type(exc).__name__})") from exc
+    if not 4 <= len(payload) <= MAX_JPEG_BYTES:
+        raise CameraImportError("snapshot payload is outside the bounded size")
+    return payload
+
+
+def verify_jpeg(payload: bytes) -> tuple[int, int]:
+    previous_limit = Image.MAX_IMAGE_PIXELS
+    Image.MAX_IMAGE_PIXELS = MAX_IMAGE_PIXELS
+    try:
+        with Image.open(io.BytesIO(payload)) as probe:
+            if probe.format != "JPEG":
+                raise CameraImportError("snapshot payload is not JPEG")
+            probe.verify()
+        with Image.open(io.BytesIO(payload)) as image:
+            width, height = image.size
+            if width <= 0 or height <= 0 or width > 8192 or height > 8192 or width * height > MAX_IMAGE_PIXELS:
+                raise CameraImportError("snapshot dimensions are outside the bounded size")
+            image.load()
+    except CameraImportError:
+        raise
+    except (UnidentifiedImageError, OSError, ValueError) as exc:
+        raise CameraImportError("snapshot JPEG validation failed") from exc
+    finally:
+        Image.MAX_IMAGE_PIXELS = previous_limit
+    return width, height
+
+
+def atomic_write(path: Path, data: bytes) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    try:
+        with os.fdopen(descriptor, "wb") as stream:
+            stream.write(data)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary_name, path)
+    except Exception:
+        try:
+            os.unlink(temporary_name)
+        except FileNotFoundError:
+            pass
+        raise
+
+
+def embedded_svg(camera_id: str, width: int, height: int, jpeg: bytes) -> bytes:
+    encoded = base64.b64encode(jpeg).decode("ascii")
+    document = f"""<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
+  <title>Quest outside camera {camera_id} still</title>
+  <metadata>quest-termux-lab Camera2 one-shot import; camera_id={camera_id}</metadata>
+  <image x="0" y="0" width="{width}" height="{height}" preserveAspectRatio="xMidYMid meet" href="data:image/jpeg;base64,{encoded}" />
+</svg>
+"""
+    return document.encode("utf-8")
+
+
+def save_import(output_dir: Path, camera_id: str, jpeg: bytes) -> tuple[Path, Path, int, int]:
+    if camera_id not in CAMERA_IDS:
+        raise CameraImportError("camera ID must be 50 or 51")
+    width, height = verify_jpeg(jpeg)
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    base = f"quest-camera-{camera_id}-{timestamp}"
+    jpeg_path = output_dir.expanduser().resolve() / f"{base}.jpg"
+    svg_path = output_dir.expanduser().resolve() / f"{base}.svg"
+    atomic_write(jpeg_path, jpeg)
+    try:
+        atomic_write(svg_path, embedded_svg(camera_id, width, height, jpeg))
+    except Exception:
+        jpeg_path.unlink(missing_ok=True)
+        raise
+    return jpeg_path, svg_path, width, height
+
+
+def launch_inkscape(svg_path: Path, display: str) -> None:
+    environment = os.environ.copy()
+    environment["DISPLAY"] = display
+    environment["GDK_BACKEND"] = "x11"
+    try:
+        subprocess.Popen(
+            ["inkscape", str(svg_path)],
+            env=environment,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+            close_fds=True,
+        )
+    except OSError as exc:
+        raise CameraImportError(f"could not launch Inkscape ({type(exc).__name__})") from exc
+
+
+def parse_args(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--url", required=True)
+    parser.add_argument("--token", required=True)
+    parser.add_argument("--camera-id", required=True, choices=sorted(CAMERA_IDS))
+    parser.add_argument("--output-dir", type=Path, default=Path.home() / "Pictures" / "Quest Camera Imports")
+    parser.add_argument("--display", default=":1")
+    parser.add_argument("--no-launch", action="store_true", help="save the validated JPG and SVG without opening Inkscape")
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv if argv is not None else sys.argv[1:])
+    try:
+        jpeg = download_snapshot(args.url, args.token)
+        _, svg_path, width, height = save_import(args.output_dir, args.camera_id, jpeg)
+        if not args.no_launch:
+            launch_inkscape(svg_path, args.display)
+    except CameraImportError as exc:
+        print(f"camera_import_failed: {exc}", file=sys.stderr)
+        return 2
+    except Exception as exc:
+        print(f"camera_import_failed: unexpected {type(exc).__name__}", file=sys.stderr)
+        return 3
+    print(f"camera_import_ok camera_id={args.camera_id} dimensions={width}x{height} svg={svg_path.name}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

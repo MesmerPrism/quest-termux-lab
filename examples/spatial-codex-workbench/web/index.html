@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="color-scheme" content="dark">
+  <title>Spatial Codex Workbench</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1020;
+      --surface: #121a2f;
+      --surface-2: #19243d;
+      --line: #2b3a5d;
+      --text: #eef4ff;
+      --muted: #9fb0ce;
+      --blue: #61a8ff;
+      --green: #52d890;
+      --amber: #ffc966;
+      --red: #ff7b86;
+      --radius: 14px;
+      font-family: Inter, system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: linear-gradient(145deg, #080d19, var(--bg)); color: var(--text); min-height: 100vh; }
+    button, input, textarea, select { font: inherit; }
+    button { border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); color: var(--text); padding: 10px 14px; cursor: pointer; }
+    button:hover { border-color: var(--blue); }
+    button:disabled { opacity: .42; cursor: not-allowed; }
+    button.primary { background: #1f5fa8; border-color: #3f8ee8; }
+    button.risk { border-color: #88505a; }
+    input, textarea, select { width: 100%; border: 1px solid var(--line); border-radius: 10px; background: #09101f; color: var(--text); padding: 11px 12px; }
+    textarea { min-height: 84px; resize: vertical; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .app { padding: 16px; display: grid; gap: 12px; max-width: 1500px; margin: 0 auto; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: rgba(18,26,47,.96); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .mark { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; font-weight: 800; background: linear-gradient(135deg,#236bc0,#7f65d8); }
+    h1 { margin: 0; font-size: 18px; }
+    .subtitle { color: var(--muted); font-size: 12px; }
+    .capabilities { display: flex; flex-wrap: wrap; gap: 7px; justify-content: flex-end; }
+    .chip { border: 1px solid var(--line); border-radius: 999px; padding: 6px 9px; color: var(--muted); font-size: 12px; }
+    .chip.ready { color: var(--green); border-color: #286a4d; }
+    .chip.blocked { color: var(--amber); border-color: #765e2f; }
+    .workspace { display: grid; grid-template-columns: 1fr auto auto auto; gap: 8px; align-items: center; }
+    .meta { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+    .grid { display: grid; grid-template-columns: minmax(320px, 1.05fr) minmax(360px, 1.35fr); gap: 12px; min-height: 560px; }
+    .panel { background: rgba(18,26,47,.96); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; min-width: 0; }
+    .panel h2 { margin: 0 0 10px; font-size: 14px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+    .stack { display: grid; gap: 9px; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .row > .grow { flex: 1 1 240px; }
+    .activity { height: 270px; overflow: auto; background: #080e1b; border: 1px solid var(--line); border-radius: 10px; padding: 9px; }
+    .event { display: grid; grid-template-columns: 72px 1fr; gap: 8px; padding: 7px 5px; border-bottom: 1px solid #18233b; font-size: 12px; }
+    .event:last-child { border-bottom: 0; }
+    .event .state { color: var(--blue); }
+    .tabs { display: flex; gap: 6px; margin-bottom: 9px; }
+    .tabs button.active { border-color: var(--blue); color: var(--blue); }
+    .tab { display: none; }
+    .tab.active { display: block; }
+    .diff { height: 420px; overflow: auto; white-space: pre; background: #070c16; border: 1px solid var(--line); border-radius: 10px; padding: 12px; color: #d9e5fa; font-size: 12px; }
+    .summary { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+    .metric { background: #0b1324; border: 1px solid #263653; border-radius: 10px; padding: 10px; }
+    .metric span { display: block; color: var(--muted); font-size: 11px; margin-bottom: 4px; }
+    .metric strong { font-size: 13px; overflow-wrap: anywhere; }
+    .footer { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 8px; }
+    .notice { min-height: 20px; color: var(--muted); font-size: 12px; }
+    .notice.error { color: var(--red); }
+    .notice.ok { color: var(--green); }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      .workspace { grid-template-columns: 1fr 1fr; }
+      .footer { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand"><div class="mark">CX</div><div><h1>Spatial Codex Workbench</h1><div class="subtitle">Agentic APK development on Quest</div></div></div>
+      <div id="capabilities" class="capabilities" aria-label="capabilities"></div>
+    </header>
+
+    <section class="panel workspace">
+      <div><strong id="workspaceName">No workspace</strong><div id="workspaceMeta" class="meta">Start the broker, then create the reproducible demo.</div></div>
+      <button id="startBroker">Start broker</button>
+      <button id="createDemo">Create demo</button>
+      <button id="createRun">Create run</button>
+    </section>
+
+    <section class="grid">
+      <div class="panel stack">
+        <h2>Codex</h2>
+        <div class="row"><button id="loginCodex">Sign in to Codex</button><button id="cancelLogin" disabled>Cancel sign-in</button></div>
+        <pre id="authOutput" class="diff" style="height:110px">Codex sign-in has not started.</pre>
+        <textarea id="prompt" maxlength="8192">Change the app title to “Hello from Spatial Codex” and change the background to a deep blue.</textarea>
+        <div class="row"><button id="runCodex" class="primary">Run Codex</button><button id="cancelCodex" disabled>Cancel</button><button id="refresh">Refresh</button></div>
+        <div id="activity" class="activity" aria-live="polite"></div>
+        <div id="finalMessage" class="notice">No Codex run yet.</div>
+
+        <h2>Version and build</h2>
+        <div class="row"><button id="bumpVersion">Bump patch version</button><button id="previewBuild">Build preview</button><button id="candidateBuild">Build candidate</button></div>
+        <div class="summary">
+          <div class="metric"><span>Version</span><strong id="versionValue">—</strong></div>
+          <div class="metric"><span>APK SHA-256</span><strong id="hashValue">—</strong></div>
+          <div class="metric"><span>Build</span><strong id="buildValue">—</strong></div>
+          <div class="metric"><span>Source</span><strong id="sourceValue">—</strong></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="tabs"><button data-tab="diff" class="active">Diff</button><button data-tab="commit">Commit</button><button data-tab="github">GitHub</button><button data-tab="deploy">Deploy</button></div>
+        <section id="tab-diff" class="tab active"><pre id="diff" class="diff">No reviewed diff.</pre></section>
+        <section id="tab-commit" class="tab stack">
+          <label>Commit message<input id="commitMessage" maxlength="200" value="Update Quest demo with Codex"></label>
+          <div class="notice">Commit is enabled only for the exact reviewed diff.</div>
+          <button id="commit" class="risk">Commit reviewed changes</button>
+        </section>
+        <section id="tab-github" class="tab stack">
+          <div id="githubState" class="notice">GitHub has not been checked.</div>
+          <label>Pull-request title<input id="prTitle" maxlength="200" value="Update Quest demo from Spatial Codex"></label>
+          <label>Body<textarea id="prBody" maxlength="4000">Created through the public Spatial Codex Workbench proof of concept.</textarea></label>
+          <div class="row"><button id="checkGithub">Check GitHub</button><button id="pushPr" class="risk">Push &amp; draft PR</button></div>
+        </section>
+        <section id="tab-deploy" class="tab stack">
+          <div class="row"><button id="findTargets">Find ADB targets</button><select id="target"><option value="">Select an exact target</option></select></div>
+          <div class="notice">Install requires an explicit target and a fresh <code>uid=2000(shell)</code> gate.</div>
+          <div class="row"><button id="install" class="risk">Install candidate</button><button id="launch" class="risk">Launch candidate</button></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="footer">
+      <button id="reviewDiff">Review diff</button>
+      <button id="discard" class="risk">Discard run changes</button>
+      <button data-tab-jump="commit">Commit</button>
+      <button data-tab-jump="github">Push / PR</button>
+      <button data-tab-jump="deploy">Install / launch</button>
+      <button id="recenter">Recenter panel</button>
+    </section>
+    <div id="notice" class="notice" aria-live="assertive"></div>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+      const state = { broker: false, workspace: null, run: null, codexId: null, reviewToken: null, buildId: null, candidateBuildId: null, sequence: 0, version: null };
+      const pending = new Map();
+      const $ = (id) => document.getElementById(id);
+      const notice = (text, type = "") => { $("notice").textContent = text; $("notice").className = `notice ${type}`; };
+      const id = () => `ui-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+
+      window.Workbench = {
+        onNativeResponse(requestId, payload) {
+          const entry = pending.get(requestId);
+          if (!entry) return;
+          pending.delete(requestId);
+          try {
+            const parsed = typeof payload === "string" ? JSON.parse(payload) : payload;
+            if (parsed && parsed.error) entry.reject(new Error(parsed.error.message || "Operation failed"));
+            else entry.resolve(parsed);
+          } catch (error) { entry.reject(error); }
+        },
+      };
+
+      function nativeCall(kind, method, path, body = {}) {
+        if (!window.WorkbenchNative) return mockCall(kind, method, path, body);
+        const requestId = id();
+        return new Promise((resolve, reject) => {
+          pending.set(requestId, { resolve, reject });
+          if (kind === "start") window.WorkbenchNative.startBroker(requestId);
+          else if (kind === "recenter") window.WorkbenchNative.recenterPanel(requestId);
+          else window.WorkbenchNative.request(requestId, method, path, JSON.stringify(body));
+          setTimeout(() => { if (pending.delete(requestId)) reject(new Error("Native request timed out")); }, 120000);
+        });
+      }
+
+      const api = (method, path, body) => nativeCall("api", method, path, body);
+      async function action(label, work) {
+        notice(`${label}…`);
+        try { const result = await work(); notice(`${label} completed.`, "ok"); return result; }
+        catch (error) { notice(`${label}: ${error.message}`, "error"); throw error; }
+      }
+
+      function renderCapabilities(items = []) {
+        const ids = ["broker", "codex", "codex_auth", "git", "github", "adb", "build"];
+        const byId = new Map(items.map((item) => [item.id, item.state]));
+        $("capabilities").replaceChildren(...ids.map((name) => {
+          const chip = document.createElement("span");
+          const status = name === "broker" ? (state.broker ? "ready" : "blocked") : (byId.get(name) || "blocked");
+          chip.className = `chip ${status}`;
+          chip.textContent = `${name} ${status === "ready" ? "✓" : "○"}`;
+          return chip;
+        }));
+      }
+
+      function renderWorkspace() {
+        $("workspaceName").textContent = state.workspace?.workspace_id || "No workspace";
+        $("workspaceMeta").textContent = state.run?.branch ? `Branch ${state.run.branch} from ${state.run.base_branch}` : (state.workspace ? "Workspace ready; create an isolated run." : "Start the broker, then create the reproducible demo.");
+      }
+
+      function addEvent(event) {
+        const row = document.createElement("div");
+        row.className = "event";
+        const status = document.createElement("span"); status.className = "state"; status.textContent = event.status;
+        const summary = document.createElement("span"); summary.textContent = event.summary;
+        row.append(status, summary); $("activity").append(row); $("activity").scrollTop = $("activity").scrollHeight;
+      }
+
+      async function refreshAll() {
+        if (!state.broker) return;
+        const status = await api("GET", "/v1/status");
+        state.workspace = status.workspace; state.run = status.workspace; renderWorkspace();
+        const capabilities = await api("GET", "/v1/capabilities"); renderCapabilities(capabilities.capabilities);
+        if (state.run?.run_id) {
+          const repo = await api("GET", "/v1/repository/status");
+          $("sourceValue").textContent = `${repo.repository.clean ? "clean" : "dirty"} ${repo.repository.head.slice(0, 8)}`;
+        }
+        const events = await api("GET", `/v1/events?after=${state.sequence}`);
+        for (const event of events.events) { addEvent(event); state.sequence = Math.max(state.sequence, event.sequence); }
+      }
+
+      async function pollCodex() {
+        if (!state.codexId) return;
+        const result = await api("GET", `/v1/codex/runs/${state.codexId}`);
+        $("finalMessage").textContent = result.codex.final_message || `Codex ${result.codex.status}`;
+        if (result.codex.status === "running") setTimeout(pollCodex, 900);
+        else { $("cancelCodex").disabled = true; await reviewDiff(); }
+      }
+
+      async function pollCodexAuth() {
+        const result = await api("GET", "/v1/codex/auth/device");
+        $("authOutput").textContent = result.auth.output || `Codex sign-in ${result.auth.status}.`;
+        if (result.auth.status === "running") return setTimeout(pollCodexAuth, 700);
+        $("cancelLogin").disabled = true;
+        await refreshAll();
+      }
+
+      async function pollBuild(buildId, candidate) {
+        const result = await api("GET", `/v1/builds/${buildId}`);
+        $("buildValue").textContent = `${result.build.kind} ${result.build.status}`;
+        if (result.build.status === "running") return setTimeout(() => pollBuild(buildId, candidate), 1000);
+        if (result.build.status === "completed") {
+          const artifact = result.build.artifact;
+          $("versionValue").textContent = `${artifact.version_name} (${artifact.version_code})`;
+          $("hashValue").textContent = artifact.apk_sha256.slice(0, 16) + "…";
+          if (candidate) state.candidateBuildId = buildId;
+        }
+      }
+
+      async function reviewDiff() {
+        const result = await action("Review diff", () => api("GET", "/v1/repository/diff"));
+        state.reviewToken = result.repository.review_token;
+        $("diff").textContent = result.repository.diff || "No changes.";
+        showTab("diff");
+      }
+
+      function showTab(name) {
+        document.querySelectorAll(".tab").forEach((tab) => tab.classList.toggle("active", tab.id === `tab-${name}`));
+        document.querySelectorAll(".tabs button").forEach((button) => button.classList.toggle("active", button.dataset.tab === name));
+      }
+
+      $("startBroker").onclick = async () => {
+        await action("Start broker", async () => { await nativeCall("start"); state.broker = true; await refreshAll(); });
+      };
+      $("loginCodex").onclick = async () => {
+        const result = await action("Start Codex sign-in", () => api("POST", "/v1/codex/auth/device", {}));
+        $("authOutput").textContent = result.auth.output || "Waiting for the device code…";
+        $("cancelLogin").disabled = false;
+        pollCodexAuth();
+      };
+      $("cancelLogin").onclick = () => action("Cancel Codex sign-in", () => api("POST", "/v1/codex/auth/device/cancel", {}));
+      $("createDemo").onclick = async () => {
+        const result = await action("Create demo", () => api("POST", "/v1/workspaces/demo", { workspace_id: "hello-quest" }));
+        state.workspace = result.workspace; renderWorkspace();
+      };
+      $("createRun").onclick = async () => {
+        const result = await action("Create run", () => api("POST", "/v1/runs", { purpose: "quest demo" }));
+        state.run = result.run; renderWorkspace();
+      };
+      $("runCodex").onclick = async () => {
+        const result = await action("Run Codex", () => api("POST", "/v1/codex/runs", { prompt: $("prompt").value }));
+        state.codexId = result.codex.operation_id; $("cancelCodex").disabled = false; pollCodex();
+      };
+      $("cancelCodex").onclick = () => action("Cancel Codex", () => api("POST", `/v1/codex/runs/${state.codexId}/cancel`, {}));
+      $("refresh").onclick = () => action("Refresh", refreshAll);
+      $("reviewDiff").onclick = reviewDiff;
+      $("bumpVersion").onclick = async () => { const result = await action("Bump version", () => api("POST", "/v1/repository/version/patch", {})); state.version = result.version; $("versionValue").textContent = `${result.version.version_name} (${result.version.version_code})`; await reviewDiff(); };
+      $("previewBuild").onclick = async () => { const result = await action("Start preview build", () => api("POST", "/v1/builds", { kind: "preview" })); state.buildId = result.build.build_id; pollBuild(state.buildId, false); };
+      $("candidateBuild").onclick = async () => { const result = await action("Start candidate build", () => api("POST", "/v1/builds", { kind: "candidate" })); state.buildId = result.build.build_id; pollBuild(state.buildId, true); };
+      $("commit").onclick = async () => { if (!state.reviewToken) await reviewDiff(); await action("Commit", () => api("POST", "/v1/repository/commit", { message: $("commitMessage").value, review_token: state.reviewToken })); state.reviewToken = null; await refreshAll(); };
+      $("discard").onclick = async () => { if (!state.reviewToken) await reviewDiff(); await action("Discard", () => api("POST", "/v1/repository/discard", { review_token: state.reviewToken, confirmation: "DISCARD" })); state.reviewToken = null; await reviewDiff(); };
+      $("checkGithub").onclick = async () => { const result = await action("Check GitHub", () => api("GET", "/v1/github/status")); $("githubState").textContent = `GitHub ${result.github.state}`; };
+      $("pushPr").onclick = async () => { const result = await action("Push and create draft PR", () => api("POST", "/v1/github/push-draft-pr", { title: $("prTitle").value, body: $("prBody").value, base_branch: state.run.base_branch })); $("githubState").textContent = result.github.url || result.github.state; };
+      $("findTargets").onclick = async () => { const result = await action("Find ADB targets", () => api("GET", "/v1/adb/targets")); const select = $("target"); select.replaceChildren(new Option("Select an exact target", ""), ...result.targets.map((entry) => new Option(`${entry.target} — ${entry.state}`, entry.target))); };
+      $("install").onclick = () => action("Install candidate", () => api("POST", "/v1/deploy/install", { target: $("target").value, build_id: state.candidateBuildId }));
+      $("launch").onclick = () => action("Launch candidate", () => api("POST", "/v1/deploy/launch", { target: $("target").value, build_id: state.candidateBuildId }));
+      $("recenter").onclick = () => action("Recenter panel", () => nativeCall("recenter"));
+      document.querySelectorAll("[data-tab]").forEach((button) => button.onclick = () => showTab(button.dataset.tab));
+      document.querySelectorAll("[data-tab-jump]").forEach((button) => button.onclick = () => showTab(button.dataset.tabJump));
+
+      const mock = { workspace: null, run: null, events: [], sequence: 0, dirty: false, version: { version_code: 1, version_name: "0.1.0" }, build: null };
+      async function mockCall(kind, method, path, body) {
+        await new Promise((resolve) => setTimeout(resolve, 120));
+        if (kind === "start") { state.broker = true; return { broker: "ready", mock: true }; }
+        if (kind === "recenter") return { status: "recentered", mock: true };
+        if (path === "/v1/status") return { broker: "ready", workspace: mock.run || mock.workspace, latest_sequence: mock.sequence };
+        if (path === "/v1/capabilities") return { capabilities: ["node","git","codex","codex_auth","github","adb","build"].map((id) => ({ id, state: "ready", version: "mock" })) };
+        if (path === "/v1/codex/auth/device") return { auth: { status: "completed", output: "Mock mode: Codex is authenticated." } };
+        if (path === "/v1/codex/auth/device/cancel") return { auth: { status: "canceled", output: "Mock sign-in canceled." } };
+        if (path.startsWith("/v1/events")) return { events: mock.events.filter((event) => event.sequence > state.sequence) };
+        if (path === "/v1/workspaces/demo") { mock.workspace = { workspace_id: "hello-quest", run_id: null, branch: null, base_branch: "main" }; return { workspace: mock.workspace }; }
+        if (path === "/v1/runs") { mock.run = { workspace_id: "hello-quest", run_id: "run-mock", branch: "codex/quest-demo-mock", base_branch: "main" }; return { run: mock.run }; }
+        if (path === "/v1/codex/runs") { mock.dirty = true; mock.events.push({ sequence: ++mock.sequence, status: "running", summary: "Codex started the demo change." }, { sequence: ++mock.sequence, status: "pass", summary: "Codex completed the demo change." }); return { codex: { operation_id: "codex-mock", status: "running" } }; }
+        if (path === "/v1/codex/runs/codex-mock") return { codex: { status: "completed", final_message: "Updated the title and background colour." } };
+        if (path === "/v1/repository/status") return { repository: { clean: !mock.dirty, head: "0123456789abcdef", branch: mock.run?.branch } };
+        if (path === "/v1/repository/diff") return { repository: { diff: mock.dirty ? "- Built by Codex on Quest\n+ Hello from Spatial Codex" : "", review_token: "mock-review", clean: !mock.dirty } };
+        if (path === "/v1/repository/version/patch") { mock.version.version_code++; mock.version.version_name = "0.1.1"; mock.dirty = true; return { version: mock.version }; }
+        if (path === "/v1/repository/commit") { mock.dirty = false; return { repository: { clean: true, head: "fedcba9876543210", branch: mock.run.branch } }; }
+        if (path === "/v1/repository/discard") { mock.dirty = false; return { repository: { clean: true } }; }
+        if (path === "/v1/builds") { mock.build = { build_id: body.kind === "candidate" ? "build-candidate" : "build-preview", kind: body.kind, status: "completed", artifact: { version_name: mock.version.version_name, version_code: mock.version.version_code, apk_sha256: "a".repeat(64) } }; return { build: mock.build }; }
+        if (path.startsWith("/v1/builds/")) return { build: mock.build };
+        if (path === "/v1/github/status") return { github: { state: "ready" } };
+        if (path === "/v1/github/push-draft-pr") return { github: { state: "created", url: "https://github.com/example/demo/pull/1" } };
+        if (path === "/v1/adb/targets") return { targets: [{ target: "mock-target", state: "device", details: "product:synthetic" }] };
+        if (path === "/v1/deploy/install") return { deploy: { status: "installed" } };
+        if (path === "/v1/deploy/launch") return { deploy: { status: "launched" } };
+        throw new Error(`Mock route not implemented: ${method} ${path}`);
+      }
+
+      renderCapabilities(); renderWorkspace();
+      if (!window.WorkbenchNative) notice("Browser mock mode: no headset or broker mutation will occur.", "ok");
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,270 @@
+#!/data/data/com.termux/files/usr/bin/bash
+set -u
+
+APP_NAME="Quest Inkscape Print"
+DEFAULT_CUPS_SERVER="127.0.0.1:8631"
+DEFAULT_WAIT_SECONDS=90
+
+source_file=""
+printer_name=""
+assume_yes=false
+use_dialogs=true
+dry_run=false
+color_mode="monochrome"
+wait_seconds="$DEFAULT_WAIT_SECONDS"
+work_dir=""
+
+usage() {
+  cat <<'EOF'
+Usage: quest-inkscape-print [options] [drawing.svg]
+
+Choose or accept one SVG drawing, render its page through Inkscape, flatten it
+onto white JPEG, and submit one A4, one-sided job to the default CUPS queue.
+
+Options:
+  --file PATH          SVG to render; otherwise show a Zenity file chooser
+  --printer NAME       CUPS destination; otherwise use or choose a destination
+  --color              Request color output (default: monochrome)
+  --yes                Skip the confirmation dialog
+  --no-dialogs         Print status and errors to the terminal
+  --dry-run            Render and validate without submitting a print job
+  --wait-seconds N     Job-completion wait, from 1 to 300 seconds
+  -h, --help           Show this help
+EOF
+}
+
+show_error() {
+  local message=$1
+  if "$use_dialogs" && command -v zenity >/dev/null 2>&1; then
+    zenity --error --title="$APP_NAME" --text="$message" >/dev/null 2>&1 || true
+  else
+    printf '%s: %s\n' "$APP_NAME" "$message" >&2
+  fi
+}
+
+show_info() {
+  local message=$1
+  if "$use_dialogs" && command -v zenity >/dev/null 2>&1; then
+    zenity --info --title="$APP_NAME" --text="$message" >/dev/null 2>&1 || true
+  else
+    printf '%s\n' "$message"
+  fi
+}
+
+fail() {
+  show_error "$1"
+  exit 1
+}
+
+cleanup() {
+  if [ -n "$work_dir" ] && [ -d "$work_dir" ]; then
+    rm -f -- "$work_dir/page.png" "$work_dir/page.jpg" "$work_dir/run.log"
+    rmdir -- "$work_dir" 2>/dev/null || true
+  fi
+}
+trap cleanup EXIT
+trap 'exit 130' HUP INT TERM
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --file)
+      [ "$#" -ge 2 ] || fail "--file requires a path."
+      source_file=$2
+      shift 2
+      ;;
+    --printer)
+      [ "$#" -ge 2 ] || fail "--printer requires a destination."
+      printer_name=$2
+      shift 2
+      ;;
+    --color)
+      color_mode="color"
+      shift
+      ;;
+    --yes)
+      assume_yes=true
+      shift
+      ;;
+    --no-dialogs)
+      use_dialogs=false
+      shift
+      ;;
+    --dry-run)
+      dry_run=true
+      shift
+      ;;
+    --wait-seconds)
+      [ "$#" -ge 2 ] || fail "--wait-seconds requires a value."
+      wait_seconds=$2
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --*)
+      fail "Unknown option: $1"
+      ;;
+    *)
+      [ -z "$source_file" ] || fail "Only one SVG drawing can be printed at a time."
+      source_file=$1
+      shift
+      ;;
+  esac
+done
+
+case "$wait_seconds" in
+  ''|*[!0-9]*) fail "--wait-seconds must be an integer from 1 to 300." ;;
+esac
+[ "$wait_seconds" -ge 1 ] && [ "$wait_seconds" -le 300 ] || \
+  fail "--wait-seconds must be an integer from 1 to 300."
+
+termux_prefix=${PREFIX:-/data/data/com.termux/files/usr}
+termux_home=${HOME:-/data/data/com.termux/files/home}
+temp_root=${TMPDIR:-$termux_prefix/tmp}
+cups_server=${CUPS_SERVER:-$DEFAULT_CUPS_SERVER}
+PATH="$termux_prefix/bin:$PATH"
+export PATH
+
+for required_command in inkscape python lp lpstat cupsd mktemp; do
+  command -v "$required_command" >/dev/null 2>&1 || \
+    fail "Missing command: $required_command"
+done
+
+if [ -z "$source_file" ]; then
+  command -v zenity >/dev/null 2>&1 || fail "Zenity is required when no SVG path is supplied."
+  source_file=$(zenity \
+    --file-selection \
+    --title="Choose an SVG drawing to print" \
+    --filename="$termux_home/" \
+    --file-filter="SVG drawings | *.svg" \
+    --file-filter="All files | *" 2>/dev/null) || exit 0
+fi
+
+[ -f "$source_file" ] || fail "The selected SVG does not exist."
+case "${source_file##*.}" in
+  svg|SVG) ;;
+  *) fail "Choose an SVG drawing. Inkscape exports it to a printer-safe image." ;;
+esac
+
+mkdir -p -- "$temp_root" || fail "Could not prepare the Termux temporary directory."
+work_dir=$(mktemp -d "$temp_root/quest-inkscape-print.XXXXXX") || \
+  fail "Could not create a private print workspace."
+chmod 700 "$work_dir"
+rendered_png="$work_dir/page.png"
+rendered_jpg="$work_dir/page.jpg"
+run_log="$work_dir/run.log"
+
+if ! lpstat -h "$cups_server" -r >/dev/null 2>&1; then
+  cupsd >>"$run_log" 2>&1 || true
+  scheduler_ready=false
+  for _ in 1 2 3 4 5; do
+    if lpstat -h "$cups_server" -r >/dev/null 2>&1; then
+      scheduler_ready=true
+      break
+    fi
+    sleep 1
+  done
+  "$scheduler_ready" || fail "CUPS did not start on Quest loopback."
+fi
+
+if [ -z "$printer_name" ]; then
+  printer_name=$(lpstat -h "$cups_server" -d 2>/dev/null | sed -n 's/^system default destination: //p')
+fi
+
+if [ -z "$printer_name" ]; then
+  mapfile -t available_printers < <(lpstat -h "$cups_server" -e 2>/dev/null)
+  case "${#available_printers[@]}" in
+    0) fail "No CUPS printer is configured." ;;
+    1) printer_name=${available_printers[0]} ;;
+    *)
+      if "$use_dialogs"; then
+        printer_name=$(zenity --list --title="$APP_NAME" --text="Choose a printer" \
+          --column="Printer" "${available_printers[@]}" 2>/dev/null) || exit 0
+      else
+        fail "Multiple printers are configured; use --printer NAME."
+      fi
+      ;;
+  esac
+fi
+
+lpstat -h "$cups_server" -p "$printer_name" >/dev/null 2>&1 || \
+  fail "CUPS destination '$printer_name' is unavailable."
+
+if ! "$assume_yes"; then
+  if "$use_dialogs"; then
+    zenity --question \
+      --title="$APP_NAME" \
+      --ok-label="Print" \
+      --cancel-label="Cancel" \
+      --text="Print '$(basename -- "$source_file")' on '$printer_name'?\n\nA4, one-sided, $color_mode" \
+      >/dev/null 2>&1 || exit 0
+  else
+    fail "Use --yes for a non-interactive print."
+  fi
+fi
+
+if ! inkscape "$source_file" \
+  --export-area-page \
+  --export-width=1240 \
+  --export-filename="$rendered_png" \
+  --export-background=white \
+  --export-background-opacity=255 \
+  >"$run_log" 2>&1; then
+  fail "Inkscape could not render the selected SVG."
+fi
+
+if ! python - "$rendered_png" "$rendered_jpg" >>"$run_log" 2>&1 <<'PY'
+from pathlib import Path
+import sys
+
+from PIL import Image
+
+source = Path(sys.argv[1])
+target = Path(sys.argv[2])
+with Image.open(source) as opened:
+    rgba = opened.convert("RGBA")
+page = Image.new("RGBA", rgba.size, (255, 255, 255, 255))
+page.alpha_composite(rgba)
+page.convert("RGB").save(target, "JPEG", quality=90, dpi=(150, 150), subsampling=0)
+PY
+then
+  fail "Pillow could not prepare the printer-safe JPEG."
+fi
+
+[ -s "$rendered_jpg" ] || fail "The rendered print image is empty."
+
+if "$dry_run"; then
+  show_info "Render check passed for '$(basename -- "$source_file")'. No print job was submitted."
+  exit 0
+fi
+
+job_result=$(lp -h "$cups_server" \
+  -d "$printer_name" \
+  -t "Inkscape: $(basename -- "$source_file")" \
+  -o media=iso_a4_210x297mm \
+  -o fit-to-page \
+  -o sides=one-sided \
+  -o print-color-mode="$color_mode" \
+  "$rendered_jpg" 2>>"$run_log") || fail "CUPS rejected the print job."
+
+job_id=$(printf '%s\n' "$job_result" | sed -n 's/.*request id is \([^ ]*\).*/\1/p')
+[ -n "$job_id" ] || fail "CUPS accepted the file but returned no job identifier."
+
+completed=false
+poll_count=$((wait_seconds / 2))
+[ "$poll_count" -ge 1 ] || poll_count=1
+for _ in $(seq 1 "$poll_count"); do
+  active_jobs=$(lpstat -h "$cups_server" -W not-completed -o "$printer_name" 2>/dev/null || true)
+  if ! printf '%s\n' "$active_jobs" | grep -Fq "$job_id"; then
+    completed=true
+    break
+  fi
+  sleep 2
+done
+
+if "$completed"; then
+  show_info "CUPS completed $job_id.\n\nPlease confirm the physical page at the printer."
+else
+  show_info "CUPS submitted $job_id, which is still active.\n\nCheck the printer or its queue status."
+fi

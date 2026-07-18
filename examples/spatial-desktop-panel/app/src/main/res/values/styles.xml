@@ -1,0 +1,10 @@
+<resources>
+  <style name="AppTheme" parent="android:style/Theme.Material.NoActionBar">
+    <item name="android:windowIsTranslucent">false</item>
+    <item name="android:windowContentOverlay">@null</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:backgroundDimEnabled">false</item>
+    <item name="android:fontFamily">sans</item><item name="android:colorAccent">#71C4FF</item>
+    <item name="android:windowBackground">#10151B</item>
+  </style>
+</resources>
