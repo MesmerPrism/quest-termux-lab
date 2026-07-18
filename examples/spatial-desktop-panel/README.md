@@ -33,7 +33,7 @@ Launch the installed app through the public Meta Quest workflow, then select **C
 
 ## Debug semantic-action CLI
 
-Debug builds expose a narrow app-owned intent that reaches the same dispatcher as the panel buttons. The module CLI requires one explicit serial and accepts only `connect`, `disconnect`, `size-up`, `size-down`, `recenter-panel`, `right-click`, `scroll-up`, `scroll-down`, bounded pointer actions, printable-ASCII text, and Enter:
+Debug builds expose a narrow app-owned intent that reaches the same dispatcher as the panel buttons. The module CLI requires one explicit serial and accepts only `connect`, `disconnect`, `size-up`, `size-down`, `recenter-panel`, `right-click`, `scroll-up`, `scroll-down`, `camera-50`, `camera-51`, bounded pointer actions, printable-ASCII text, and Enter:
 
 ```powershell
 pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\Invoke-SpatialDesktopPanelAction.ps1 `
@@ -65,3 +65,92 @@ Diagnostics shown in the panel are sanitized counters: dimensions/generation, up
 Open `fixtures/click-grid.svg` full-screen at exactly 1280×720 in XFCE and run `xev -event mouse -event keyboard` beside it. Record the applied coordinates for center `(640,360)` and corners `(0,0)`, `(1279,0)`, `(0,719)`, `(1279,719)`. Resize the panel and switch the X root resolution, repeat center/corners, deliberately select both letterbox bands, drag across cells, right-click, scroll both ways, test Ctrl+C/arrows/F keys, then background the app while holding left. The focus-loss event must emit mask zero. Complete `../spatial-desktop-session-evidence.synthetic.json` as a private run artifact; publish only a sanitized copy conforming to the schema.
 
 Live acceptance additionally gates bounded pointer-to-visible response and headset frame budget. Source/unit completion does not claim either device result. Troubleshoot connection refusal by checking `printf '%s\n' "$DISPLAY"`, requiring `xdpyinfo -display "$DISPLAY"` to succeed, and confirming x11vnc is listening on loopback port `5900` for that same display. Do not assume `:0`; the established wide Termux:X11 startup defaults to `:1`, while an explicitly active `DISPLAY` remains authoritative. A protocol error usually means the server selected an encoding outside this intentionally small subset.
+
+## Small Inkscape export-and-print action
+
+`linux/quest-inkscape-print` provides the deliberately small GUI path used by
+this example. The desktop launcher accepts a dropped SVG or opens a Zenity file
+chooser, confirms the default CUPS destination, renders the SVG page through
+Inkscape, flattens it to JPEG with Pillow, and submits one A4, one-sided job.
+Monochrome is the default; pass `--color` only when color is intentional. The
+temporary PNG, JPEG, and log are removed when the action exits.
+
+Install the user-facing dependencies from the public Termux repositories:
+
+```sh
+pkg install cups inkscape python-pillow zenity
+```
+
+Configure a driverless queue separately, with a printer address discovered by
+the operator. Keep the scheduler on Termux's loopback-only port and explicitly
+disable queue sharing:
+
+```sh
+cupsd
+lpadmin -h 127.0.0.1:8631 -p <queue> -E \
+  -v ipp://<printer-address>/ipp/print -m everywhere \
+  -o printer-is-shared=false
+lpadmin -h 127.0.0.1:8631 -d <queue>
+```
+
+The stock Termux CUPS `SystemGroup` may not include the current Android app
+username. If `lpadmin` returns `Unauthorized`, add the exact output of
+`id -un` to `SystemGroup` in `$PREFIX/etc/cups/cups-files.conf`, validate with
+`cupsd -t`, and restart only the CUPS process. Do not weaken the location or
+policy blocks and do not expose the scheduler to the LAN.
+
+Install the action and its XFCE desktop entry:
+
+```sh
+cd examples/spatial-desktop-panel/linux
+bash ./install-quest-inkscape-print.sh
+```
+
+For a no-paper pipeline check, use the synthetic fixture:
+
+```sh
+quest-inkscape-print --file ../fixtures/print-smoke.svg --yes --dry-run --no-dialogs
+```
+
+The fixture contains only `QTL` and one thin dark line. It exists specifically
+to keep a live printer validation page low-ink and unambiguous. A CUPS completed
+state proves submission through the printer endpoint; the operator must still
+confirm that the physical page emerged.
+
+## One-shot outside-camera import into Inkscape
+
+The panel's `CAM 50` and `CAM 51` buttons provide a deliberately bounded still
+image route. The Android application owns Camera2 permission and lifecycle,
+captures one `YUV_420_888` frame from the selected Quest outside camera,
+converts that frame once to JPEG, and serves it from a random-port
+`127.0.0.1` endpoint. The endpoint requires a per-capture random bearer token,
+permits one successful download, expires after 30 seconds, and is never exposed
+to the LAN.
+
+Termux consumes the still with `quest-camera2-to-inkscape`, verifies the JPEG
+type, byte count, dimensions, and decode, then writes a user-owned `.jpg` and an
+SVG with the JPEG embedded under `~/Pictures/Quest Camera Imports/`. It opens
+that SVG on `DISPLAY=:1`. The Android side does not persist the raw YUV frame,
+and no image bytes travel through JSON, intent extras, logs, VNC control
+messages, or the high-rate H.264 streaming path.
+
+Install the additional Termux dependency and helper from the checked-out
+example:
+
+```sh
+pkg install -y python-pillow inkscape
+cd ~/quest-termux-lab/examples/spatial-desktop-panel/linux
+bash ./install-quest-camera2-inkscape.sh
+```
+
+Termux must already allow the app's explicit `RUN_COMMAND` integration, as it
+does for the documented desktop sidecar flow. On first use, grant the visible
+Android camera permission request. Lab builds may also require the documented
+headset-camera permission grant for the public package, depending on the
+Horizon OS build. Camera IDs `50` and `51` are the only accepted IDs; they are
+the outside pair validated by the referenced custom Camera2 projection work.
+
+This is a still-image interoperability demonstration, not a camera application,
+continuous capture service, calibrated stereo camera, or promise that these IDs
+remain stable across other headset models or OS versions. Captured images are
+private user artifacts and must not be committed to this public repository.

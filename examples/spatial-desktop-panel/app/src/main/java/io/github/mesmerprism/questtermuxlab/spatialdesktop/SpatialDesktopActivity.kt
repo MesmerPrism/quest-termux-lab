@@ -1,6 +1,8 @@
 package io.github.mesmerprism.questtermuxlab.spatialdesktop
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -51,6 +53,10 @@ class SpatialDesktopActivity : AppSystemActivity(), RfbListener {
   private val pendingActions = ArrayDeque<PanelActionRequest>()
   private val lifecycleHandler = Handler(Looper.getMainLooper())
   private val deferredPauseDisconnect = Runnable { disconnect("activity pause") }
+  private var pendingCameraId: String? = null
+  private var cameraCapture: Camera2StillCapture? = null
+  private var snapshotServer: OneShotJpegServer? = null
+  private var cameraLauncher: CameraToInkscapeLauncher? = null
 
   override fun registerFeatures(): List<SpatialFeature> {
     Log.i(TAG, "${SpatialPresentationContract.MARKER_VR_FEATURE} inputSystem=INTERACTION_SDK")
@@ -179,11 +185,101 @@ class SpatialDesktopActivity : AppSystemActivity(), RfbListener {
     }
     root.findViewById<Button>(R.id.size_up).setOnClickListener { dispatchHuman(PanelAction.SizeUp) }
     root.findViewById<Button>(R.id.size_down).setOnClickListener { dispatchHuman(PanelAction.SizeDown) }
+    root.findViewById<Button>(R.id.camera_50).setOnClickListener { dispatchHuman(PanelAction.Camera50) }
+    root.findViewById<Button>(R.id.camera_51).setOnClickListener { dispatchHuman(PanelAction.Camera51) }
     root.findViewById<Button>(R.id.right_click).setOnClickListener { dispatchHuman(PanelAction.RightClick) }
     root.findViewById<Button>(R.id.scroll_up).setOnClickListener { dispatchHuman(PanelAction.ScrollUp) }
     root.findViewById<Button>(R.id.scroll_down).setOnClickListener { dispatchHuman(PanelAction.ScrollDown) }
     bindKeyboard(root.findViewById(R.id.ime))
     drainPendingActions()
+  }
+
+  private fun beginCameraImport(cameraId: String) {
+    require(cameraId == "50" || cameraId == "51") { "unsupported camera ID" }
+    if (cameraCapture != null) {
+      inputLine = "camera=$cameraId state=busy"
+      refreshStatus()
+      return
+    }
+    if (!hasCameraPermissions()) {
+      pendingCameraId = cameraId
+      inputLine = "camera=$cameraId state=requesting-permission"
+      refreshStatus()
+      requestPermissions(CAMERA_PERMISSIONS, CAMERA_PERMISSION_REQUEST)
+      return
+    }
+    captureCameraIntoInkscape(cameraId)
+  }
+
+  private fun hasCameraPermissions(): Boolean =
+    CAMERA_PERMISSIONS.all { checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }
+
+  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    if (requestCode != CAMERA_PERMISSION_REQUEST) return
+    val cameraId = pendingCameraId
+    pendingCameraId = null
+    if (cameraId == null || !hasCameraPermissions()) {
+      inputLine = "camera=${cameraId ?: "unknown"} state=permission-denied"
+      refreshStatus()
+      return
+    }
+    captureCameraIntoInkscape(cameraId)
+  }
+
+  private fun captureCameraIntoInkscape(cameraId: String) {
+    inputLine = "camera=$cameraId state=capturing"
+    refreshStatus()
+    val capture = Camera2StillCapture(this)
+    cameraCapture = capture
+    capture.capture(cameraId) { result ->
+      cameraCapture = null
+      result.onFailure { error ->
+        inputLine = "camera=$cameraId state=failed reason=${error.javaClass.simpleName}"
+        Log.w(TAG, "SPATIAL_DESKTOP_CAMERA_CAPTURE_FAILED cameraId=$cameraId type=${error.javaClass.simpleName} reason=${error.message}")
+        refreshStatus()
+      }
+      result.onSuccess { still ->
+        runCatching { handStillToTermux(still) }
+          .onFailure { error ->
+            inputLine = "camera=$cameraId state=bridge-failed reason=${error.javaClass.simpleName}"
+            Log.w(TAG, "SPATIAL_DESKTOP_CAMERA_BRIDGE_FAILED cameraId=$cameraId type=${error.javaClass.simpleName} reason=${error.message}")
+            refreshStatus()
+          }
+      }
+    }
+  }
+
+  private fun handStillToTermux(still: CameraStill) {
+    snapshotServer?.close()
+    lateinit var server: OneShotJpegServer
+    server =
+      OneShotJpegServer.start(still.jpegBytes) { state ->
+        runOnUiThread {
+          if (snapshotServer === server) {
+            inputLine = "camera=${still.cameraId} ${still.width}x${still.height} transfer=$state"
+            refreshStatus()
+          }
+        }
+      }
+    snapshotServer = server
+    val launcher =
+      cameraLauncher ?: CameraToInkscapeLauncher(this) { state ->
+        runOnUiThread {
+          inputLine = state
+          refreshStatus()
+        }
+      }.also { cameraLauncher = it }
+    try {
+      launcher.launch(still.cameraId, server.url, server.token)
+    } catch (error: Exception) {
+      server.close()
+      snapshotServer = null
+      throw error
+    }
+    inputLine = "camera=${still.cameraId} ${still.width}x${still.height} transfer=loopback-pending"
+    Log.i(TAG, "SPATIAL_DESKTOP_CAMERA_CAPTURED cameraId=${still.cameraId} size=${still.width}x${still.height} route=one-shot-loopback")
+    refreshStatus()
   }
 
   private fun dispatchHuman(action: PanelAction) {
@@ -280,6 +376,8 @@ class SpatialDesktopActivity : AppSystemActivity(), RfbListener {
       PanelAction.RightClick -> { requireConnected(); input.click(3) }
       PanelAction.ScrollUp -> { requireConnected(); input.scroll(-1) }
       PanelAction.ScrollDown -> { requireConnected(); input.scroll(1) }
+      PanelAction.Camera50 -> beginCameraImport("50")
+      PanelAction.Camera51 -> beginCameraImport("51")
       is PanelAction.PointerMove -> input.move(checked(action.point))
       is PanelAction.PointerDown -> input.press(1, checked(action.point))
       is PanelAction.PointerUp -> input.release(1, checked(action.point))
@@ -458,6 +556,12 @@ class SpatialDesktopActivity : AppSystemActivity(), RfbListener {
 
   override fun onDestroy() {
     lifecycleHandler.removeCallbacks(deferredPauseDisconnect)
+    cameraCapture?.close()
+    cameraCapture = null
+    snapshotServer?.close()
+    snapshotServer = null
+    cameraLauncher?.close()
+    cameraLauncher = null
     disconnect("activity destroy")
     super.onDestroy()
   }
@@ -471,6 +575,8 @@ class SpatialDesktopActivity : AppSystemActivity(), RfbListener {
     private const val TAG = "SpatialDesktop"
     private const val MAX_PENDING_ACTIONS = 8
     private const val PAUSE_DISCONNECT_DELAY_MS = 2_000L
+    private const val CAMERA_PERMISSION_REQUEST = 501
+    private val CAMERA_PERMISSIONS = arrayOf(Manifest.permission.CAMERA, "horizonos.permission.HEADSET_CAMERA")
   }
 }
 
