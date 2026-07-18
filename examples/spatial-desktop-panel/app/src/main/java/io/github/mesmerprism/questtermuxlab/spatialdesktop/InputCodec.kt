@@ -13,6 +13,7 @@ class InputLifecycle(private val send: (PointerPacket) -> Unit) {
   fun press(button: Int, p: DesktopPoint = last) { last=p; mask = mask or bit(button); emit() }
   fun release(button: Int, p: DesktopPoint = last) { last=p; mask = mask and bit(button).inv(); emit() }
   fun click(button: Int, p: DesktopPoint = last) { press(button,p); release(button,p) }
+  fun drag(start: DesktopPoint, end: DesktopPoint) { press(1,start); move(end); release(1,end) }
   fun scroll(verticalSteps: Int, p: DesktopPoint = last) { val button=if(verticalSteps<0) 4 else 5; repeat(kotlin.math.abs(verticalSteps).coerceAtMost(16)){ click(button,p) } }
   fun cancel() = forceRelease()
   fun forceRelease() { if(mask != 0) { mask=0; forcedReleases++; emit() } }

@@ -203,6 +203,8 @@ class SpatialDesktopActivity : AppSystemActivity(), RfbListener {
         x = if (intent.hasExtra(DebugPanelActionContract.EXTRA_X)) intent.getIntExtra(DebugPanelActionContract.EXTRA_X, -1) else null,
         y = if (intent.hasExtra(DebugPanelActionContract.EXTRA_Y)) intent.getIntExtra(DebugPanelActionContract.EXTRA_Y, -1) else null,
         text = intent.getStringExtra(DebugPanelActionContract.EXTRA_TEXT),
+        x2 = if (intent.hasExtra(DebugPanelActionContract.EXTRA_X2)) intent.getIntExtra(DebugPanelActionContract.EXTRA_X2, -1) else null,
+        y2 = if (intent.hasExtra(DebugPanelActionContract.EXTRA_Y2)) intent.getIntExtra(DebugPanelActionContract.EXTRA_Y2, -1) else null,
       )
     parsed.onFailure {
       Log.w(TAG, "${DebugPanelActionContract.MARKER_REJECTED} requestId=${requestId ?: "missing"} reason=${it.message}")
@@ -282,6 +284,7 @@ class SpatialDesktopActivity : AppSystemActivity(), RfbListener {
       is PanelAction.PointerDown -> input.press(1, checked(action.point))
       is PanelAction.PointerUp -> input.release(1, checked(action.point))
       is PanelAction.Tap -> input.click(1, checked(action.point))
+      is PanelAction.Drag -> input.drag(checked(action.start), checked(action.end))
       is PanelAction.TypeText -> {
         requireConnected()
         action.text.forEach { client.key(true, it.code); client.key(false, it.code) }

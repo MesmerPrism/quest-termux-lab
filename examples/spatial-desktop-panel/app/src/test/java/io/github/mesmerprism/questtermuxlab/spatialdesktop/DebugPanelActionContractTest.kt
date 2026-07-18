@@ -7,7 +7,7 @@ import org.junit.Test
 
 class DebugPanelActionContractTest {
   @Test fun allowlistParsesEverySimpleAction() {
-    val simple = DebugPanelActionContract.actionNames - setOf("pointer-move", "pointer-down", "pointer-up", "tap", "type-text")
+    val simple = DebugPanelActionContract.actionNames - setOf("pointer-move", "pointer-down", "pointer-up", "tap", "drag", "type-text")
     simple.forEach { name ->
       assertTrue(DebugPanelActionContract.parse(true, DebugPanelActionContract.INTENT_ACTION, "test-$name", name, null, null, null).isSuccess)
     }
@@ -28,6 +28,13 @@ class DebugPanelActionContractTest {
     assertTrue(DebugPanelActionContract.parse(true, DebugPanelActionContract.INTENT_ACTION, "bad id", "connect", null, null, null).isFailure)
   }
 
+  @Test fun atomicDragRequiresTwoBoundedPoints() {
+    val parsed = DebugPanelActionContract.parse(true, DebugPanelActionContract.INTENT_ACTION, "drag-ok", "drag", 10, 20, null, x2 = 30, y2 = 40)
+    assertEquals(PanelAction.Drag(DesktopPoint(10, 20), DesktopPoint(30, 40)), parsed.getOrThrow().action)
+    assertTrue(DebugPanelActionContract.parse(true, DebugPanelActionContract.INTENT_ACTION, "drag-missing", "drag", 10, 20, null).isFailure)
+    assertTrue(DebugPanelActionContract.parse(true, DebugPanelActionContract.INTENT_ACTION, "drag-bad", "drag", 10, 20, null, x2 = 4096, y2 = 40).isFailure)
+  }
+
   @Test fun cliRequiresSerialAndContainsNoRawShellParameter() {
     val candidates = listOf(File("tools/Invoke-SpatialDesktopPanelAction.ps1"), File("../tools/Invoke-SpatialDesktopPanelAction.ps1"))
     val cli = candidates.firstOrNull { it.isFile }?.readText() ?: error("missing module CLI")
@@ -37,5 +44,7 @@ class DebugPanelActionContractTest {
     assertTrue(!cli.contains("Invoke-Expression"))
     assertEquals(1, Regex("'shell', 'am', 'start'").findAll(cli).count())
     assertTrue(cli.contains("'recenter-panel'"))
+    assertTrue(cli.contains("'drag'"))
+    assertTrue(cli.contains("shellQuotedText"))
   }
 }
