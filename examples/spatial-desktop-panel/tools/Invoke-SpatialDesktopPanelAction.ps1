@@ -5,7 +5,7 @@ param(
   [string]$Serial,
 
   [Parameter(Mandatory = $true)]
-  [ValidateSet('connect', 'disconnect', 'size-up', 'size-down', 'recenter-panel', 'right-click', 'scroll-up', 'scroll-down', 'pointer-move', 'pointer-down', 'pointer-up', 'tap', 'type-text', 'enter', 'start-sidecar', 'start-witness', 'stop-witness')]
+  [ValidateSet('connect', 'disconnect', 'size-up', 'size-down', 'recenter-panel', 'right-click', 'scroll-up', 'scroll-down', 'pointer-move', 'pointer-down', 'pointer-up', 'tap', 'drag', 'type-text', 'enter', 'start-sidecar', 'start-witness', 'stop-witness')]
   [string]$Action,
 
   [ValidateRange(0, 4095)]
@@ -13,6 +13,12 @@ param(
 
   [ValidateRange(0, 4095)]
   [int]$Y,
+
+  [ValidateRange(0, 4095)]
+  [int]$X2,
+
+  [ValidateRange(0, 4095)]
+  [int]$Y2,
 
   [ValidateLength(1, 128)]
   [string]$Text,
@@ -28,13 +34,22 @@ $package = 'io.github.mesmerprism.questtermuxlab.spatialdesktop'
 $activity = "$package/.SpatialDesktopActivity"
 $intentAction = "$package.DEBUG_PANEL_ACTION"
 $coordinateActions = @('pointer-move', 'pointer-down', 'pointer-up', 'tap')
+$dragCoordinateNames = @('X', 'Y', 'X2', 'Y2')
 
-if ($coordinateActions -contains $Action) {
+if ($Action -eq 'drag') {
+  foreach ($name in $dragCoordinateNames) {
+    if (-not $PSBoundParameters.ContainsKey($name)) { throw "Action 'drag' requires -X, -Y, -X2 and -Y2." }
+  }
+} elseif ($coordinateActions -contains $Action) {
   if (-not $PSBoundParameters.ContainsKey('X') -or -not $PSBoundParameters.ContainsKey('Y')) {
     throw "Action '$Action' requires -X and -Y."
   }
-} elseif ($PSBoundParameters.ContainsKey('X') -or $PSBoundParameters.ContainsKey('Y')) {
-  throw "-X and -Y are accepted only for pointer actions."
+} elseif ($dragCoordinateNames | Where-Object { $PSBoundParameters.ContainsKey($_) }) {
+  throw "-X, -Y, -X2 and -Y2 are accepted only for pointer actions."
+}
+
+if ($Action -ne 'drag' -and ($PSBoundParameters.ContainsKey('X2') -or $PSBoundParameters.ContainsKey('Y2'))) {
+  throw '-X2 and -Y2 are accepted only for drag.'
 }
 
 if ($Action -eq 'type-text') {
@@ -50,7 +65,11 @@ $adbArgs = @(
   '--es', 'request_id', $requestId, '--es', 'panel_action', $Action
 )
 if ($coordinateActions -contains $Action) { $adbArgs += @('--ei', 'x', $X, '--ei', 'y', $Y) }
-if ($Action -eq 'type-text') { $adbArgs += @('--es', 'text', $Text) }
+if ($Action -eq 'drag') { $adbArgs += @('--ei', 'x', $X, '--ei', 'y', $Y, '--ei', 'x2', $X2, '--ei', 'y2', $Y2) }
+if ($Action -eq 'type-text') {
+  $shellQuotedText = "'" + $Text.Replace("'", "'\''") + "'"
+  $adbArgs += @('--es', 'text', $shellQuotedText)
+}
 
 $launchOutput = & adb @adbArgs 2>&1
 if ($LASTEXITCODE -ne 0) { throw "ADB activity intent failed: $($launchOutput -join [Environment]::NewLine)" }
