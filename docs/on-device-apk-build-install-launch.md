@@ -35,6 +35,10 @@ the user-approved debugging session, not from Termux itself.
 - No OpenXR session creation or headset-rendered XR frame yet.
 - No permission to commit generated APKs, keystores, platform jars, logs, or
   real device evidence.
+- No proof that an Accessibility watchdog owns HOME, receives the physical Meta
+  button, or provides kiosk/device-owner authority. See
+  `accessibility-foreground-watchdogs.md` for the separate user-enabled service
+  and ADB configuration boundary.
 
 ## Authority Model
 

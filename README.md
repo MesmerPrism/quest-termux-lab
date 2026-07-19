@@ -56,6 +56,9 @@ full boundary.
   records for treating Termux or Proot as a normal-app developer sidecar.
 - Public-safe on-device APK build/install/launch guidance for an
   operator-authorized WiFi ADB loopback route.
+- Public-safe Accessibility foreground-watchdog guidance covering the Termux
+  versus ADB authority split, privacy-minimized window events, Meta Home burst
+  grouping, synthetic diagnostics, and fresh Spatial-task return validation.
 - Public-safe cross-package XR questionnaire panel handoff guidance for testing
   a foreground XR app launching a separate 2D panel app and returning to the
   same XR app with a caller-owned `content://` result URI, without ADB,
@@ -200,6 +203,12 @@ session, built a small Android Activity APK with source-only inputs, signed it
 locally, installed it, and launched it into a visible Quest panel. This does
 not yet prove a Makepad build or OpenXR rendering. See
 `docs/on-device-apk-build-install-launch.md`.
+
+The Accessibility foreground-watchdog lesson is documented at
+`docs/accessibility-foreground-watchdogs.md`. Termux can build, configure, and
+inspect such an APK only through an already authorized ADB shell lease. The
+watchdog itself remains a user-enabled Android service, and neither Termux nor
+Accessibility becomes HOME, kiosk, device-owner, or physical-button authority.
 
 A new cross-package XR questionnaire panel handoff note is available at
 `docs/xr-questionnaire-panel-handoff.md`, with a compact test checklist at
@@ -691,6 +700,10 @@ this repository unless license obligations are reviewed.
     with fresh heartbeats and the loopback ADB `uid=2000(shell)` gate.
 49. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
     treat each as a separate high-risk gate.
+50. Accessibility foreground watchdog: prove the loopback ADB shell gate,
+    preserve existing enabled services, group one Meta Home event burst into
+    one invocation, keep refocus separate from escape counting, and require a
+    fresh return-app runtime without claiming kiosk authority.
 
 ## Validation
 
