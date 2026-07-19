@@ -50,6 +50,7 @@ includes Meta's AI Runtime Optimizer; Spatial SDK 0.13.1 adds `EntityPath` and
 | Outbound remote operations leases, typed command simulator, Termux agent fixtures | Quest Termux Lab |
 | Cross-app questionnaire request/result IPC | Quest Questionnaire Panel |
 | Quest Settings and recorder UI exploration through UIAutomator | Quest Questionnaire Panel automation example plus Meta Quest workflow evidence rules |
+| Accessibility foreground-watchdog behavior and Meta Home signal interpretation | Meta Quest workflow; Termux only supplies an authorized ADB client/build/evidence sidecar |
 | Rusty Morphospace sidecar intake and Manifold handoff proposals | `rusty-quest-sidecar-mesh` |
 | Raw device evidence and private artifacts | Local/private workspace, not this repo |
 | Public reusable findings | Sanitized docs, schemas, and synthetic fixtures in this repo |
@@ -107,6 +108,14 @@ A visible, pre-granted helper APK may be used only to ask Termux to restart the
 fixed fleet-agent command after process stop. Treat success as fresh heartbeat
 plus loopback ADB `uid=2000(shell)` evidence, not as WiFi ADB recovery or
 managed-device authority.
+
+For a privacy-minimized Accessibility watchdog, keep the service in its own
+installed APK and follow
+[`accessibility-foreground-watchdogs.md`](accessibility-foreground-watchdogs.md).
+Termux may read, enable, or disable the service only through the same approved
+loopback ADB shell gate, must preserve the existing enabled-service list, and
+must not expose arbitrary secure-setting or activity-launch commands through
+the remote control plane.
 
 ## Remote Operations Relationship
 

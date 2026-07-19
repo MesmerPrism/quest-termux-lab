@@ -51,6 +51,10 @@ Keep committed content portable and sanitized:
 - For on-device APK work, treat WiFi ADB as an explicit operator-approved shell
   lease. Termux may run an ADB client after pairing or external enablement, but
   Termux itself is not Android shell authority.
+- An Accessibility foreground watchdog belongs in its own installed APK.
+  Termux may build it or inspect/configure it only through an authorized ADB
+  shell lease; Accessibility is not HOME interception, kiosk authority, or a
+  reason to expose arbitrary secure-setting and activity-launch commands.
 - Do not commit generated APKs, idsig files, debug keystores, Android platform
   jars, native libraries, dex files, package-manager output, raw logcat, or
   launch screenshots.
@@ -60,6 +64,10 @@ Keep committed content portable and sanitized:
   `meta-quest-workflow` skill/workflow first. This repository owns the
   Termux/Linux sidecar recipes; the Meta Quest workflow owns device-operation
   discipline.
+- Route Meta Home event grouping, privacy-minimized Accessibility service
+  configuration, background foregrounding, and fresh Spatial-task return
+  guidance through `docs/accessibility-foreground-watchdogs.md` and the public
+  Meta Quest workflow.
 
 Before committing, run:
 
