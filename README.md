@@ -170,9 +170,13 @@ viewer can show the full frame in a wide Quest panel.
 
 The original larger WebView viewer remains observation-only and slower because
 it receives an MJPEG stream. The separate Spatial SDK example under
-`examples/spatial-desktop-panel` now provides the source-complete interactive
-route directly to x11vnc on Android loopback. Its headset behavior and frame
-budget remain explicit live-validation gates rather than source claims.
+`examples/spatial-desktop-panel` provides the interactive route directly to
+x11vnc on Android loopback. A live Quest 3S lab run validated panel movement,
+desktop pointer and keyboard interaction, Inkscape use, bounded outside-camera
+still import, and local CUPS printing. This is qualitative operator-observed
+acceptance; quantified latency, sustained frame budget, thermal behavior, and
+broader application compatibility remain open. See
+[`docs/spatial-desktop-panel-results-public.md`](docs/spatial-desktop-panel-results-public.md).
 
 The first headless-sidecar milestone is also positive: a Termux-owned
 localhost JSON command service can continue answering allowlisted commands
