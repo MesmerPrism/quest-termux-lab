@@ -1,6 +1,11 @@
 # Spatial Desktop Panel
 
-This example is the interactive, foreground Quest presentation lane for an XFCE desktop owned by Termux:X11. It connects only to `127.0.0.1:5900` inside Android. It does not use the host MJPEG evidence stream, ADB forwarding, fleet commands, shell authority, or peer-mesh input mirroring.
+This example is the interactive, foreground Quest presentation lane for an XFCE desktop owned by Termux:X11. It is a hybrid Android application with two exclusive presentations over one shared desktop-session implementation:
+
+- **Window mode** is the default launcher activity. Horizon OS owns the 2D panel's placement, chrome, and resizing.
+- **Spatial mode** is the existing immersive Spatial SDK activity. The application owns a grabbable 16:9 panel, viewer-relative recentering, and bounded physical scaling.
+
+The **Spatial** or **Window** button switches modes, carries an active connection forward, and closes the outgoing activity. Both modes connect only to `127.0.0.1:5900` inside Android. Neither uses the host MJPEG evidence stream, ADB forwarding, fleet commands, shell authority, or peer-mesh input mirroring.
 
 ## Pinned toolchain and licenses
 
@@ -29,11 +34,11 @@ xdpyinfo -display "$DISPLAY" >/dev/null || {
 x11vnc -display "$DISPLAY" -localhost -rfbport 5900 -nopw -forever -shared
 ```
 
-Launch the installed app through the public Meta Quest workflow, then select **Connect**. The app requests Raw plus DesktopSize, retains the framebuffer, requests one full update followed by incremental updates, and sends RFB PointerEvent/KeyEvent directly over device loopback. Stop the app connection and terminate the exact x11vnc process at session end. Never remove `-localhost`; None security is acceptable only for this operator-visible loopback lab session.
+Launch the installed app through the public Meta Quest workflow. A normal launcher invocation opens Window mode; launch `.SpatialDesktopActivity` explicitly only when validating the immersive presentation. Select **Connect**. The app requests Raw plus DesktopSize, retains the framebuffer, requests one full update followed by incremental updates, and sends RFB PointerEvent/KeyEvent directly over device loopback. Stop the app connection and terminate the exact x11vnc process at session end. Never remove `-localhost`; None security is acceptable only for this operator-visible loopback lab session.
 
 ## Debug semantic-action CLI
 
-Debug builds expose a narrow app-owned intent that reaches the same dispatcher as the panel buttons. The module CLI requires one explicit serial and accepts only `connect`, `disconnect`, `size-up`, `size-down`, `recenter-panel`, `right-click`, `scroll-up`, `scroll-down`, `camera-50`, `camera-51`, bounded pointer actions, printable-ASCII text, and Enter:
+Debug builds expose a narrow app-owned intent that reaches the same dispatcher as the panel buttons. The module CLI requires one explicit serial and accepts only `connect`, `disconnect`, `size-up`, `size-down`, `recenter-panel`, `switch-presentation`, `right-click`, `scroll-up`, `scroll-down`, `camera-50`, `camera-51`, bounded pointer actions, printable-ASCII text, and Enter:
 
 ```powershell
 pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\Invoke-SpatialDesktopPanelAction.ps1 `
@@ -43,14 +48,18 @@ pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\Invoke-SpatialDesktopPanel
   -Serial <quest-serial> -Action tap -X 640 -Y 360
 
 pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\Invoke-SpatialDesktopPanelAction.ps1 `
-  -Serial <quest-serial> -Action recenter-panel
+  -Serial <quest-serial> -Presentation spatial -Action recenter-panel
 ```
 
-The debug-only `start-sidecar` preparation action dispatches only the fixed documented Termux:X11/XFCE recipe and fixed loopback x11vnc arguments through Termux RunCommand; it accepts no command text. `start-witness` opens one fixed titled XFCE terminal so RFB typing can be observed without direct Termux-side input injection; `stop-witness` quits that test-only terminal daemon. Release builds reject the control intent. The CLI has no raw-command or shell-text surface, waits for its matching request marker, and returns nonzero for rejection or timeout. Coordinates are desktop framebuffer coordinates, not Android display coordinates. This proves semantic app-handler and RFB-event equivalence only; it does not prove Meta Touch, hand-ray, or OpenXR controller parity.
+The CLI targets Window mode by default; pass `-Presentation spatial` for spatial-only actions such as recentering and physical scaling. The debug-only `start-sidecar` preparation action dispatches only the fixed documented Termux:X11/XFCE recipe and fixed loopback x11vnc arguments through Termux RunCommand; it accepts no command text. `start-witness` opens one fixed titled XFCE terminal so RFB typing can be observed without direct Termux-side input injection; `stop-witness` quits that test-only terminal daemon. Release builds reject the control intent. The CLI has no raw-command or shell-text surface, waits for its matching request marker, and returns nonzero for rejection or timeout. Coordinates are desktop framebuffer coordinates, not Android display coordinates. This proves semantic app-handler and RFB-event equivalence only; it does not prove Meta Touch, hand-ray, or OpenXR controller parity.
 
-## Input and panel behavior
+## Input and presentation behavior
 
-The framebuffer uses one contain/letterbox transform. Letterbox input is rejected. The panel entity uses Spatial SDK `Grabbable` with `PIVOT_Y` and a 0.5–2.5 m height range; Interaction SDK exclusively writes its transform during a physical grab. The title is only a visual grab affordance, not custom Android drag chrome. The debug-only `recenter-panel` action performs one viewer-relative transform write while preserving the current scale. `−`/`+` changes physical size from 0.65× to 1.75× while preserving 16:9; framebuffer pixels never determine meters. The desktop surface is exclusively the classic VNC single pointer: extra contacts are ignored, not represented as Linux multitouch. Primary taps move the cursor with no button mask and emit their press/release pair only on up. Spatial-ray movement within 18 desktop pixels remains a tap candidate; movement beyond that starts a normal drag by pressing at the original coordinate. A second tap within 350 ms and 32 desktop pixels snaps to the first tap's exact coordinate, making double-clicks tolerant of ray jitter without delaying the first click. Hover, right click, wheel steps, and CLI pointer actions remain unchanged. Cancel, focus loss, pause, write failure, and disconnect release only a held button and discard gesture state.
+Both presentations inflate the same Android layout and use one `DesktopPanelSession` for RFB, rendering, input, camera import, diagnostics, and lifecycle cleanup. The framebuffer uses one contain/letterbox transform, so Horizon OS window resizing does not change desktop coordinates and input in a letterbox band is rejected.
+
+In Spatial mode, the panel entity uses Spatial SDK `Grabbable` with `PIVOT_Y` and a 0.5–2.5 m height range; Interaction SDK exclusively writes its transform during a physical grab. The title is only a visual grab affordance, not custom Android drag chrome. The debug-only `recenter-panel` action performs one viewer-relative transform write while preserving the current scale. `−`/`+` changes physical size from 0.65× to 1.75× while preserving 16:9; framebuffer pixels never determine meters. In Window mode those controls are hidden because Horizon OS owns window placement and size.
+
+The desktop surface is exclusively the classic VNC single pointer: extra contacts are ignored, not represented as Linux multitouch. Primary taps move the cursor with no button mask and emit their press/release pair only on up. Pointer movement within 18 desktop pixels remains a tap candidate; movement beyond that starts a normal drag by pressing at the original coordinate. A second tap within 350 ms and 32 desktop pixels snaps to the first tap's exact coordinate, making double-clicks tolerant of ray jitter without delaying the first click. Hover, right click, wheel steps, and CLI pointer actions remain unchanged. Cancel, focus loss, pause, write failure, mode switching, and disconnect release only a held button and discard gesture state.
 
 Physical Android keys map press and release for printable ASCII, modifiers, Escape, Tab, arrows, navigation, F1–F12, repeats, and therefore ordinary Ctrl/Alt/Shift chords. The explicit edit field accepts IME text but intentionally transmits only printable ASCII as paired key events. Non-ASCII composition, dead keys, clipboard transfer, and arbitrary Unicode are not claimed; use the XFCE on-screen keyboard or an application-specific ASCII transliteration.
 
@@ -62,7 +71,7 @@ Diagnostics shown in the panel are sanitized counters: dimensions/generation, up
 
 ## Deterministic acceptance
 
-Open `fixtures/click-grid.svg` full-screen at exactly 1280×720 in XFCE and run `xev -event mouse -event keyboard` beside it. Record the applied coordinates for center `(640,360)` and corners `(0,0)`, `(1279,0)`, `(0,719)`, `(1279,719)`. Resize the panel and switch the X root resolution, repeat center/corners, deliberately select both letterbox bands, drag across cells, right-click, scroll both ways, test Ctrl+C/arrows/F keys, then background the app while holding left. The focus-loss event must emit mask zero. Complete `../spatial-desktop-session-evidence.synthetic.json` as a private run artifact; publish only a sanitized copy conforming to the schema.
+Open `fixtures/click-grid.svg` full-screen at exactly 1280×720 in XFCE and run `xev -event mouse -event keyboard` beside it. In Window mode, record the applied coordinates for center `(640,360)` and corners `(0,0)`, `(1279,0)`, `(0,719)`, `(1279,719)`, resize the Horizon OS window, and repeat. Switch to Spatial mode, confirm automatic reconnection, repeat center/corners, grab and resize the panel, then switch back to Window mode. In both presentations deliberately select letterbox bands, drag across cells, right-click, scroll both ways, test Ctrl+C/arrows/F keys, and background the app while holding left. The focus-loss event must emit mask zero and every outgoing activity must disconnect its RFB client. Complete `../spatial-desktop-session-evidence.synthetic.json` as a private run artifact; publish only a sanitized copy conforming to the schema.
 
 Live acceptance additionally gates bounded pointer-to-visible response and headset frame budget. Source/unit completion does not claim either device result. Troubleshoot connection refusal by checking `printf '%s\n' "$DISPLAY"`, requiring `xdpyinfo -display "$DISPLAY"` to succeed, and confirming x11vnc is listening on loopback port `5900` for that same display. Do not assume `:0`; the established wide Termux:X11 startup defaults to `:1`, while an explicitly active `DISPLAY` remains authoritative. A protocol error usually means the server selected an encoding outside this intentionally small subset.
 

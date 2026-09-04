@@ -33,7 +33,7 @@ class SpatialArchitectureStaticTest {
     assertEquals(2, Regex("setComponent\\(Transform\\(").findAll(activity).count() + Regex("Transform\\(pose\\)").findAll(activity).count())
   }
 
-  @Test fun manifestHasMinimalHorizonOpenXrAndVrScaffolding() {
+  @Test fun manifestHasHybridWindowedAndImmersiveScaffolding() {
     val manifest = source("src/main/AndroidManifest.xml")
     listOf(
       "uses-horizonos-sdk",
@@ -43,8 +43,17 @@ class SpatialArchitectureStaticTest {
       "com.oculus.vr.focusaware",
       "libossdk.oculus.so",
       "android:screenOrientation=\"landscape\"",
-      "keyboard|navigation|uiMode",
+      ".DesktopPanelActivity",
+      "com.oculus.intent.category.2D",
+      "com.oculus.intent.category.VR_HOME_LAUNCHER",
+      "com.oculus.intent.category.OVERLAY_LAUNCHER",
+      ".SpatialDesktopActivity",
+      "com.oculus.intent.category.VR",
+      "android:defaultWidth=\"1280dp\"",
+      "android:defaultHeight=\"720dp\"",
     ).forEach { assertTrue("missing manifest marker $it", manifest.contains(it)) }
+    assertEquals(1, Regex("android.intent.category.LAUNCHER").findAll(manifest).count())
+    assertTrue(!manifest.contains("keyboardHidden|keyboard|navigation"))
   }
 
   @Test fun panelThemeIsExplicitlyOpaqueAndVrDependenciesArePinned() {
@@ -57,16 +66,17 @@ class SpatialArchitectureStaticTest {
 
   @Test fun buttonsAndDebugIntentShareTypedDispatcher() {
     val activity = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/SpatialDesktopActivity.kt")
+    val session = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/DesktopPanelSession.kt")
     assertTrue(activity.contains("override fun onNewIntent(intent: Intent)"))
-    assertTrue(activity.contains("BuildConfig.DEBUG"))
-    assertTrue(activity.contains("dispatchHuman(if (client.isActive) PanelAction.Disconnect else PanelAction.Connect)"))
-    assertTrue(activity.contains("dispatchHuman(PanelAction.Camera50)"))
-    assertTrue(activity.contains("dispatchHuman(PanelAction.Camera51)"))
-    assertTrue(activity.contains("dispatchPanelAction(request.action, request.requestId)"))
-    assertTrue(activity.contains("SPATIAL_DESKTOP_RFB_STATUS"))
-    assertTrue(activity.contains("SPATIAL_DESKTOP_RFB_FRAME"))
-    assertTrue(activity.contains("postDelayed(deferredPauseDisconnect, PAUSE_DISCONNECT_DELAY_MS)"))
-    assertTrue(activity.contains("lifecycleHandler.removeCallbacks(deferredPauseDisconnect)"))
+    assertTrue(session.contains("BuildConfig.DEBUG"))
+    assertTrue(session.contains("dispatchHuman(if (client.isActive) PanelAction.Disconnect else PanelAction.Connect)"))
+    assertTrue(session.contains("dispatchHuman(PanelAction.Camera50)"))
+    assertTrue(session.contains("dispatchHuman(PanelAction.Camera51)"))
+    assertTrue(session.contains("dispatchPanelAction(request.action, request.requestId)"))
+    assertTrue(session.contains("SPATIAL_DESKTOP_RFB_STATUS"))
+    assertTrue(session.contains("SPATIAL_DESKTOP_RFB_FRAME"))
+    assertTrue(session.contains("postDelayed(deferredPauseDisconnect, PAUSE_DISCONNECT_DELAY_MS)"))
+    assertTrue(session.contains("lifecycleHandler.removeCallbacks(deferredPauseDisconnect)"))
     val rfb = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/RfbProtocol.kt")
     assertTrue(rfb.indexOf("negotiate(input, out)") < rfb.indexOf("s.soTimeout = 0"))
     assertTrue(rfb.contains("newSingleThreadExecutor"))
@@ -95,5 +105,21 @@ class SpatialArchitectureStaticTest {
     assertTrue(witness.contains("xfce4-terminal"))
     assertTrue(witness.contains("^\$PREFIX/bin/xfce4-terminal .*--title=SpatialDesktopWitness$"))
     assertTrue(!witness.contains("-lc"))
+  }
+
+  @Test fun hybridActivitiesShareOneDesktopSessionAndUseExclusiveTransitions() {
+    val windowed = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/DesktopPanelActivity.kt")
+    val spatial = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/SpatialDesktopActivity.kt")
+    val navigator = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/DesktopPresentation.kt")
+    val session = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/DesktopPanelSession.kt")
+    assertTrue(windowed.contains("DesktopPanelSession(this, this)"))
+    assertTrue(spatial.contains("DesktopPanelSession(this, this)"))
+    assertTrue(windowed.contains("HybridDesktopNavigator.launchSpatial(this)"))
+    assertTrue(spatial.contains("HybridDesktopNavigator.launchWindowedInHome(this)"))
+    assertTrue(navigator.contains("extra_launch_in_home_pending_intent"))
+    assertTrue(navigator.contains("finishAndRemoveTask()"))
+    assertTrue(navigator.contains("EXTRA_AUTO_CONNECT"))
+    assertTrue(session.contains("presentation.switchPresentation()"))
+    assertTrue(session.contains("sizeDown.visibility = if (spatial) View.VISIBLE else View.GONE"))
   }
 }

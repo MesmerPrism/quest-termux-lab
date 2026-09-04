@@ -2,21 +2,25 @@
 
 Status: live operator-observed proof of concept with explicit limits
 
-This record summarizes the public-safe results of the July 2026 development
-session. It contains no headset serial, network address, captured image, raw
-log, printer identity, credential, or signing material. The underlying checks
-combined host-side automated tests with live operator observation on a Meta
-Quest 3S. They were not a controlled performance benchmark.
+This record summarizes the public-safe results of the July 2026 spatial-panel
+development session and the September 2026 hybrid-panel validation. It
+contains no headset serial, network address, captured image, raw log, printer
+identity, credential, or signing material. The underlying checks combined
+host-side automated tests, app-owned bounded actions, and live operator
+observation on a Meta Quest 3S. They were not a controlled performance
+benchmark.
 
 ## Validated configuration
 
-- Meta Quest 3S running the example as an ordinary Android application.
+- Meta Quest 3S running version 0.2.0 of the hybrid Android application.
 - Meta Spatial SDK 0.13.2.
 - Termux, Termux:X11, a 1280x720 XFCE desktop, and `x11vnc` restricted to
   Android loopback.
 - Direct RFB 3.8 framebuffer and input transport between the Spatial SDK app
   and the local X desktop.
 - Inkscape and CUPS installed as user-managed Termux dependencies.
+- An OS-managed 2D Activity configured as the default launcher and the
+  existing Spatial SDK Activity retained as the immersive presentation.
 
 ## Observed results
 
@@ -38,6 +42,15 @@ Quest 3S. They were not a controlled performance benchmark.
 - The print helper rendered the deliberately small monochrome SVG fixture,
   submitted it to the operator-configured network printer through local CUPS,
   and the operator confirmed that the physical page emerged.
+- A normal launcher invocation opened the OS-managed 2D panel at a 1600x900
+  runtime surface. It connected to the same 1280x720 loopback RFB desktop,
+  decoded and presented framebuffer updates, and accepted bounded pointer,
+  scroll, and printable-ASCII input actions with no RFB error.
+- The app completed both exclusive hybrid transitions: Window mode to the
+  Spatial SDK panel, and Spatial mode back to a Home panel through the
+  platform `PendingIntent` route. Each outgoing client disconnected before
+  transition and the incoming presentation automatically reconnected and
+  presented a fresh full framebuffer.
 
 ## Validation boundaries
 
@@ -51,6 +64,10 @@ The run also does not establish compatibility with arbitrary Linux
 applications, other Quest models, future Horizon OS releases, every network
 printer, or camera IDs other than the tested allowlist. Camera IDs are treated
 as version-specific implementation details rather than a platform guarantee.
+The September hybrid transition checks used the app's bounded debug intent;
+manual hand/controller interaction with the new OS-managed mode and arbitrary
+system window sizes remain operator acceptance gates rather than automated
+claims.
 
 The current input path remains a classic single desktop pointer. Arbitrary
 Unicode composition, sophisticated IME behavior, clipboard integration,

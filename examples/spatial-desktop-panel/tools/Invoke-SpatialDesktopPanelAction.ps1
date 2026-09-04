@@ -4,8 +4,11 @@ param(
   [ValidatePattern('^[A-Za-z0-9._:-]+$')]
   [string]$Serial,
 
+  [ValidateSet('window', 'spatial')]
+  [string]$Presentation = 'window',
+
   [Parameter(Mandatory = $true)]
-  [ValidateSet('connect', 'disconnect', 'size-up', 'size-down', 'recenter-panel', 'right-click', 'scroll-up', 'scroll-down', 'camera-50', 'camera-51', 'pointer-move', 'pointer-down', 'pointer-up', 'tap', 'drag', 'type-text', 'enter', 'start-sidecar', 'start-witness', 'stop-witness')]
+  [ValidateSet('connect', 'disconnect', 'size-up', 'size-down', 'recenter-panel', 'switch-presentation', 'right-click', 'scroll-up', 'scroll-down', 'camera-50', 'camera-51', 'pointer-move', 'pointer-down', 'pointer-up', 'tap', 'drag', 'type-text', 'enter', 'start-sidecar', 'start-witness', 'stop-witness')]
   [string]$Action,
 
   [ValidateRange(0, 4095)]
@@ -31,7 +34,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $package = 'io.github.mesmerprism.questtermuxlab.spatialdesktop'
-$activity = "$package/.SpatialDesktopActivity"
+$activity = if ($Presentation -eq 'spatial') { "$package/.SpatialDesktopActivity" } else { "$package/.DesktopPanelActivity" }
 $intentAction = "$package.DEBUG_PANEL_ACTION"
 $coordinateActions = @('pointer-move', 'pointer-down', 'pointer-up', 'tap')
 $dragCoordinateNames = @('X', 'Y', 'X2', 'Y2')
@@ -88,6 +91,7 @@ if ($EvidenceDirectory) {
   $receipt = [ordered]@{
     request_id = $requestId
     action = $Action
+    presentation = $Presentation
     completed_utc = [DateTimeOffset]::UtcNow.ToString('o')
     marker = $matched
   }
