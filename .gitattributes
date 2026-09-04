@@ -8,3 +8,5 @@
 *.patch text eol=lf
 *.diff text eol=lf
 *.ps1 text eol=crlf
+examples/spatial-desktop-panel/linux/quest-camera2-to-inkscape text eol=lf
+examples/spatial-desktop-panel/linux/quest-inkscape-print text eol=lf

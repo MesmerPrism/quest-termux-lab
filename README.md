@@ -50,6 +50,9 @@ full boundary.
   and browser-readable MJPEG streams.
 - A small Android 2D panel viewer example for showing the localhost MJPEG
   stream in a landscape Quest panel.
+- A Spatial SDK desktop panel source example with a bounded loopback RFB
+  client and full classic-pointer/keyboard input lane; see
+  [docs/spatial-desktop-panel.md](docs/spatial-desktop-panel.md).
 - Public-safe native-wide Termux:X11 preference probes, evidence schema,
   capture helper, and patch scaffolds for a possible Quest-flavored activity.
 - Public-safe on-device Codex engineering runbooks and synthetic evidence
@@ -165,10 +168,15 @@ The first landscape-desktop milestone is complete: Termux:X11 can run a
 1280x720 desktop, the localhost VNC/MJPEG bridge can stream it, and the Android
 viewer can show the full frame in a wide Quest panel.
 
-This is still a proof of concept. Direct interaction currently works through
-the foreground Termux:X11 panel, while the larger viewer is observation-only
-and slower because it receives an MJPEG stream rather than the native X11
-surface.
+The original larger WebView viewer remains observation-only and slower because
+it receives an MJPEG stream. The separate Spatial SDK example under
+`examples/spatial-desktop-panel` provides the interactive route directly to
+x11vnc on Android loopback. A live Quest 3S lab run validated panel movement,
+desktop pointer and keyboard interaction, Inkscape use, bounded outside-camera
+still import, and local CUPS printing. This is qualitative operator-observed
+acceptance; quantified latency, sustained frame budget, thermal behavior, and
+broader application compatibility remain open. See
+[`docs/spatial-desktop-panel-results-public.md`](docs/spatial-desktop-panel-results-public.md).
 
 The first headless-sidecar milestone is also positive: a Termux-owned
 localhost JSON command service can continue answering allowlisted commands

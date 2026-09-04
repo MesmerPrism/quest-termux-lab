@@ -146,5 +146,6 @@ python tools/peer_authority_source_handoff.py examples/peer-authority-source-han
 python -m unittest tools.test_peer_authority_source_handoff
 powershell -NoProfile -Command "[scriptblock]::Create((Get-Content -Raw tools/capture_x11_surface_metrics.ps1)) | Out-Null"
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/build_android_vnc_panel_viewer.ps1 -Unsigned
+gradle -p examples/spatial-desktop-panel test lint assembleDebug assembleRelease
 bash -n scripts/build-minimal-android-apk-on-device.sh scripts/wifi-adb-keepawake-watchdog.sh scripts/quest-x11-wide-prefs.sh scripts/start-quest-x11-wide.sh
 ```

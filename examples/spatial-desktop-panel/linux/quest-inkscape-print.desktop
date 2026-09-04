@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Export & Print SVG
+Comment=Render an SVG with Inkscape and print it through the local CUPS queue
+Exec=/data/data/com.termux/files/usr/local/bin/quest-inkscape-print %f
+TryExec=/data/data/com.termux/files/usr/local/bin/quest-inkscape-print
+Icon=printer
+Terminal=false
+Categories=Graphics;Utility;
+MimeType=image/svg+xml;
+StartupNotify=true
