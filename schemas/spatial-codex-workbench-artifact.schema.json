@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/quest-termux-lab/spatial-codex-workbench-artifact.schema.json",
+  "title": "Spatial Codex Workbench artifact summary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "package", "activity", "version_code", "version_name", "apk_name", "apk_sha256", "apk_bytes", "signing_certificate_sha256", "signing"],
+  "properties": {
+    "schema": {
+      "const": "quest-termux-lab.spatial-codex-workbench-artifact.v1"
+    },
+    "package": {
+      "const": "io.github.mesmerprism.questtermuxlab.codexdemo"
+    },
+    "activity": {
+      "const": ".MainActivity"
+    },
+    "version_code": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "version_name": {
+      "type": "string",
+      "pattern": "^[0-9A-Za-z][0-9A-Za-z.+-]{0,31}$"
+    },
+    "apk_name": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}\\.apk$"
+    },
+    "apk_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "apk_bytes": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "signing_certificate_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "signing": {
+      "const": "debug-external"
+    }
+  }
+}

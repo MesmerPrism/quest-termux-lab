@@ -1,0 +1,62 @@
+{
+  "schema": "quest-termux-lab.spatial-codex-workbench-github-round-trip-acceptance.v1",
+  "kind": "sanitized-live-result",
+  "result": "pass",
+  "public_showcase": {
+    "repository": "https://github.com/MesmerPrism/spatial-codex-quest-apk-showcase",
+    "draft_pull_request": "https://github.com/MesmerPrism/spatial-codex-quest-apk-showcase/pull/1"
+  },
+  "inbound_git": {
+    "remote_source_updated": true,
+    "quest_fast_forward_pull": true,
+    "worktree_clean_after_pull": true,
+    "pulled_source_marker_verified": true
+  },
+  "pulled_candidate": {
+    "version_code": 10,
+    "version_name": "1.0.0",
+    "compiled_on_quest": true,
+    "hash_verified": true,
+    "signature_verified": true,
+    "installed_version_matched": true,
+    "launch_status_ok": true,
+    "process_running": true,
+    "bounded_package_fatals": 0
+  },
+  "outbound_git": {
+    "codex_cli_edit_on_quest": true,
+    "reviewed_changed_file_count": 2,
+    "version_commit_clean": true,
+    "feature_branch_pushed_from_quest": true,
+    "draft_pull_request_created_from_quest": true,
+    "remote_commit_matched": true
+  },
+  "codex_candidate": {
+    "version_code": 11,
+    "version_name": "1.0.1",
+    "compiled_on_quest": true,
+    "source_commit_bound": true,
+    "hash_reverified_before_install": true,
+    "signature_verified": true,
+    "installed_version_matched": true,
+    "launch_status_ok": true,
+    "process_running": true,
+    "bounded_package_fatals": 0
+  },
+  "authority": {
+    "github_authentication": "operator_visible_device_flow",
+    "git_protocol": "https",
+    "adb_selected_target_count": 1,
+    "adb_shell_uid_verified": true,
+    "unattended_pairing_or_authorization": false
+  },
+  "redactions": [
+    "device_serial",
+    "adb_endpoint",
+    "termux_paths",
+    "artifact_hashes",
+    "signing_fingerprint",
+    "authentication_material",
+    "raw_logs"
+  ]
+}

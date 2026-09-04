@@ -57,6 +57,10 @@ full boundary.
   capture helper, and patch scaffolds for a possible Quest-flavored activity.
 - Public-safe on-device Codex engineering runbooks and synthetic evidence
   records for treating Termux or Proot as a normal-app developer sidecar.
+- A Spatial Codex Workbench example plus a two-lane showcase guide that keeps
+  the Inkscape input proof separate from the Codex CLI, Git, local APK build,
+  authorized install, and launch proof; see
+  [docs/quest-spatial-development-showcase.md](docs/quest-spatial-development-showcase.md).
 - Public-safe on-device APK build/install/launch guidance for an
   operator-authorized WiFi ADB loopback route.
 - Public-safe cross-package XR questionnaire panel handoff guidance for testing
@@ -699,11 +703,16 @@ this repository unless license obligations are reviewed.
     with fresh heartbeats and the loopback ADB `uid=2000(shell)` gate.
 49. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
     treat each as a separate high-risk gate.
+50. Spatial development showcase: demonstrate Inkscape input through the
+    Spatial Desktop, then run a bounded Codex CLI edit, reviewed Git commit,
+    source-only APK build, and explicitly authorized install/launch as a
+    separate evidence lane.
 
 ## Validation
 
 ```powershell
 python tools/check_public_boundary.py --repo-root .
+python tools/check_repository_integrity.py --repo-root .
 python -m py_compile tools/capture_vnc_screenshot.py tools/stream_vnc_mjpeg.py tools/check_public_boundary.py
 python -m py_compile tools/fleet_control_plane.py scripts/termux_fleet_agent.py scripts/mirror_commander.py tools/test_fleet_control_plane.py tools/test_mirror_protocol.py
 python -m unittest tools.test_fleet_control_plane
@@ -778,5 +787,8 @@ python -m py_compile tools/peer_mesh_private_result_acceptance.py tools/test_pee
 python -m unittest tools.test_peer_mesh_private_result_acceptance
 powershell -NoProfile -Command "[scriptblock]::Create((Get-Content -Raw tools\capture_x11_surface_metrics.ps1)) | Out-Null"
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\build_android_vnc_panel_viewer.ps1 -Unsigned
-bash -n scripts/build-minimal-android-apk-on-device.sh scripts/wifi-adb-keepawake-watchdog.sh scripts/quest-x11-wide-prefs.sh scripts/start-quest-x11-wide.sh
+gradle -p examples/spatial-desktop-panel test lint assembleDebug assembleRelease
+node --test examples/spatial-codex-workbench/sidecar/tests/*.test.mjs
+gradle -p examples/spatial-codex-workbench test lint assembleDebug assembleRelease assembleAndroidTest
+bash -n scripts/build-minimal-android-apk-on-device.sh scripts/wifi-adb-keepawake-watchdog.sh scripts/quest-x11-wide-prefs.sh scripts/start-quest-x11-wide.sh examples/spatial-codex-workbench/demo-project/build.sh
 ```

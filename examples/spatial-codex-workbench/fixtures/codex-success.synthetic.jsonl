@@ -1,0 +1,5 @@
+{"type":"thread.started","thread_id":"synthetic-thread"}
+{"type":"turn.started"}
+{"type":"item.started","item":{"id":"item-1","type":"command_execution","command":"synthetic edit","status":"in_progress"}}
+{"type":"item.completed","item":{"id":"item-2","type":"agent_message","text":"Updated the demo title and validated the change."}}
+{"type":"turn.completed","usage":{"input_tokens":100,"cached_input_tokens":80,"output_tokens":20,"reasoning_output_tokens":0}}
