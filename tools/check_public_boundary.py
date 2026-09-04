@@ -49,7 +49,16 @@ SYNTHETIC_MARKER_REQUIRED = {
     "remote-session-lease.synthetic.json",
 }
 
-SKIP_DIRS = {".git", "__pycache__", "runs", "artifacts", "captures", "logs"}
+GENERATED_DIRS = {".gradle", ".kotlin", "build"}
+SKIP_DIRS = {
+    ".git",
+    "__pycache__",
+    "runs",
+    "artifacts",
+    "captures",
+    "logs",
+    *GENERATED_DIRS,
+}
 TEXT_SUFFIXES = {
     ".md",
     ".txt",
@@ -67,8 +76,9 @@ TEXT_SUFFIXES = {
     ".patch",
     ".diff",
 }
-FORBIDDEN_TRACKED_SUFFIXES = {
+FORBIDDEN_ARTIFACT_SUFFIXES = {
     ".apk",
+    ".class",
     ".idsig",
     ".keystore",
     ".jks",
@@ -79,6 +89,31 @@ FORBIDDEN_TRACKED_SUFFIXES = {
     ".dex",
     ".so",
 }
+
+
+def git_paths(root: Path, *args: str) -> list[Path]:
+    """Return NUL-delimited Git paths and fail when inventory is unavailable."""
+
+    try:
+        output = subprocess.run(
+            ["git", "-C", str(root), "ls-files", "-z", *args],
+            check=True,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        ).stdout
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise RuntimeError("git inventory unavailable") from exc
+    return [Path(value) for value in output.split("\0") if value]
+
+
+def check_git_path(findings: list[str], rel: Path, *, tracked: bool) -> None:
+    if any(part in GENERATED_DIRS for part in rel.parts):
+        state = "tracked" if tracked else "unignored"
+        findings.append(f"{rel}: forbidden {state} generated build state")
+    elif rel.suffix.lower() in FORBIDDEN_ARTIFACT_SUFFIXES:
+        state = "tracked" if tracked else "unignored"
+        findings.append(f"{rel}: forbidden {state} generated/binary artifact")
 
 
 def should_scan(path: Path) -> bool:
@@ -100,20 +135,15 @@ def main() -> int:
     findings: list[str] = []
 
     try:
-        tracked = subprocess.run(
-            ["git", "-C", str(root), "ls-files"],
-            check=True,
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        ).stdout.splitlines()
-    except (OSError, subprocess.CalledProcessError):
-        tracked = []
-
-    for rel_text in tracked:
-        rel = Path(rel_text)
-        if rel.suffix.lower() in FORBIDDEN_TRACKED_SUFFIXES:
-            findings.append(f"{rel}: forbidden tracked generated/binary artifact")
+        tracked = git_paths(root)
+        untracked = git_paths(root, "--others", "--exclude-standard")
+    except RuntimeError as exc:
+        findings.append(str(exc))
+    else:
+        for rel in tracked:
+            check_git_path(findings, rel, tracked=True)
+        for rel in untracked:
+            check_git_path(findings, rel, tracked=False)
 
     for path in sorted(root.rglob("*")):
         if not path.is_file() or not should_scan(path.relative_to(root)):
