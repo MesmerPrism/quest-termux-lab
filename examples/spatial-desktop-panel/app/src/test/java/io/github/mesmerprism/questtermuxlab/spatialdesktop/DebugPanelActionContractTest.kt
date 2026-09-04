@@ -37,7 +37,7 @@ class DebugPanelActionContractTest {
 
   @Test fun cliRequiresSerialAndContainsNoRawShellParameter() {
     val candidates = listOf(File("tools/Invoke-SpatialDesktopPanelAction.ps1"), File("../tools/Invoke-SpatialDesktopPanelAction.ps1"))
-    val cli = candidates.firstOrNull { it.isFile }?.readText() ?: error("missing module CLI")
+    val cli = candidates.firstOrNull { it.isFile }?.readText()?.replace("\r\n", "\n") ?: error("missing module CLI")
     assertTrue(cli.contains("[Parameter(Mandatory = \$true)]\n  [ValidatePattern"))
     assertTrue(cli.contains("[string]\$Serial"))
     assertTrue(!cli.contains("[string]\$Command"))
