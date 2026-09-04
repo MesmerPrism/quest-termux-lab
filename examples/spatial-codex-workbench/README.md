@@ -100,6 +100,19 @@ lab boundary.
 
 ## Live acceptance result
 
+A current source candidate also received a narrower unattended shell test on a
+Quest 3S. The exact debug APK installed and launched; version readback,
+foreground/process state, a `2304x1296` first draw, target-owned OpenXR focus
+and frame progression, and a bounded zero-fatal check passed. That headset did
+not contain Termux or the Spatial Desktop, and no wearer participated, so the
+broker, Codex/Git/build/deploy path, Inkscape, and human input usability were
+correctly left unexercised. See
+[`fixtures/workbench-shell-validation.synthetic.json`](fixtures/workbench-shell-validation.synthetic.json).
+
+The complete development workflow evidence below comes from the prior prepared
+Quest environment and remains historical until that environment is available
+for a current replay.
+
 The complete local golden path passed on a Quest: capability preflight,
 isolated run branch, real Codex edit, reviewed diff, version bump, clean Git
 commit, candidate APK build and signature/hash verification, exact-target

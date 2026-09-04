@@ -1,0 +1,74 @@
+{
+  "schema": "quest-termux-lab.spatial-codex-workbench-shell-validation.v1",
+  "kind": "sanitized-live-result",
+  "result": "pass_with_sidecar_workflow_deferred",
+  "app_source_commit": "54fe3ec4ea7dd46b1c9a93b2e3958c729c2731fd",
+  "environment": {
+    "device_family": "Meta Quest 3S",
+    "android_release": "14",
+    "termux_present": false,
+    "spatial_desktop_present": false
+  },
+  "candidate": {
+    "version_code": 1,
+    "version_name": "0.1.0",
+    "artifact_hash_reverified_before_install": true,
+    "debuggable": true
+  },
+  "checks": [
+    {
+      "gate": "exact_target_install_and_version_readback",
+      "status": "pass"
+    },
+    {
+      "gate": "cold_launch",
+      "status": "pass"
+    },
+    {
+      "gate": "foreground_and_process_readback",
+      "status": "pass"
+    },
+    {
+      "gate": "workbench_first_draw",
+      "status": "pass",
+      "observed_panel_pixels": "2304x1296"
+    },
+    {
+      "gate": "target_owned_openxr_focus_and_frame_progression",
+      "status": "pass"
+    },
+    {
+      "gate": "bounded_target_fatal_check",
+      "status": "pass",
+      "fatal_count": 0
+    },
+    {
+      "gate": "termux_broker_and_codex_git_build_workflow",
+      "status": "not_exercised",
+      "reason": "The connected validation headset did not contain the prepared Termux environment."
+    },
+    {
+      "gate": "spatial_desktop_and_inkscape",
+      "status": "not_exercised",
+      "reason": "The connected validation headset did not contain the Spatial Desktop environment."
+    },
+    {
+      "gate": "wearer_input_usability",
+      "status": "not_exercised",
+      "reason": "No wearer participated in this automated validation slice."
+    }
+  ],
+  "cleanup": {
+    "workbench_process_stopped": true,
+    "installed_workbench_retained": true,
+    "adb_daemon_lifecycle_changed": false,
+    "unrelated_packages_or_data_changed": false,
+    "agent_board_leases_released": true
+  },
+  "redactions": [
+    "device_serial",
+    "candidate_apk_path",
+    "candidate_apk_sha256",
+    "raw_logcat"
+  ]
+}

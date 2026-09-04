@@ -18,7 +18,8 @@ separate.
 | Surface | Public state | Evidence boundary |
 | --- | --- | --- |
 | Spatial Desktop and Inkscape | Source, tests, CI, runbook, and a sanitized live result are published. | The live result is qualitative. It does not claim measured latency, arbitrary Linux compatibility, or long-duration thermal stability. |
-| Codex CLI, Git, and local APK build | A bounded workflow, source-only demo app, host tests, and sanitized prior Quest results are published. | Host tests do not prove Codex authentication, Termux package availability, ADB authority, or a current Quest run. |
+| Workbench Spatial SDK shell | The current candidate installed and launched on a Quest 3S with first-draw, foreground, process, OpenXR-focus, frame-progression, and fatal-free evidence. | The connected headset lacked Termux and the Spatial Desktop, so this is not a current Codex/Git or Inkscape result. No wearer input was tested. |
+| Codex CLI, Git, and local APK build | A bounded workflow, source-only demo app, host tests, and sanitized prior Quest results are published. | Host tests and the current shell-only device result do not prove Codex authentication, Termux package availability, ADB authority from inside Termux, or a current full Quest run. |
 | Install and launch | Previously passed through an operator-authorized, explicit ADB target with Android shell UID verification. | A new release candidate still requires a fresh serial-scoped device run before making a current-version claim. |
 | GitHub round trip | A prior Quest run pulled source, pushed a feature branch, and opened a draft pull request. | Authentication is operator-owned and never part of the app, prompt, repository, or public evidence. |
 
