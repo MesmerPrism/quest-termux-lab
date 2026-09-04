@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
+import android.view.MotionEvent
 
 /** Horizon OS-managed 2D presentation of the same interactive Linux desktop. */
 class DesktopPanelActivity : Activity(), DesktopPresentationHost {
@@ -30,6 +31,9 @@ class DesktopPanelActivity : Activity(), DesktopPresentationHost {
 
   override fun dispatchKeyEvent(event: KeyEvent): Boolean =
     session.handleControllerKey(event) || super.dispatchKeyEvent(event)
+
+  override fun dispatchGenericMotionEvent(event: MotionEvent): Boolean =
+    session.handleControllerMotion(event) || super.dispatchGenericMotionEvent(event)
 
   override fun isPresentationReady(action: PanelAction): Boolean = true
 

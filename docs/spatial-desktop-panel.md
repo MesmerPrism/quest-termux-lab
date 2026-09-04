@@ -46,10 +46,18 @@ example README for build, startup, cleanup, limitations, performance counters,
 validation gates, and troubleshooting. Evidence uses only
 `quest-termux-lab.spatial-desktop-session-evidence.v1`.
 
-Both Activities route Android `KEYCODE_BUTTON_A` through the shared session
-before child-view dispatch. When RFB is ready, one initial A-button key-down
-emits an RFB button-3 click at the most recently mapped cursor coordinate;
-repeats do not click again, and the keyboard `KEYCODE_A` remains an ordinary
-text key. The route is intentionally supplemental to the visible on-panel
-right-click control and does not claim controller parity without live manual
-validation.
+The visible right-click control is a one-shot mode: it arms button 3, lets the
+operator target the next framebuffer press, consumes that press without a
+primary gesture, and returns to normal. This avoids requiring one ray to hover
+over a desktop target and press separate panel chrome simultaneously.
+
+Both Activities route Android `KEYCODE_BUTTON_A` and raw joystick-primary
+button events through the shared session before child-view dispatch. Spatial
+mode additionally registers an early Spatial SDK system that reads the local
+right-controller `ButtonA` component. A pressed edge emits button 3 and
+cancels/suppresses the matching primary panel gesture; duplicate sources and
+repeats do not click again. The keyboard `KEYCODE_A` remains ordinary text.
+Horizon OS can reduce controller input to a synthesized primary pointer in an
+OS-managed panel, so Window mode does not claim an independent A-button route
+unless live readback proves one. The one-shot control is the cross-mode
+fallback.

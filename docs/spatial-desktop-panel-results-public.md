@@ -13,8 +13,9 @@ benchmark.
 ## Validated configuration
 
 - Meta Quest 3S running version 0.2.0 of the hybrid Android application for the
-  completed manual hybrid/camera acceptance; version 0.2.1 adds the controller
-  A-button secondary-click mapping and requires a separate controller check.
+  completed manual hybrid/camera acceptance. Version 0.2.1 supplied the first
+  controller A-button attempt; version 0.2.2 redesigns right-click interaction
+  and remains a separate acceptance candidate.
 - Meta Spatial SDK 0.13.2.
 - Termux, Termux:X11, a 1280x720 XFCE desktop, and `x11vnc` restricted to
   Android loopback.
@@ -56,6 +57,12 @@ benchmark.
 - The operator subsequently confirmed that both Window and Spatial modes were
   smooth and responsive under hand/controller use, and that both camera
   buttons captured a still and opened it in Inkscape.
+- A paired Bluetooth keyboard delivered input through the focused framebuffer
+  as intended without requiring Meta's floating keyboard.
+- Live version 0.2.1 testing showed that Horizon OS converted controller A into
+  an ordinary primary panel gesture in Window mode: moving while holding it
+  drew XFCE's blue selection rectangle. That is a recorded failure of the
+  first controller-A route, not a right-click success.
 
 ## Validation boundaries
 
@@ -70,11 +77,13 @@ applications, other Quest models, future Horizon OS releases, every network
 printer, or camera IDs other than the tested allowlist. Camera IDs are treated
 as version-specific implementation details rather than a platform guarantee.
 The first September hybrid transition checks used the app's bounded debug
-intent, followed by the manual acceptance noted above. The new version 0.2.1
-mapping from the right Touch controller A button to an RFB secondary click is
-not included in that earlier proof until it is exercised with a real
-controller. An ADB-synthesized Android key event cannot establish Touch or
-OpenXR input parity.
+intent, followed by the manual acceptance noted above. Version 0.2.2 adds an
+armed one-shot right-click control for both presentations and a Spatial SDK
+controller-component A-button route for immersive mode. Neither is a live
+claim until the new candidate is exercised with a real controller. An
+ADB-synthesized Android key event cannot establish Touch or OpenXR input
+parity, and Window mode may continue to receive only Horizon's synthesized
+primary panel gesture.
 
 The current input path remains a classic single desktop pointer. Arbitrary
 Unicode composition, sophisticated IME behavior, clipboard integration,

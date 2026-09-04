@@ -1,6 +1,8 @@
 package io.github.mesmerprism.questtermuxlab.spatialdesktop
 
 import android.view.KeyEvent
+import android.view.InputDevice
+import android.view.MotionEvent
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -12,5 +14,36 @@ class KeyMapperTest {
     assertTrue(ControllerButtonMapper.isSecondaryClick(KeyEvent.KEYCODE_BUTTON_A))
     assertFalse(ControllerButtonMapper.isSecondaryClick(KeyEvent.KEYCODE_A))
     assertFalse(ControllerButtonMapper.isSecondaryClick(KeyEvent.KEYCODE_BUTTON_B))
+  }
+
+  @Test fun joystickPrimaryButtonMotionMapsButPointerMotionDoesNot() {
+    assertTrue(
+      ControllerButtonMapper.isSecondaryClickMotion(
+        InputDevice.SOURCE_JOYSTICK,
+        MotionEvent.ACTION_BUTTON_PRESS,
+        MotionEvent.BUTTON_PRIMARY,
+        MotionEvent.BUTTON_PRIMARY,
+      )
+    )
+    assertFalse(
+      ControllerButtonMapper.isSecondaryClickMotion(
+        InputDevice.SOURCE_MOUSE,
+        MotionEvent.ACTION_BUTTON_PRESS,
+        MotionEvent.BUTTON_PRIMARY,
+        MotionEvent.BUTTON_PRIMARY,
+      )
+    )
+  }
+
+  @Test fun oneShotSecondaryClickArmsConsumesAndCancels() {
+    val state = OneShotSecondaryClickState()
+    assertTrue(state.toggle())
+    assertTrue(state.armed)
+    assertTrue(state.consume())
+    assertFalse(state.armed)
+    assertFalse(state.consume())
+    assertTrue(state.toggle())
+    assertTrue(state.cancel())
+    assertFalse(state.cancel())
   }
 }

@@ -1,6 +1,8 @@
 package io.github.mesmerprism.questtermuxlab.spatialdesktop
 
 import android.view.KeyEvent
+import android.view.InputDevice
+import android.view.MotionEvent
 
 data class PointerPacket(val mask: Int, val x: Int, val y: Int)
 
@@ -43,4 +45,32 @@ object AndroidKeyMapper {
 
 object ControllerButtonMapper {
   fun isSecondaryClick(keyCode: Int): Boolean = keyCode == KeyEvent.KEYCODE_BUTTON_A
+
+  fun isSecondaryClickMotion(source: Int, action: Int, actionButton: Int, buttonState: Int): Boolean {
+    if (source and InputDevice.SOURCE_JOYSTICK != InputDevice.SOURCE_JOYSTICK) return false
+    if (action != MotionEvent.ACTION_BUTTON_PRESS && action != MotionEvent.ACTION_BUTTON_RELEASE) return false
+    return actionButton == MotionEvent.BUTTON_PRIMARY || buttonState and MotionEvent.BUTTON_PRIMARY != 0
+  }
+}
+
+class OneShotSecondaryClickState {
+  var armed = false
+    private set
+
+  fun toggle(): Boolean {
+    armed = !armed
+    return armed
+  }
+
+  fun consume(): Boolean {
+    if (!armed) return false
+    armed = false
+    return true
+  }
+
+  fun cancel(): Boolean {
+    val changed = armed
+    armed = false
+    return changed
+  }
 }

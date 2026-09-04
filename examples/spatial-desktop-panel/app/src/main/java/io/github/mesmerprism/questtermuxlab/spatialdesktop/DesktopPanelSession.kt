@@ -6,10 +6,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.Button
@@ -33,6 +35,9 @@ class DesktopPanelSession(
   private var cameraCapture: Camera2StillCapture? = null
   private var snapshotServer: OneShotJpegServer? = null
   private var cameraLauncher: CameraToInkscapeLauncher? = null
+  private var controllerAKeyDown = false
+  private var controllerAMotionDown = false
+  private var lastControllerRightClickAtMs = 0L
 
   fun bindPanelViews(root: View) {
     installFirstDrawMarker(root)
@@ -44,6 +49,7 @@ class DesktopPanelSession(
       }
     val sizeDown = root.findViewById<Button>(R.id.size_down)
     val sizeUp = root.findViewById<Button>(R.id.size_up)
+    val rightClick = root.findViewById<Button>(R.id.right_click)
     val spatial = presentation.presentationMode == DesktopPresentationMode.SPATIAL
     sizeDown.visibility = if (spatial) View.VISIBLE else View.GONE
     sizeUp.visibility = if (spatial) View.VISIBLE else View.GONE
@@ -56,6 +62,11 @@ class DesktopPanelSession(
         it.client = client
         it.input = InputLifecycle { packet -> client.pointer(packet.mask, packet.x, packet.y) }
         it.onInputDiagnostic = { line -> inputLine = line; refreshStatus() }
+        it.onSecondaryClickArmChanged = { armed ->
+          rightClick.text = if (armed) "Cancel right-click" else "Right-click mode"
+          inputLine = if (armed) "rightClick=armed nextDesktopTap=button3" else "rightClick=normal"
+          refreshStatus()
+        }
         it.onFrameApplied = { frame, render ->
           Log.i(
             TAG,
@@ -83,7 +94,13 @@ class DesktopPanelSession(
     sizeDown.setOnClickListener { dispatchHuman(PanelAction.SizeDown) }
     root.findViewById<Button>(R.id.camera_50).setOnClickListener { dispatchHuman(PanelAction.Camera50) }
     root.findViewById<Button>(R.id.camera_51).setOnClickListener { dispatchHuman(PanelAction.Camera51) }
-    root.findViewById<Button>(R.id.right_click).setOnClickListener { dispatchHuman(PanelAction.RightClick) }
+    rightClick.apply {
+      text = "Right-click mode"
+      setOnClickListener {
+        val armed = framebufferView?.toggleSecondaryClickArm() ?: false
+        Log.i(TAG, "$MARKER_RIGHT_CLICK_ARM armed=$armed mode=${presentation.presentationMode}")
+      }
+    }
     root.findViewById<Button>(R.id.scroll_up).setOnClickListener { dispatchHuman(PanelAction.ScrollUp) }
     root.findViewById<Button>(R.id.scroll_down).setOnClickListener { dispatchHuman(PanelAction.ScrollDown) }
     bindKeyboard(root.findViewById(R.id.ime))
@@ -118,6 +135,8 @@ class DesktopPanelSession(
 
   fun onPause() {
     focusLosses++
+    controllerAKeyDown = false
+    controllerAMotionDown = false
     framebufferView?.releaseInput()
     lifecycleHandler.removeCallbacks(deferredPauseDisconnect)
     lifecycleHandler.postDelayed(deferredPauseDisconnect, PAUSE_DISCONNECT_DELAY_MS)
@@ -139,20 +158,56 @@ class DesktopPanelSession(
   fun handleControllerKey(event: KeyEvent): Boolean {
     if (!ControllerButtonMapper.isSecondaryClick(event.keyCode)) return false
     if (!client.isActive || client.framebuffer.width <= 0 || client.framebuffer.height <= 0) return false
-    if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0) {
-      val input = framebufferView?.input ?: return false
-      input.click(3)
-      inputLine =
-        "controllerButton=A semanticAction=RightClick inputSeq=${input.sequence} " +
-          "mapped=${input.last.x},${input.last.y} buttons=${input.mask}"
-      Log.i(
-        TAG,
-        "$MARKER_CONTROLLER_RIGHT_CLICK keyCode=${event.keyCode} inputSeq=${input.sequence} " +
-          "mapped=${input.last.x},${input.last.y}",
-      )
-      refreshStatus()
+    when (event.action) {
+      KeyEvent.ACTION_DOWN -> {
+        val firstDown = !controllerAKeyDown && event.repeatCount == 0
+        controllerAKeyDown = true
+        if (firstDown) performControllerRightClick("android-key-event")
+      }
+      KeyEvent.ACTION_UP -> controllerAKeyDown = false
     }
     return event.action == KeyEvent.ACTION_DOWN || event.action == KeyEvent.ACTION_UP
+  }
+
+  /** Handles a raw gamepad A event where Horizon exposes it separately from panel pointing. */
+  fun handleControllerMotion(event: MotionEvent): Boolean {
+    if (
+      !ControllerButtonMapper.isSecondaryClickMotion(
+        event.source,
+        event.actionMasked,
+        event.actionButton,
+        event.buttonState,
+      )
+    ) return false
+    val down = event.actionMasked == MotionEvent.ACTION_BUTTON_PRESS
+    if (down && !controllerAMotionDown) performControllerRightClick("android-gamepad-motion")
+    controllerAMotionDown = down
+    return true
+  }
+
+  /** Called from the immersive Spatial SDK controller-component poller on an A pressed edge. */
+  fun handleSpatialControllerA(): Boolean = performControllerRightClick("spatial-sdk-controller")
+
+  private fun performControllerRightClick(source: String): Boolean {
+    if (!client.isActive || client.framebuffer.width <= 0 || client.framebuffer.height <= 0) return false
+    val now = SystemClock.uptimeMillis()
+    if (now - lastControllerRightClickAtMs < CONTROLLER_RIGHT_CLICK_DEDUP_MS) return true
+    val view = framebufferView ?: return false
+    val input = view.input ?: return false
+    lastControllerRightClickAtMs = now
+    view.cancelSecondaryClickArm()
+    view.suppressPrimaryGestureForControllerAction()
+    input.click(3)
+    inputLine =
+      "controllerButton=A source=$source semanticAction=RightClick inputSeq=${input.sequence} " +
+        "mapped=${input.last.x},${input.last.y} buttons=${input.mask}"
+    Log.i(
+      TAG,
+      "$MARKER_CONTROLLER_RIGHT_CLICK source=$source mode=${presentation.presentationMode} " +
+        "inputSeq=${input.sequence} mapped=${input.last.x},${input.last.y}",
+    )
+    refreshStatus()
+    return true
   }
 
   fun onDestroy() {
@@ -473,6 +528,8 @@ class DesktopPanelSession(
   companion object {
     private const val TAG = "SpatialDesktop"
     const val MARKER_CONTROLLER_RIGHT_CLICK = "SPATIAL_DESKTOP_CONTROLLER_RIGHT_CLICK"
+    const val MARKER_RIGHT_CLICK_ARM = "SPATIAL_DESKTOP_RIGHT_CLICK_ARM"
+    private const val CONTROLLER_RIGHT_CLICK_DEDUP_MS = 150L
     private const val MAX_PENDING_ACTIONS = 8
     private const val PAUSE_DISCONNECT_DELAY_MS = 2_000L
     private const val CAMERA_PERMISSION_REQUEST = 501

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
+import android.view.MotionEvent
 import com.meta.spatial.core.Entity
 import com.meta.spatial.core.Pose
 import com.meta.spatial.core.Quaternion
@@ -41,7 +42,10 @@ class SpatialDesktopActivity : AppSystemActivity(), DesktopPresentationHost {
 
   override fun registerFeatures(): List<SpatialFeature> {
     Log.i(TAG, "${SpatialPresentationContract.MARKER_VR_FEATURE} inputSystem=INTERACTION_SDK")
-    return listOf(VRFeature(this, LocomotionControls.Right, false, VrInputSystemType.INTERACTION_SDK))
+    return listOf(
+      VRFeature(this, LocomotionControls.Right, false, VrInputSystemType.INTERACTION_SDK),
+      SpatialControllerAFeature(::pollControllerA),
+    )
   }
 
   override fun registerPanels(): List<PanelRegistration> {
@@ -94,6 +98,32 @@ class SpatialDesktopActivity : AppSystemActivity(), DesktopPresentationHost {
 
   override fun dispatchKeyEvent(event: KeyEvent): Boolean =
     session.handleControllerKey(event) || super.dispatchKeyEvent(event)
+
+  override fun dispatchGenericMotionEvent(event: MotionEvent): Boolean =
+    session.handleControllerMotion(event) || super.dispatchGenericMotionEvent(event)
+
+  private var spatialControllerADown = false
+  private var spatialControllerRouteLogged = false
+
+  private fun pollControllerA() {
+    val down =
+      runCatching { SpatialControllerAState.isDown(scene) }
+        .onSuccess {
+          if (!spatialControllerRouteLogged) {
+            spatialControllerRouteLogged = true
+            Log.i(TAG, "SPATIAL_DESKTOP_CONTROLLER_ROUTE_READY source=spatial-sdk-controller-component")
+          }
+        }
+        .getOrElse { error ->
+          if (!spatialControllerRouteLogged) {
+            spatialControllerRouteLogged = true
+            Log.w(TAG, "SPATIAL_DESKTOP_CONTROLLER_ROUTE_FAILED source=spatial-sdk-controller-component", error)
+          }
+          false
+        }
+    if (down && !spatialControllerADown) session.handleSpatialControllerA()
+    spatialControllerADown = down
+  }
 
   @OptIn(SpatialSDKExperimentalAPI::class)
   override fun onSceneReady() {
@@ -187,6 +217,7 @@ class SpatialDesktopActivity : AppSystemActivity(), DesktopPresentationHost {
   }
 
   override fun onPause() {
+    spatialControllerADown = false
     session.onPause()
     super.onPause()
   }

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.os.SystemClock
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -28,6 +29,7 @@ class FramebufferView(context: Context, attrs: AttributeSet? = null) : View(cont
   var client: RfbClient? = null
   var input: InputLifecycle? = null
   var onInputDiagnostic: ((String) -> Unit)? = null
+  var onSecondaryClickArmChanged: ((Boolean) -> Unit)? = null
   var onFrameApplied: ((DecodedFrame, FramebufferRenderStats) -> Unit)? = null
   var onFramePresented: ((DecodedFrame, FramebufferRenderStats) -> Unit)? = null
   private var bitmap: Bitmap? = null
@@ -47,6 +49,32 @@ class FramebufferView(context: Context, attrs: AttributeSet? = null) : View(cont
       isFakeBoldText = true
     }
   private val primaryGesture = PrimaryPointerGestureClassifier(::dispatchPrimaryGesture)
+  private val secondaryClick = OneShotSecondaryClickState()
+  private var secondaryPointerId: Int? = null
+  private var suppressedPrimaryPointerId: Int? = null
+  private var suppressNextPrimaryUntilMs = 0L
+
+  val secondaryClickArmed: Boolean get() = secondaryClick.armed
+
+  fun toggleSecondaryClickArm(): Boolean {
+    primaryGesture.cancel()
+    secondaryPointerId = null
+    val armed = secondaryClick.toggle()
+    onSecondaryClickArmChanged?.invoke(armed)
+    return armed
+  }
+
+  fun cancelSecondaryClickArm() {
+    secondaryPointerId = null
+    if (secondaryClick.cancel()) onSecondaryClickArmChanged?.invoke(false)
+  }
+
+  /** Cancels/absorbs the panel primary gesture synthesized for a controller-A press. */
+  fun suppressPrimaryGestureForControllerAction() {
+    suppressedPrimaryPointerId = primaryGesture.pointerId
+    primaryGesture.cancel()
+    suppressNextPrimaryUntilMs = SystemClock.uptimeMillis() + CONTROLLER_PRIMARY_SUPPRESSION_MS
+  }
 
   fun submit(frame: DecodedFrame) {
     val offered = pending.offer(frame)
@@ -131,6 +159,8 @@ class FramebufferView(context: Context, attrs: AttributeSet? = null) : View(cont
     val index = e.actionIndex
     val id = e.getPointerId(index)
     val point = DesktopMapping.map(e.getX(index), e.getY(index), width, height, b.width, b.height)
+    if (handleSuppressedPrimary(e, id)) return true
+    if (handleSecondaryClick(e, id, point)) return true
     when (e.actionMasked) {
       MotionEvent.ACTION_HOVER_MOVE -> if (point != null) input?.move(point)
       MotionEvent.ACTION_DOWN ->
@@ -171,7 +201,75 @@ class FramebufferView(context: Context, attrs: AttributeSet? = null) : View(cont
 
   fun releaseInput() {
     primaryGesture.reset()
+    cancelSecondaryClickArm()
+    suppressedPrimaryPointerId = null
+    suppressNextPrimaryUntilMs = 0L
     input?.forceRelease()
+  }
+
+  private fun handleSecondaryClick(e: MotionEvent, id: Int, point: DesktopPoint?): Boolean {
+    when (e.actionMasked) {
+      MotionEvent.ACTION_HOVER_MOVE -> return false
+      MotionEvent.ACTION_DOWN -> {
+        if (!secondaryClick.armed || point == null) return false
+        requestFocus()
+        secondaryPointerId = id
+        input?.move(point)
+        emitInputDiagnostic("right-click-armed")
+        return true
+      }
+      MotionEvent.ACTION_MOVE -> {
+        if (id != secondaryPointerId) return false
+        point?.let { input?.move(it) }
+        emitInputDiagnostic("right-click-targeting")
+        return true
+      }
+      MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
+        if (id != secondaryPointerId) return false
+        val lifecycle = input
+        if (lifecycle != null) lifecycle.click(3, point ?: lifecycle.last)
+        secondaryPointerId = null
+        secondaryClick.consume()
+        onSecondaryClickArmChanged?.invoke(false)
+        emitInputDiagnostic("right-click")
+        return true
+      }
+      MotionEvent.ACTION_CANCEL -> {
+        if (secondaryPointerId == null) return false
+        secondaryPointerId = null
+        secondaryClick.cancel()
+        onSecondaryClickArmChanged?.invoke(false)
+        emitInputDiagnostic("right-click-cancelled")
+        return true
+      }
+      else -> return secondaryPointerId != null
+    }
+  }
+
+  private fun handleSuppressedPrimary(e: MotionEvent, id: Int): Boolean {
+    if (
+      e.actionMasked == MotionEvent.ACTION_DOWN &&
+        suppressedPrimaryPointerId == null &&
+        e.eventTime <= suppressNextPrimaryUntilMs
+    ) {
+      suppressedPrimaryPointerId = id
+    }
+    if (id != suppressedPrimaryPointerId) return false
+    if (e.actionMasked == MotionEvent.ACTION_UP || e.actionMasked == MotionEvent.ACTION_CANCEL) {
+      suppressedPrimaryPointerId = null
+      suppressNextPrimaryUntilMs = 0L
+    }
+    emitInputDiagnostic("controller-a-primary-suppressed")
+    return true
+  }
+
+  private fun emitInputDiagnostic(gesture: String) {
+    input?.let {
+      onInputDiagnostic?.invoke(
+        "inputSeq=${it.sequence} mapped=${it.last.x},${it.last.y} buttons=${it.mask} " +
+          "gesture=$gesture doubleTapSnap=${primaryGesture.doubleTapSnapCount}"
+      )
+    }
   }
 
   private fun dispatchPrimaryGesture(event: PrimaryPointerGestureEvent) {
@@ -187,5 +285,6 @@ class FramebufferView(context: Context, attrs: AttributeSet? = null) : View(cont
 
   companion object {
     private const val MAX_PENDING_FRAMES = 2
+    private const val CONTROLLER_PRIMARY_SUPPRESSION_MS = 400L
   }
 }
