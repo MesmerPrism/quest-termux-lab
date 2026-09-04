@@ -25,15 +25,17 @@ for input in "$VERSION_FILE" "$MANIFEST_TEMPLATE" "$SOURCE_FILE" "$ANDROID_JAR";
   fi
 done
 
-for tool in aapt2 javac d8 jar apksigner keytool sed sha256sum; do
+for tool in aapt2 javac d8 jar apksigner keytool sed sha256sum tr; do
   if ! command -v "$tool" >/dev/null 2>&1; then
     printf 'missing required tool: %s\n' "$tool" >&2
     exit 2
   fi
 done
 
-VERSION_CODE="$(sed -n 's/^VERSION_CODE=//p' "$VERSION_FILE")"
-VERSION_NAME="$(sed -n 's/^VERSION_NAME=//p' "$VERSION_FILE")"
+# Android asset packaging preserves the checkout's line endings. Normalize the
+# parsed values so a CRLF checkout remains buildable in Termux.
+VERSION_CODE="$(sed -n 's/^VERSION_CODE=//p' "$VERSION_FILE" | tr -d '\r')"
+VERSION_NAME="$(sed -n 's/^VERSION_NAME=//p' "$VERSION_FILE" | tr -d '\r')"
 
 case "$VERSION_CODE" in
   ''|*[!0-9]*|0) printf 'VERSION_CODE must be a positive integer\n' >&2; exit 2 ;;
