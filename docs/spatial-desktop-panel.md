@@ -45,3 +45,11 @@ lifecycle exit releases all held RFB button bits before disconnect. See the
 example README for build, startup, cleanup, limitations, performance counters,
 validation gates, and troubleshooting. Evidence uses only
 `quest-termux-lab.spatial-desktop-session-evidence.v1`.
+
+Both Activities route Android `KEYCODE_BUTTON_A` through the shared session
+before child-view dispatch. When RFB is ready, one initial A-button key-down
+emits an RFB button-3 click at the most recently mapped cursor coordinate;
+repeats do not click again, and the keyboard `KEYCODE_A` remains an ordinary
+text key. The route is intentionally supplemental to the visible on-panel
+right-click control and does not claim controller parity without live manual
+validation.

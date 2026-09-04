@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 
 /** Horizon OS-managed 2D presentation of the same interactive Linux desktop. */
 class DesktopPanelActivity : Activity(), DesktopPresentationHost {
@@ -26,6 +27,9 @@ class DesktopPanelActivity : Activity(), DesktopPresentationHost {
     setIntent(intent)
     session.handleIntent(intent)
   }
+
+  override fun dispatchKeyEvent(event: KeyEvent): Boolean =
+    session.handleControllerKey(event) || super.dispatchKeyEvent(event)
 
   override fun isPresentationReady(action: PanelAction): Boolean = true
 

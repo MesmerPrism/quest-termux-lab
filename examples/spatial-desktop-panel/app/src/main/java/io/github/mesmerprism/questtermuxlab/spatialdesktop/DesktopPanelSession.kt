@@ -135,6 +135,26 @@ class DesktopPanelSession(
     }
   }
 
+  /** Maps the right Touch controller A button to a Linux secondary click. */
+  fun handleControllerKey(event: KeyEvent): Boolean {
+    if (!ControllerButtonMapper.isSecondaryClick(event.keyCode)) return false
+    if (!client.isActive || client.framebuffer.width <= 0 || client.framebuffer.height <= 0) return false
+    if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0) {
+      val input = framebufferView?.input ?: return false
+      input.click(3)
+      inputLine =
+        "controllerButton=A semanticAction=RightClick inputSeq=${input.sequence} " +
+          "mapped=${input.last.x},${input.last.y} buttons=${input.mask}"
+      Log.i(
+        TAG,
+        "$MARKER_CONTROLLER_RIGHT_CLICK keyCode=${event.keyCode} inputSeq=${input.sequence} " +
+          "mapped=${input.last.x},${input.last.y}",
+      )
+      refreshStatus()
+    }
+    return event.action == KeyEvent.ACTION_DOWN || event.action == KeyEvent.ACTION_UP
+  }
+
   fun onDestroy() {
     lifecycleHandler.removeCallbacks(deferredPauseDisconnect)
     cameraCapture?.close()
@@ -452,6 +472,7 @@ class DesktopPanelSession(
 
   companion object {
     private const val TAG = "SpatialDesktop"
+    const val MARKER_CONTROLLER_RIGHT_CLICK = "SPATIAL_DESKTOP_CONTROLLER_RIGHT_CLICK"
     private const val MAX_PENDING_ACTIONS = 8
     private const val PAUSE_DISCONNECT_DELAY_MS = 2_000L
     private const val CAMERA_PERMISSION_REQUEST = 501

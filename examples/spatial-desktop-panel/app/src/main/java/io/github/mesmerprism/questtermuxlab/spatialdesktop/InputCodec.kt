@@ -40,3 +40,7 @@ object AndroidKeyMapper {
     }
   }
 }
+
+object ControllerButtonMapper {
+  fun isSecondaryClick(keyCode: Int): Boolean = keyCode == KeyEvent.KEYCODE_BUTTON_A
+}

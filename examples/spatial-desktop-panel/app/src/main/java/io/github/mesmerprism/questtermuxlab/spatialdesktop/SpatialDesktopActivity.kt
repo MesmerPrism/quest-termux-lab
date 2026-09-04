@@ -3,6 +3,7 @@ package io.github.mesmerprism.questtermuxlab.spatialdesktop
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import com.meta.spatial.core.Entity
 import com.meta.spatial.core.Pose
 import com.meta.spatial.core.Quaternion
@@ -90,6 +91,9 @@ class SpatialDesktopActivity : AppSystemActivity(), DesktopPresentationHost {
     setIntent(intent)
     session.handleIntent(intent)
   }
+
+  override fun dispatchKeyEvent(event: KeyEvent): Boolean =
+    session.handleControllerKey(event) || super.dispatchKeyEvent(event)
 
   @OptIn(SpatialSDKExperimentalAPI::class)
   override fun onSceneReady() {

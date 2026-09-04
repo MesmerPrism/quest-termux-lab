@@ -12,7 +12,9 @@ benchmark.
 
 ## Validated configuration
 
-- Meta Quest 3S running version 0.2.0 of the hybrid Android application.
+- Meta Quest 3S running version 0.2.0 of the hybrid Android application for the
+  completed manual hybrid/camera acceptance; version 0.2.1 adds the controller
+  A-button secondary-click mapping and requires a separate controller check.
 - Meta Spatial SDK 0.13.2.
 - Termux, Termux:X11, a 1280x720 XFCE desktop, and `x11vnc` restricted to
   Android loopback.
@@ -51,6 +53,9 @@ benchmark.
   platform `PendingIntent` route. Each outgoing client disconnected before
   transition and the incoming presentation automatically reconnected and
   presented a fresh full framebuffer.
+- The operator subsequently confirmed that both Window and Spatial modes were
+  smooth and responsive under hand/controller use, and that both camera
+  buttons captured a still and opened it in Inkscape.
 
 ## Validation boundaries
 
@@ -64,10 +69,12 @@ The run also does not establish compatibility with arbitrary Linux
 applications, other Quest models, future Horizon OS releases, every network
 printer, or camera IDs other than the tested allowlist. Camera IDs are treated
 as version-specific implementation details rather than a platform guarantee.
-The September hybrid transition checks used the app's bounded debug intent;
-manual hand/controller interaction with the new OS-managed mode and arbitrary
-system window sizes remain operator acceptance gates rather than automated
-claims.
+The first September hybrid transition checks used the app's bounded debug
+intent, followed by the manual acceptance noted above. The new version 0.2.1
+mapping from the right Touch controller A button to an RFB secondary click is
+not included in that earlier proof until it is exercised with a real
+controller. An ADB-synthesized Android key event cannot establish Touch or
+OpenXR input parity.
 
 The current input path remains a classic single desktop pointer. Arbitrary
 Unicode composition, sophisticated IME behavior, clipboard integration,

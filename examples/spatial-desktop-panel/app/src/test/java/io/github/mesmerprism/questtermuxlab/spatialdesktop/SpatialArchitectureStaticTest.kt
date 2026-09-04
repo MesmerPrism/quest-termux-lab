@@ -66,6 +66,7 @@ class SpatialArchitectureStaticTest {
 
   @Test fun buttonsAndDebugIntentShareTypedDispatcher() {
     val activity = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/SpatialDesktopActivity.kt")
+    val windowedActivity = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/DesktopPanelActivity.kt")
     val session = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/DesktopPanelSession.kt")
     assertTrue(activity.contains("override fun onNewIntent(intent: Intent)"))
     assertTrue(session.contains("BuildConfig.DEBUG"))
@@ -77,6 +78,11 @@ class SpatialArchitectureStaticTest {
     assertTrue(session.contains("SPATIAL_DESKTOP_RFB_FRAME"))
     assertTrue(session.contains("postDelayed(deferredPauseDisconnect, PAUSE_DISCONNECT_DELAY_MS)"))
     assertTrue(session.contains("lifecycleHandler.removeCallbacks(deferredPauseDisconnect)"))
+    assertTrue(activity.contains("session.handleControllerKey(event) || super.dispatchKeyEvent(event)"))
+    assertTrue(windowedActivity.contains("session.handleControllerKey(event) || super.dispatchKeyEvent(event)"))
+    assertTrue(session.contains("ControllerButtonMapper.isSecondaryClick(event.keyCode)"))
+    assertTrue(session.contains("input.click(3)"))
+    assertTrue(session.contains("SPATIAL_DESKTOP_CONTROLLER_RIGHT_CLICK"))
     val rfb = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/RfbProtocol.kt")
     assertTrue(rfb.indexOf("negotiate(input, out)") < rfb.indexOf("s.soTimeout = 0"))
     assertTrue(rfb.contains("newSingleThreadExecutor"))
