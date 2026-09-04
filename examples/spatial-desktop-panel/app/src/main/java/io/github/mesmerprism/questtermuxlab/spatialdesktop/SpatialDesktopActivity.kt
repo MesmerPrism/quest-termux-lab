@@ -44,7 +44,7 @@ class SpatialDesktopActivity : AppSystemActivity(), DesktopPresentationHost {
     Log.i(TAG, "${SpatialPresentationContract.MARKER_VR_FEATURE} inputSystem=INTERACTION_SDK")
     return listOf(
       VRFeature(this, LocomotionControls.Right, false, VrInputSystemType.INTERACTION_SDK),
-      SpatialControllerAFeature(::pollControllerA),
+      SpatialControllerButtonsFeature(::pollControllerButtons),
     )
   }
 
@@ -103,11 +103,12 @@ class SpatialDesktopActivity : AppSystemActivity(), DesktopPresentationHost {
     session.handleControllerMotion(event) || super.dispatchGenericMotionEvent(event)
 
   private var spatialControllerADown = false
+  private var spatialControllerBDown = false
   private var spatialControllerRouteLogged = false
 
-  private fun pollControllerA() {
-    val down =
-      runCatching { SpatialControllerAState.isDown(scene) }
+  private fun pollControllerButtons() {
+    val buttons =
+      runCatching { SpatialControllerButtonsState.read(scene) }
         .onSuccess {
           if (!spatialControllerRouteLogged) {
             spatialControllerRouteLogged = true
@@ -119,10 +120,12 @@ class SpatialDesktopActivity : AppSystemActivity(), DesktopPresentationHost {
             spatialControllerRouteLogged = true
             Log.w(TAG, "SPATIAL_DESKTOP_CONTROLLER_ROUTE_FAILED source=spatial-sdk-controller-component", error)
           }
-          false
+          SpatialControllerButtons(aDown = false, bDown = false)
         }
-    if (down && !spatialControllerADown) session.handleSpatialControllerA()
-    spatialControllerADown = down
+    if (buttons.aDown && !spatialControllerADown) session.handleSpatialControllerA()
+    if (buttons.bDown && !spatialControllerBDown) session.handleSpatialControllerB()
+    spatialControllerADown = buttons.aDown
+    spatialControllerBDown = buttons.bDown
   }
 
   @OptIn(SpatialSDKExperimentalAPI::class)
@@ -218,6 +221,7 @@ class SpatialDesktopActivity : AppSystemActivity(), DesktopPresentationHost {
 
   override fun onPause() {
     spatialControllerADown = false
+    spatialControllerBDown = false
     session.onPause()
     super.onPause()
   }

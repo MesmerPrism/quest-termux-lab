@@ -6,14 +6,19 @@
     <Button android:id="@+id/mode_switch" android:layout_width="112dp" android:layout_height="match_parent" android:text="Spatial" />
     <Button android:id="@+id/camera_50" android:layout_width="88dp" android:layout_height="match_parent" android:text="CAM 50" />
     <Button android:id="@+id/camera_51" android:layout_width="88dp" android:layout_height="match_parent" android:text="CAM 51" />
+    <Button android:id="@+id/microphone" android:layout_width="96dp" android:layout_height="match_parent" android:text="MIC OFF" />
     <Button android:id="@+id/connect" android:layout_width="110dp" android:layout_height="match_parent" android:text="Connect" />
   </LinearLayout>
-  <io.github.mesmerprism.questtermuxlab.spatialdesktop.FramebufferView android:id="@+id/framebuffer" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:focusable="true" android:focusableInTouchMode="true" />
+  <FrameLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+    <io.github.mesmerprism.questtermuxlab.spatialdesktop.FramebufferView android:id="@+id/framebuffer" android:layout_width="match_parent" android:layout_height="match_parent" android:focusable="true" android:focusableInTouchMode="true" />
+    <TextView android:id="@+id/recording_indicator" android:layout_width="match_parent" android:layout_height="52dp" android:layout_gravity="top" android:gravity="center" android:background="#D50000" android:elevation="16dp" android:paddingHorizontal="16dp" android:text="●  QUEST MICROPHONE LIVE  •  PRESS B OR MIC LIVE TO STOP" android:textColor="#FFFFFF" android:textSize="20sp" android:textStyle="bold" android:visibility="gone" />
+  </FrameLayout>
   <LinearLayout android:layout_width="match_parent" android:layout_height="52dp" android:paddingHorizontal="8dp" android:gravity="center_vertical" android:background="#1A222B">
     <Button android:id="@+id/right_click" android:layout_width="wrap_content" android:layout_height="match_parent" android:text="Right-click mode" />
     <Button android:id="@+id/scroll_up" android:layout_width="wrap_content" android:layout_height="match_parent" android:text="Scroll ↑" />
     <Button android:id="@+id/scroll_down" android:layout_width="wrap_content" android:layout_height="match_parent" android:text="Scroll ↓" />
-    <EditText android:id="@+id/ime" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:hint="Keyboard / ASCII or Ctrl chord" android:singleLine="true" android:textColor="#FFFFFF" android:textColorHint="#AAB7C4" />
+    <Button android:id="@+id/virtual_keyboard" android:layout_width="164dp" android:layout_height="match_parent" android:text="Virtual keyboard" />
+    <EditText android:id="@+id/ime" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:hint="Keyboard input • ASCII" android:imeOptions="flagNoExtractUi" android:inputType="textVisiblePassword" android:singleLine="true" android:textColor="#FFFFFF" android:textColorHint="#AAB7C4" />
   </LinearLayout>
-  <TextView android:id="@+id/status" android:layout_width="match_parent" android:layout_height="56dp" android:maxLines="2" android:gravity="center_vertical" android:padding="8dp" android:background="#FFFFFF" android:text="DISCONNECTED — shell ready; loopback 127.0.0.1:5900" android:textColor="#000000" android:textSize="14sp" android:textStyle="bold" />
+  <TextView android:id="@+id/status" android:layout_width="match_parent" android:layout_height="56dp" android:maxLines="2" android:gravity="center_vertical" android:padding="8dp" android:background="#FFFFFF" android:text="Diagnostics available in structured logs" android:textColor="#000000" android:textSize="14sp" android:textStyle="bold" android:visibility="gone" />
 </LinearLayout>

@@ -2,6 +2,9 @@ package io.github.mesmerprism.questtermuxlab.spatialdesktop
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Handler
@@ -14,6 +17,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -26,6 +30,7 @@ class DesktopPanelSession(
   private val client = RfbClient(this)
   private var framebufferView: FramebufferView? = null
   private var statusView: TextView? = null
+  private var connectButton: Button? = null
   private var focusLosses = 0L
   private var inputLine = ""
   private val pendingActions = ArrayDeque<PanelActionRequest>()
@@ -35,9 +40,22 @@ class DesktopPanelSession(
   private var cameraCapture: Camera2StillCapture? = null
   private var snapshotServer: OneShotJpegServer? = null
   private var cameraLauncher: CameraToInkscapeLauncher? = null
+  private var microphoneButton: Button? = null
+  private var microphoneIndicator: TextView? = null
+  private var microphoneLauncher: QuestMicrophoneBridgeLauncher? = null
+  private var microphoneStreamer: QuestMicrophoneStreamer? = null
+  private var microphoneSourceReady = false
+  private var pendingMicrophoneStart = false
+  private var microphoneStartInFlight = false
   private var controllerAKeyDown = false
   private var controllerAMotionDown = false
+  private var controllerBKeyDown = false
+  private var controllerBMotionDown = false
   private var lastControllerRightClickAtMs = 0L
+  private var lastControllerVoiceToggleAtMs = 0L
+  private var pendingMicrophoneStartedAction: (() -> Unit)? = null
+  private var microphoneIndicatorActive = false
+  private var imeView: EditText? = null
 
   fun bindPanelViews(root: View) {
     installFirstDrawMarker(root)
@@ -87,13 +105,22 @@ class DesktopPanelSession(
         }
       }
     statusView = root.findViewById(R.id.status)
-    root.findViewById<Button>(R.id.connect).setOnClickListener {
-      dispatchHuman(if (client.isActive) PanelAction.Disconnect else PanelAction.Connect)
+    connectButton = root.findViewById<Button>(R.id.connect).also { button ->
+      button.text = if (client.isActive) "Disconnect" else "Connect"
+      button.setOnClickListener {
+        dispatchHuman(if (client.isActive) PanelAction.Disconnect else PanelAction.Connect)
+      }
     }
     sizeUp.setOnClickListener { dispatchHuman(PanelAction.SizeUp) }
     sizeDown.setOnClickListener { dispatchHuman(PanelAction.SizeDown) }
     root.findViewById<Button>(R.id.camera_50).setOnClickListener { dispatchHuman(PanelAction.Camera50) }
     root.findViewById<Button>(R.id.camera_51).setOnClickListener { dispatchHuman(PanelAction.Camera51) }
+    microphoneButton = root.findViewById<Button>(R.id.microphone).also { button ->
+      button.text = "MIC OFF"
+      button.setOnClickListener { dispatchHuman(PanelAction.ToggleMicrophone) }
+    }
+    microphoneIndicator = root.findViewById(R.id.recording_indicator)
+    prepareMicrophoneSource()
     rightClick.apply {
       text = "Right-click mode"
       setOnClickListener {
@@ -103,7 +130,10 @@ class DesktopPanelSession(
     }
     root.findViewById<Button>(R.id.scroll_up).setOnClickListener { dispatchHuman(PanelAction.ScrollUp) }
     root.findViewById<Button>(R.id.scroll_down).setOnClickListener { dispatchHuman(PanelAction.ScrollDown) }
-    bindKeyboard(root.findViewById(R.id.ime))
+    imeView = root.findViewById<EditText>(R.id.ime).also(::bindKeyboard)
+    root.findViewById<Button>(R.id.virtual_keyboard).setOnClickListener {
+      dispatchHuman(PanelAction.ShowVirtualKeyboard)
+    }
     refreshStatus()
     drainPendingActions()
   }
@@ -122,6 +152,18 @@ class DesktopPanelSession(
   }
 
   fun onRequestPermissionsResult(requestCode: Int) {
+    if (requestCode == MICROPHONE_PERMISSION_REQUEST) {
+      val shouldStart = pendingMicrophoneStart
+      pendingMicrophoneStart = false
+      if (shouldStart && hasMicrophonePermission()) {
+        startMicrophoneBridge()
+      } else {
+        microphoneStartInFlight = false
+        pendingMicrophoneStartedAction = null
+        updateMicrophoneState(MicrophoneStreamState(false, "permission-denied"))
+      }
+      return
+    }
     if (requestCode != CAMERA_PERMISSION_REQUEST) return
     val cameraId = pendingCameraId
     pendingCameraId = null
@@ -137,7 +179,10 @@ class DesktopPanelSession(
     focusLosses++
     controllerAKeyDown = false
     controllerAMotionDown = false
+    controllerBKeyDown = false
+    controllerBMotionDown = false
     framebufferView?.releaseInput()
+    stopMicrophone("activity-pause")
     lifecycleHandler.removeCallbacks(deferredPauseDisconnect)
     lifecycleHandler.postDelayed(deferredPauseDisconnect, PAUSE_DISCONNECT_DELAY_MS)
   }
@@ -156,6 +201,28 @@ class DesktopPanelSession(
 
   /** Maps the right Touch controller A button to a Linux secondary click. */
   fun handleControllerKey(event: KeyEvent): Boolean {
+    val windowBackAsControllerB =
+      presentation.presentationMode == DesktopPresentationMode.WINDOWED && event.keyCode == KeyEvent.KEYCODE_BACK
+    val voiceToggle =
+      if (presentation.presentationMode == DesktopPresentationMode.WINDOWED) {
+        ControllerButtonMapper.isWindowVoiceClickToggle(event.keyCode)
+      } else {
+        ControllerButtonMapper.isVoiceClickToggle(event.keyCode)
+      }
+    if (voiceToggle) {
+      if (!client.isActive || client.framebuffer.width <= 0 || client.framebuffer.height <= 0) return false
+      when (event.action) {
+        KeyEvent.ACTION_DOWN -> {
+          val firstDown = !controllerBKeyDown && event.repeatCount == 0
+          controllerBKeyDown = true
+          if (firstDown) {
+            performControllerVoiceToggle(if (windowBackAsControllerB) "horizon-window-back-key" else "android-key-event")
+          }
+        }
+        KeyEvent.ACTION_UP -> controllerBKeyDown = false
+      }
+      return event.action == KeyEvent.ACTION_DOWN || event.action == KeyEvent.ACTION_UP
+    }
     if (!ControllerButtonMapper.isSecondaryClick(event.keyCode)) return false
     if (!client.isActive || client.framebuffer.width <= 0 || client.framebuffer.height <= 0) return false
     when (event.action) {
@@ -172,6 +239,19 @@ class DesktopPanelSession(
   /** Handles a raw gamepad A event where Horizon exposes it separately from panel pointing. */
   fun handleControllerMotion(event: MotionEvent): Boolean {
     if (
+      ControllerButtonMapper.isVoiceClickToggleMotion(
+        event.source,
+        event.actionMasked,
+        event.actionButton,
+        event.buttonState,
+      )
+    ) {
+      val down = event.actionMasked == MotionEvent.ACTION_BUTTON_PRESS
+      if (down && !controllerBMotionDown) performControllerVoiceToggle("android-gamepad-motion")
+      controllerBMotionDown = down
+      return true
+    }
+    if (
       !ControllerButtonMapper.isSecondaryClickMotion(
         event.source,
         event.actionMasked,
@@ -187,6 +267,13 @@ class DesktopPanelSession(
 
   /** Called from the immersive Spatial SDK controller-component poller on an A pressed edge. */
   fun handleSpatialControllerA(): Boolean = performControllerRightClick("spatial-sdk-controller")
+  fun handleSpatialControllerB(): Boolean = performControllerVoiceToggle("spatial-sdk-controller")
+
+  /** Fallback for Horizon window builds that invoke Android Back without dispatching its key event. */
+  fun handleWindowBackInvoked(): Boolean {
+    if (presentation.presentationMode != DesktopPresentationMode.WINDOWED) return false
+    return performControllerVoiceToggle("horizon-window-back-callback")
+  }
 
   private fun performControllerRightClick(source: String): Boolean {
     if (!client.isActive || client.framebuffer.width <= 0 || client.framebuffer.height <= 0) return false
@@ -210,6 +297,37 @@ class DesktopPanelSession(
     return true
   }
 
+  /** B starts capture before clicking Codex voice; the second B click stops both. */
+  private fun performControllerVoiceToggle(source: String): Boolean {
+    if (!client.isActive || client.framebuffer.width <= 0 || client.framebuffer.height <= 0) return false
+    val now = SystemClock.uptimeMillis()
+    if (now - lastControllerVoiceToggleAtMs < CONTROLLER_VOICE_TOGGLE_DEDUP_MS) return true
+    val view = framebufferView ?: return false
+    val input = view.input ?: return false
+    lastControllerVoiceToggleAtMs = now
+    val clickCodexVoice = {
+      view.cancelSecondaryClickArm()
+      view.suppressPrimaryGestureForControllerAction()
+      input.click(1)
+      inputLine =
+        "controllerButton=B source=$source semanticAction=VoiceClickToggle inputSeq=${input.sequence} " +
+          "mapped=${input.last.x},${input.last.y} microphone=${if (microphoneStreamer?.isActive == true) "on" else "off"}"
+      Log.i(
+        TAG,
+        "$MARKER_CONTROLLER_VOICE_TOGGLE source=$source mode=${presentation.presentationMode} " +
+          "inputSeq=${input.sequence} mapped=${input.last.x},${input.last.y}",
+      )
+      refreshStatus()
+    }
+    if (microphoneStreamer?.isActive == true) {
+      clickCodexVoice()
+      stopMicrophone("controller-b")
+    } else {
+      beginMicrophoneStart(clickCodexVoice)
+    }
+    return true
+  }
+
   fun onDestroy() {
     lifecycleHandler.removeCallbacks(deferredPauseDisconnect)
     cameraCapture?.close()
@@ -218,6 +336,10 @@ class DesktopPanelSession(
     snapshotServer = null
     cameraLauncher?.close()
     cameraLauncher = null
+    microphoneLauncher?.close()
+    microphoneLauncher = null
+    microphoneStreamer?.close()
+    microphoneStreamer = null
     disconnect("activity destroy")
   }
 
@@ -258,6 +380,114 @@ class DesktopPanelSession(
 
   private fun hasCameraPermissions(): Boolean =
     CAMERA_PERMISSIONS.all { activity.checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }
+
+  private fun toggleMicrophone() {
+    if (microphoneStreamer?.isActive == true) {
+      stopMicrophone("operator-toggle")
+      return
+    }
+    beginMicrophoneStart()
+  }
+
+  private fun beginMicrophoneStart(afterStarted: (() -> Unit)? = null) {
+    if (microphoneStartInFlight) {
+      inputLine = "microphone=start-already-pending"
+      refreshStatus()
+      return
+    }
+    microphoneStartInFlight = true
+    pendingMicrophoneStartedAction = afterStarted
+    if (!hasMicrophonePermission()) {
+      pendingMicrophoneStart = true
+      inputLine = "microphone=requesting-permission"
+      refreshStatus()
+      activity.requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), MICROPHONE_PERMISSION_REQUEST)
+      return
+    }
+    startMicrophoneBridge()
+  }
+
+  private fun hasMicrophonePermission(): Boolean =
+    activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+
+  private fun startMicrophoneBridge() {
+    updateMicrophoneState(MicrophoneStreamState(false, "preparing-virtual-source"))
+    if (microphoneSourceReady) {
+      startMicrophoneStreamer()
+    } else {
+      prepareMicrophoneSource(forceStart = true)
+    }
+  }
+
+  /** Keep the Linux device present for the session; this does not open Android AudioRecord. */
+  private fun prepareMicrophoneSource(forceStart: Boolean = false) {
+    if (microphoneLauncher == null) {
+      microphoneLauncher =
+        QuestMicrophoneBridgeLauncher(activity) { ready ->
+          activity.runOnUiThread {
+            microphoneSourceReady = ready
+            if (!ready) {
+              if (microphoneStartInFlight) {
+                microphoneStartInFlight = false
+                pendingMicrophoneStartedAction = null
+              }
+              updateMicrophoneState(MicrophoneStreamState(false, "source-unavailable"))
+            } else if (microphoneStartInFlight) {
+              startMicrophoneStreamer()
+            } else {
+              updateMicrophoneState(MicrophoneStreamState(false, "source-ready:capture-off"))
+            }
+          }
+        }
+    }
+    if (!microphoneSourceReady || forceStart) microphoneLauncher?.start()
+  }
+
+  private fun startMicrophoneStreamer() {
+    val streamer =
+      microphoneStreamer ?: QuestMicrophoneStreamer { state ->
+        activity.runOnUiThread {
+          updateMicrophoneState(state)
+          if (state.active) {
+            microphoneStartInFlight = false
+            pendingMicrophoneStartedAction?.also { pendingMicrophoneStartedAction = null }?.invoke()
+          }
+          if (!state.active && state.detail.startsWith("failed")) {
+            microphoneStartInFlight = false
+            pendingMicrophoneStartedAction = null
+          }
+        }
+      }.also { microphoneStreamer = it }
+    streamer.start()
+  }
+
+  private fun stopMicrophone(reason: String) {
+    val wasActive = microphoneStreamer?.isActive == true
+    microphoneStreamer?.stop()
+    pendingMicrophoneStart = false
+    microphoneStartInFlight = false
+    pendingMicrophoneStartedAction = null
+    if (wasActive) {
+      Log.i(TAG, "SPATIAL_DESKTOP_MIC_RELEASED reason=$reason")
+      updateMicrophoneState(MicrophoneStreamState(false, "stopped:$reason"))
+    }
+  }
+
+  private fun updateMicrophoneState(state: MicrophoneStreamState) {
+    microphoneButton?.apply {
+      text = if (state.active) "● MIC LIVE" else "MIC OFF"
+      backgroundTintList = ColorStateList.valueOf(Color.parseColor(if (state.active) "#D50000" else "#E6E0E9"))
+      setTextColor(Color.parseColor(if (state.active) "#FFFFFF" else "#1D1B20"))
+      contentDescription = if (state.active) "Quest microphone live. Activate to stop." else "Quest microphone off."
+    }
+    microphoneIndicator?.visibility = if (state.active) View.VISIBLE else View.GONE
+    if (state.active != microphoneIndicatorActive) {
+      microphoneIndicatorActive = state.active
+      Log.i(TAG, "SPATIAL_DESKTOP_MIC_INDICATOR visible=${state.active} actualCapture=${state.active}")
+    }
+    inputLine = "microphone=${state.detail} bytes=${state.bytesSent} rms=${state.rms} source=quest_mic"
+    refreshStatus()
+  }
 
   private fun captureCameraIntoInkscape(cameraId: String) {
     inputLine = "camera=$cameraId state=capturing"
@@ -412,6 +642,8 @@ class DesktopPanelSession(
       PanelAction.ScrollDown -> { requireConnected(); input.scroll(1) }
       PanelAction.Camera50 -> beginCameraImport("50")
       PanelAction.Camera51 -> beginCameraImport("51")
+      PanelAction.ToggleMicrophone -> toggleMicrophone()
+      PanelAction.ShowVirtualKeyboard -> showVirtualKeyboard()
       is PanelAction.PointerMove -> input.move(checked(action.point))
       is PanelAction.PointerDown -> input.press(1, checked(action.point))
       is PanelAction.PointerUp -> input.release(1, checked(action.point))
@@ -446,6 +678,7 @@ class DesktopPanelSession(
   }
 
   private fun bindKeyboard(ime: EditText) {
+    ime.showSoftInputOnFocus = true
     ime.setOnKeyListener { _, _, event ->
       val key = AndroidKeyMapper.map(event) ?: return@setOnKeyListener false
       client.key(event.action == KeyEvent.ACTION_DOWN, key)
@@ -468,6 +701,22 @@ class DesktopPanelSession(
         }
       },
     )
+  }
+
+  private fun showVirtualKeyboard() {
+    val ime = imeView ?: error("keyboard input not ready")
+    ime.requestFocus()
+    ime.post {
+      val manager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+      val accepted = manager.showSoftInput(ime, InputMethodManager.SHOW_IMPLICIT)
+      inputLine = "virtualKeyboard=requested accepted=$accepted mode=${presentation.presentationMode}"
+      Log.i(
+        TAG,
+        "SPATIAL_DESKTOP_VIRTUAL_KEYBOARD_REQUESTED mode=${presentation.presentationMode} " +
+          "accepted=$accepted focused=${ime.hasFocus()}",
+      )
+      refreshStatus()
+    }
   }
 
   override fun onFramebuffer(frame: DecodedFrame, stats: RfbStats) {
@@ -499,6 +748,7 @@ class DesktopPanelSession(
     )
     activity.runOnUiThread {
       if (message == "disconnected") framebufferView?.releaseInput()
+      connectButton?.text = if (client.isActive) "Disconnect" else "Connect"
       statusView?.tag = message
       refreshStatus()
     }
@@ -529,10 +779,13 @@ class DesktopPanelSession(
     private const val TAG = "SpatialDesktop"
     const val MARKER_CONTROLLER_RIGHT_CLICK = "SPATIAL_DESKTOP_CONTROLLER_RIGHT_CLICK"
     const val MARKER_RIGHT_CLICK_ARM = "SPATIAL_DESKTOP_RIGHT_CLICK_ARM"
+    const val MARKER_CONTROLLER_VOICE_TOGGLE = "SPATIAL_DESKTOP_CONTROLLER_VOICE_TOGGLE"
     private const val CONTROLLER_RIGHT_CLICK_DEDUP_MS = 150L
+    private const val CONTROLLER_VOICE_TOGGLE_DEDUP_MS = 150L
     private const val MAX_PENDING_ACTIONS = 8
     private const val PAUSE_DISCONNECT_DELAY_MS = 2_000L
     private const val CAMERA_PERMISSION_REQUEST = 501
+    private const val MICROPHONE_PERMISSION_REQUEST = 502
     private val CAMERA_PERMISSIONS = arrayOf(Manifest.permission.CAMERA, "horizonos.permission.HEADSET_CAMERA")
   }
 }

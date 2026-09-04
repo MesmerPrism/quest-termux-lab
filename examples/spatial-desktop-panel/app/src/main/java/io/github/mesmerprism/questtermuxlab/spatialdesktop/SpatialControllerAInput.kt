@@ -9,17 +9,19 @@ import com.meta.spatial.toolkit.AvatarAttachment
 import com.meta.spatial.toolkit.Controller
 import com.meta.spatial.toolkit.ControllerType
 
-/** Polls before panel interaction systems so controller A can replace its synthesized primary tap. */
-internal class SpatialControllerAFeature(private val poll: () -> Unit) : SpatialFeature {
-  override fun earlySystemsToRegister(): List<SystemBase> = listOf(ControllerAPollingSystem(poll))
+/** Polls before panel interaction systems so A/B can replace synthesized panel taps. */
+internal class SpatialControllerButtonsFeature(private val poll: () -> Unit) : SpatialFeature {
+  override fun earlySystemsToRegister(): List<SystemBase> = listOf(ControllerButtonsPollingSystem(poll))
 
-  private class ControllerAPollingSystem(private val poll: () -> Unit) : SystemBase() {
+  private class ControllerButtonsPollingSystem(private val poll: () -> Unit) : SystemBase() {
     override fun execute() = poll()
   }
 }
 
-internal object SpatialControllerAState {
-  fun isDown(scene: Scene): Boolean {
+internal data class SpatialControllerButtons(val aDown: Boolean, val bDown: Boolean)
+
+internal object SpatialControllerButtonsState {
+  fun read(scene: Scene): SpatialControllerButtons {
     var rightState: Int? = null
     var controllerState = 0
     Query.where { has(Controller.id) }
@@ -35,6 +37,10 @@ internal object SpatialControllerAState {
           rightState = (rightState ?: 0) or controller.buttonState
         }
       }
-    return ((rightState ?: controllerState) and ButtonBits.ButtonA) != 0
+    val state = rightState ?: controllerState
+    return SpatialControllerButtons(
+      aDown = state and ButtonBits.ButtonA != 0,
+      bDown = state and ButtonBits.ButtonB != 0,
+    )
   }
 }

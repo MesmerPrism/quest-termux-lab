@@ -45,11 +45,20 @@ object AndroidKeyMapper {
 
 object ControllerButtonMapper {
   fun isSecondaryClick(keyCode: Int): Boolean = keyCode == KeyEvent.KEYCODE_BUTTON_A
+  fun isVoiceClickToggle(keyCode: Int): Boolean = keyCode == KeyEvent.KEYCODE_BUTTON_B
+  fun isWindowVoiceClickToggle(keyCode: Int): Boolean =
+    isVoiceClickToggle(keyCode) || keyCode == KeyEvent.KEYCODE_BACK
 
   fun isSecondaryClickMotion(source: Int, action: Int, actionButton: Int, buttonState: Int): Boolean {
     if (source and InputDevice.SOURCE_JOYSTICK != InputDevice.SOURCE_JOYSTICK) return false
     if (action != MotionEvent.ACTION_BUTTON_PRESS && action != MotionEvent.ACTION_BUTTON_RELEASE) return false
     return actionButton == MotionEvent.BUTTON_PRIMARY || buttonState and MotionEvent.BUTTON_PRIMARY != 0
+  }
+
+  fun isVoiceClickToggleMotion(source: Int, action: Int, actionButton: Int, buttonState: Int): Boolean {
+    if (source and InputDevice.SOURCE_JOYSTICK != InputDevice.SOURCE_JOYSTICK) return false
+    if (action != MotionEvent.ACTION_BUTTON_PRESS && action != MotionEvent.ACTION_BUTTON_RELEASE) return false
+    return actionButton == MotionEvent.BUTTON_SECONDARY || buttonState and MotionEvent.BUTTON_SECONDARY != 0
   }
 }
 

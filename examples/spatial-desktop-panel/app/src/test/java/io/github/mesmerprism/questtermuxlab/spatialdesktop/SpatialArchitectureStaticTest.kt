@@ -39,6 +39,7 @@ class SpatialArchitectureStaticTest {
       "uses-horizonos-sdk",
       "org.khronos.openxr.permission.OPENXR",
       "org.khronos.openxr.permission.OPENXR_SYSTEM",
+      "android.permission.RECORD_AUDIO",
       "com.oculus.supportedDevices",
       "com.oculus.vr.focusaware",
       "libossdk.oculus.so",
@@ -73,15 +74,28 @@ class SpatialArchitectureStaticTest {
     assertTrue(session.contains("dispatchHuman(if (client.isActive) PanelAction.Disconnect else PanelAction.Connect)"))
     assertTrue(session.contains("dispatchHuman(PanelAction.Camera50)"))
     assertTrue(session.contains("dispatchHuman(PanelAction.Camera51)"))
+    assertTrue(session.contains("dispatchHuman(PanelAction.ToggleMicrophone)"))
+    assertTrue(session.contains("dispatchHuman(PanelAction.ShowVirtualKeyboard)"))
+    assertTrue(session.contains("R.id.recording_indicator"))
+    assertTrue(session.contains("microphoneIndicator?.visibility = if (state.active) View.VISIBLE else View.GONE"))
+    assertTrue(session.contains("SPATIAL_DESKTOP_MIC_INDICATOR"))
+    assertTrue(session.contains("SPATIAL_DESKTOP_VIRTUAL_KEYBOARD_REQUESTED"))
+    assertTrue(session.contains("stopMicrophone(\"activity-pause\")"))
     assertTrue(session.contains("dispatchPanelAction(request.action, request.requestId)"))
     assertTrue(session.contains("SPATIAL_DESKTOP_RFB_STATUS"))
     assertTrue(session.contains("SPATIAL_DESKTOP_RFB_FRAME"))
+    assertTrue(session.contains("connectButton?.text = if (client.isActive) \"Disconnect\" else \"Connect\""))
     assertTrue(session.contains("postDelayed(deferredPauseDisconnect, PAUSE_DISCONNECT_DELAY_MS)"))
     assertTrue(session.contains("lifecycleHandler.removeCallbacks(deferredPauseDisconnect)"))
     assertTrue(activity.contains("session.handleControllerKey(event) || super.dispatchKeyEvent(event)"))
     assertTrue(windowedActivity.contains("session.handleControllerKey(event) || super.dispatchKeyEvent(event)"))
     assertTrue(activity.contains("session.handleControllerMotion(event) || super.dispatchGenericMotionEvent(event)"))
     assertTrue(windowedActivity.contains("session.handleControllerMotion(event) || super.dispatchGenericMotionEvent(event)"))
+    assertTrue(windowedActivity.contains("override fun onBackPressed()"))
+    assertTrue(windowedActivity.contains("session.handleWindowBackInvoked()"))
+    assertTrue(session.contains("ControllerButtonMapper.isWindowVoiceClickToggle(event.keyCode)"))
+    assertTrue(session.contains("horizon-window-back-key"))
+    assertTrue(session.contains("horizon-window-back-callback"))
     assertTrue(session.contains("ControllerButtonMapper.isSecondaryClick(event.keyCode)"))
     assertTrue(session.contains("input.click(3)"))
     assertTrue(session.contains("SPATIAL_DESKTOP_CONTROLLER_RIGHT_CLICK"))
@@ -120,6 +134,31 @@ class SpatialArchitectureStaticTest {
     assertTrue(!witness.contains("-lc"))
   }
 
+  @Test fun questMicrophoneRecordingIndicatorOverlaysWithoutResizingDesktop() {
+    val layout = source("src/main/res/layout/spatial_desktop_panel.xml")
+    assertTrue(layout.contains("android:id=\"@+id/recording_indicator\""))
+    assertTrue(layout.contains("QUEST MICROPHONE LIVE"))
+    assertTrue(layout.contains("android:visibility=\"gone\""))
+    assertTrue(layout.indexOf("<FrameLayout") < layout.indexOf("@+id/framebuffer"))
+    assertTrue(layout.indexOf("@+id/framebuffer") < layout.indexOf("@+id/recording_indicator"))
+  }
+
+  @Test fun explicitVirtualKeyboardControlTargetsTheImeBridge() {
+    val layout = source("src/main/res/layout/spatial_desktop_panel.xml")
+    val session = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/DesktopPanelSession.kt")
+    assertTrue(layout.contains("android:id=\"@+id/virtual_keyboard\""))
+    assertTrue(session.contains("ime.showSoftInputOnFocus = true"))
+    assertTrue(session.contains("manager.showSoftInput(ime, InputMethodManager.SHOW_IMPLICIT)"))
+    assertTrue(session.contains("ime.requestFocus()"))
+  }
+
+  @Test fun rawTransportStatusStripIsHiddenByDefault() {
+    val layout = source("src/main/res/layout/spatial_desktop_panel.xml")
+    val statusStart = layout.indexOf("android:id=\"@+id/status\"")
+    assertTrue(statusStart >= 0)
+    assertTrue(layout.substring(statusStart).substringBefore("/>").contains("android:visibility=\"gone\""))
+  }
+
   @Test fun hybridActivitiesShareOneDesktopSessionAndUseExclusiveTransitions() {
     val windowed = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/DesktopPanelActivity.kt")
     val spatial = source("src/main/java/io/github/mesmerprism/questtermuxlab/spatialdesktop/SpatialDesktopActivity.kt")
@@ -129,8 +168,9 @@ class SpatialArchitectureStaticTest {
     assertTrue(spatial.contains("DesktopPanelSession(this, this)"))
     assertTrue(windowed.contains("HybridDesktopNavigator.launchSpatial(this)"))
     assertTrue(spatial.contains("HybridDesktopNavigator.launchWindowedInHome(this)"))
-    assertTrue(spatial.contains("SpatialControllerAFeature(::pollControllerA)"))
-    assertTrue(spatial.contains("SpatialControllerAState.isDown(scene)"))
+    assertTrue(spatial.contains("SpatialControllerButtonsFeature(::pollControllerButtons)"))
+    assertTrue(spatial.contains("SpatialControllerButtonsState.read(scene)"))
+    assertTrue(spatial.contains("session.handleSpatialControllerB()"))
     assertTrue(spatial.contains("SPATIAL_DESKTOP_CONTROLLER_ROUTE_READY"))
     assertTrue(navigator.contains("extra_launch_in_home_pending_intent"))
     assertTrue(navigator.contains("finishAndRemoveTask()"))

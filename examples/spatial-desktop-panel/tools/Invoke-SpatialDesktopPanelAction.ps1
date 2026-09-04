@@ -8,7 +8,7 @@ param(
   [string]$Presentation = 'window',
 
   [Parameter(Mandatory = $true)]
-  [ValidateSet('connect', 'disconnect', 'size-up', 'size-down', 'recenter-panel', 'switch-presentation', 'right-click', 'scroll-up', 'scroll-down', 'camera-50', 'camera-51', 'pointer-move', 'pointer-down', 'pointer-up', 'tap', 'drag', 'type-text', 'enter', 'start-sidecar', 'start-witness', 'stop-witness')]
+  [ValidateSet('connect', 'disconnect', 'size-up', 'size-down', 'recenter-panel', 'switch-presentation', 'right-click', 'scroll-up', 'scroll-down', 'camera-50', 'camera-51', 'microphone-toggle', 'show-keyboard', 'pointer-move', 'pointer-down', 'pointer-up', 'tap', 'drag', 'type-text', 'enter', 'start-sidecar', 'start-witness', 'stop-witness')]
   [string]$Action,
 
   [ValidateRange(0, 4095)]

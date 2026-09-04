@@ -38,7 +38,7 @@ Launch the installed app through the public Meta Quest workflow. A normal launch
 
 ## Debug semantic-action CLI
 
-Debug builds expose a narrow app-owned intent that reaches the same dispatcher as the panel buttons. The module CLI requires one explicit serial and accepts only `connect`, `disconnect`, `size-up`, `size-down`, `recenter-panel`, `switch-presentation`, `right-click`, `scroll-up`, `scroll-down`, `camera-50`, `camera-51`, bounded pointer actions, printable-ASCII text, and Enter:
+Debug builds expose a narrow app-owned intent that reaches the same dispatcher as the panel buttons. The module CLI requires one explicit serial and accepts only `connect`, `disconnect`, `size-up`, `size-down`, `recenter-panel`, `switch-presentation`, `right-click`, `scroll-up`, `scroll-down`, `camera-50`, `camera-51`, `microphone-toggle`, `show-keyboard`, bounded pointer actions, printable-ASCII text, and Enter:
 
 ```powershell
 pwsh -NoProfile -ExecutionPolicy Bypass -File .\tools\Invoke-SpatialDesktopPanelAction.ps1 `
@@ -65,13 +65,43 @@ The visible **Right-click mode** control arms one secondary click instead of cli
 
 While RFB is connected, the right Touch controller's A button also attempts one Linux secondary click at the current mapped desktop cursor position. Spatial mode reads the Spatial SDK right-controller `ButtonA` component before panel interaction and suppresses the corresponding synthesized primary gesture. Both Activities retain Android key and raw-joystick motion routes for environments that expose A separately. Horizon OS may expose only a synthesized primary panel gesture in Window mode, so the armed control is the guaranteed cross-mode route. Repeat/duplicate sources are deduplicated and the normal keyboard letter A remains distinct. ADB-synthesized `KEYCODE_BUTTON_A` establishes only Android routing; a real controller remains the acceptance source.
 
-Physical Android keys map press and release for printable ASCII, modifiers, Escape, Tab, arrows, navigation, F1–F12, repeats, and therefore ordinary Ctrl/Alt/Shift chords. A paired Bluetooth keyboard does not require Meta's floating keyboard, but the app must be foreground and the framebuffer must own focus. The explicit edit field accepts IME text but intentionally transmits only printable ASCII as paired key events. Non-ASCII composition, dead keys, clipboard transfer, and arbitrary Unicode are not claimed; use the XFCE on-screen keyboard or an application-specific ASCII transliteration.
+The right Touch controller's B button is a synchronized voice-input action. Put the Linux cursor over the Codex voice button and press B once: the app first starts Quest microphone capture and confirms the loopback PCM stream, then emits one Linux primary click at that cursor position. Press B again to click the same control and stop capture. Starting before the first click prevents the Codex session from opening against an empty source; the stop click is sent before Android capture is released. Spatial mode reads `ButtonB` directly from the same Spatial SDK controller component as A. Horizon OS maps B/Y to Android Back for ordinary 2D applications, so Window mode intentionally consumes that Back action for the same voice toggle while the desktop is connected. Android gamepad-style B routes remain accepted as a compatibility path, but real-controller acceptance is required in both modes.
+
+Actual Android `AudioRecord` state owns two app-side indicators in both presentations: the top control changes from `MIC OFF` to a red `● MIC LIVE`, and a full-width red `QUEST MICROPHONE LIVE` banner overlays the desktop without resizing it. Both disappear only after capture stops or fails; merely requesting a start does not show a false live state. This makes an accidental B press visible even when the Linux cursor was not over Codex Voice. The visible microphone button toggles only capture and remains the recovery stop; it does not click Linux.
+
+Physical Android keys map press and release for printable ASCII, modifiers, Escape, Tab, arrows, navigation, F1–F12, repeats, and therefore ordinary Ctrl/Alt/Shift chords. A paired Bluetooth keyboard does not require Meta's floating keyboard, but the app must be foreground and the framebuffer must own focus. The `Virtual keyboard` panel button focuses the explicit edit field and asks Horizon OS to show its current input method; printable ASCII entered there is forwarded as paired RFB key events and the field is immediately cleared. This provides three complementary input routes: Horizon's virtual keyboard, a paired physical Bluetooth keyboard, and the Quest microphone bridge. Non-ASCII composition, dead keys, clipboard transfer, and arbitrary Unicode are not claimed; use the XFCE on-screen keyboard or an application-specific ASCII transliteration.
 
 ## Protocol and security limits
 
 The client speaks RFB 3.8, selects None security only when offered, sets 32-bit little-endian true color, accepts bounded Raw rectangles and DesktopSize, and safely disconnects on malformed dimensions, oversized names/rectangles, unknown encodings, or unsupported server messages. Bounds are 4096×4096, 8,388,608 retained pixels, 32 MiB per rectangle, 4096 rectangles/update, and 4096-byte names/cut text. Cursor pseudo-encoding is not implemented; the server cursor is expected to be composited into the framebuffer. No reconnect loop runs in the background; reconnect is an explicit button action.
 
-Diagnostics shown in the panel are sanitized counters: dimensions/generation, updates/frames, changed pixels and bytes, decode/render time, input sequence/coordinate/mask, reconnect/error/focus/forced-release counts, and physical scale. They contain no endpoint beyond the fixed loopback route.
+The raw transport diagnostics strip is hidden in the normal panel because its counters are intended for engineering rather than end users. The top connection control still changes between `Connect` and `Disconnect` as a human-readable state cue. The same sanitized dimensions/generation, update/frame, changed-pixel/byte, decode/render, input, reconnect/error/focus/forced-release, and physical-scale diagnostics remain available in structured Android logs. They contain no endpoint beyond the fixed loopback route.
+
+## Quest microphone as a Linux input source
+
+Linux cannot directly open the Quest ALSA devices: the Termux UID has no `/dev/snd` access. This example therefore uses the supported Android `AudioRecord` API with `RECORD_AUDIO`, streams mono 48 kHz signed 16-bit PCM to `127.0.0.1:5911`, and feeds a PulseAudio `module-pipe-source` named `quest_mic`. WASAPI is Windows-only and is not part of this path.
+
+Install and start the fixed Termux helper from the checked-out example:
+
+```sh
+cd ~/quest-termux-lab/examples/spatial-desktop-panel/linux
+bash ./install-quest-mic-bridge.sh
+quest-mic-pulse-bridge start
+quest-mic-pulse-bridge status
+```
+
+The helper binds its PCM receiver and PulseAudio native protocol to IPv4 loopback only, sets `quest_mic` as the default source, and accepts no paths, ports, or command text from the Android app. Keep it running for the whole Linux desktop session. While Android capture is off it supplies real-time silence, so Linux applications can enumerate and open a stable microphone before a controller starts live capture. In the Debian Proot that runs the Codex desktop app, install the Pulse and ALSA client libraries and expose the native Termux server:
+
+```sh
+apt-get install -y pulseaudio-utils libasound2-plugins alsa-utils
+export PULSE_SERVER=127.0.0.1
+pactl list short sources
+pactl get-default-source
+```
+
+The expected default is `quest_mic`. Start the helper and verify that default **before** launching Codex; Electron discovers audio devices during process startup, so restart Codex after adding or repairing the source. Keep `PULSE_SERVER=127.0.0.1` in the Codex launch environment. The Android app never writes a recording; only byte counts and a coarse RMS value enter diagnostics. Capture stops on the explicit second toggle, Activity pause, mode switch, or destruction, but the Linux source remains present and returns to silence. The first use requires the ordinary visible microphone permission unless it was granted during an inspected developer installation.
+
+For manual acceptance, launch Codex and connect the desktop, hover its voice button, press right-controller B, speak a short phrase, and press B again. Accept only when the panel reports `MIC LIVE`, Android reports an active non-silenced `VOICE_RECOGNITION` recording, Codex visibly transcribes the phrase, the second B press returns to `MIC OFF`, and the Android recording monitor reports a stop. A synthetic `KEYCODE_BUTTON_B` validates the Android handler and synchronized RFB click but is not proof of a real Touch-controller route or speech recognition.
 
 ## Deterministic acceptance
 

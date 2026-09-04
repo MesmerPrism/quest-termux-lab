@@ -1,0 +1,159 @@
+#!/data/data/com.termux/files/usr/bin/bash
+set -euo pipefail
+
+PREFIX="${PREFIX:-/data/data/com.termux/files/usr}"
+PATH="$PREFIX/bin:$PREFIX/bin/applets:/system/bin"
+export PREFIX PATH LD_LIBRARY_PATH="$PREFIX/lib" TMPDIR="$PREFIX/tmp"
+
+runtime="$PREFIX/tmp/quest-mic-bridge"
+fifo="$runtime/quest-mic.pcm"
+pid_file="$runtime/server.pid"
+module_file="$runtime/source.module"
+ready_file="$runtime/server.ready"
+lock_dir="$PREFIX/tmp/quest-mic-bridge.start-lock"
+server="$PREFIX/local/libexec/quest-mic-loopback-server.py"
+port=5911
+server_pattern="^python $server --fifo $fifo --ready-file $ready_file --port $port$"
+
+if pactl -s tcp:127.0.0.1 info >/dev/null 2>&1; then
+  export PULSE_SERVER=tcp:127.0.0.1
+fi
+
+server_pid() {
+  matched_pid=$(pgrep -f "$server_pattern" | head -n 1 || true)
+  if [ -n "$matched_pid" ]; then
+    printf '%s\n' "$matched_pid"
+    return
+  fi
+  if [ -s "$pid_file" ] && kill -0 "$(cat "$pid_file")" 2>/dev/null; then
+    cat "$pid_file"
+  fi
+}
+
+is_running() {
+  pid=$(server_pid 2>/dev/null || true)
+  [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null
+}
+
+source_exists() {
+  pactl -s tcp:127.0.0.1 list short sources | awk '$2 == "quest_mic" { found=1 } END { exit !found }'
+}
+
+loopback_ready() {
+  # Termux RunCommand can have a narrower /proc view than an interactive
+  # shell. The server atomically owns this ready file for its listener
+  # lifetime, so do not make normal app startup depend on pgrep visibility.
+  [ -s "$ready_file" ]
+}
+
+start_bridge() {
+  if ! mkdir "$lock_dir" 2>/dev/null; then
+    lock_pid=$(cat "$lock_dir/pid" 2>/dev/null || true)
+    if [ -z "$lock_pid" ] || ! kill -0 "$lock_pid" 2>/dev/null; then
+      rm -rf "$lock_dir"
+      mkdir "$lock_dir"
+    else
+      for _ in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do
+        if loopback_ready && source_exists; then
+          pactl -s tcp:127.0.0.1 set-default-source quest_mic
+          printf 'state=ready source=quest_mic loopback=127.0.0.1:%s\n' "$port"
+          return
+        fi
+        sleep 0.1
+      done
+      printf 'microphone bridge start is already pending\n' >&2
+      exit 1
+    fi
+  fi
+  printf '%s\n' "$$" > "$lock_dir/pid"
+  trap 'rm -rf "$lock_dir"' EXIT
+  mkdir -p "$runtime"
+  chmod 700 "$runtime"
+  if loopback_ready && source_exists; then
+    pactl -s tcp:127.0.0.1 set-default-source quest_mic
+    printf 'state=ready source=quest_mic loopback=127.0.0.1:%s\n' "$port"
+    return
+  fi
+
+  stale_pid=$(server_pid 2>/dev/null || true)
+  if [ -n "$stale_pid" ]; then
+    kill "$stale_pid" 2>/dev/null || true
+    for _ in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do
+      kill -0 "$stale_pid" 2>/dev/null || break
+      sleep 0.05
+    done
+    if kill -0 "$stale_pid" 2>/dev/null; then kill -9 "$stale_pid" 2>/dev/null || true; fi
+  fi
+  rm -f "$pid_file" "$ready_file"
+
+  if pactl -s tcp:127.0.0.1 info >/dev/null 2>&1; then
+    export PULSE_SERVER=tcp:127.0.0.1
+  else
+    unset PULSE_SERVER
+    pulseaudio --check || pulseaudio --start --exit-idle-time=-1
+  fi
+
+  while read -r module_id module_name module_args; do
+    if [ "$module_name" = module-pipe-source ] && [[ "$module_args" == *source_name=quest_mic* ]]; then
+      pactl unload-module "$module_id" || true
+    fi
+  done < <(pactl list short modules)
+  rm -f "$fifo"
+
+  if ! pactl list short modules | awk '$2 == "module-native-protocol-tcp" { found=1 } END { exit !found }'; then
+    pactl load-module module-native-protocol-tcp port=4713 listen=127.0.0.1 auth-ip-acl=127.0.0.1 auth-anonymous=1 >/dev/null
+    export PULSE_SERVER=tcp:127.0.0.1
+  fi
+  source_module=$(pactl load-module module-pipe-source source_name=quest_mic file="$fifo" format=s16le rate=48000 channels=1)
+  printf '%s\n' "$source_module" > "$module_file"
+  pactl set-default-source quest_mic
+
+  nohup python "$server" --fifo "$fifo" --ready-file "$ready_file" --port "$port" \
+    </dev/null >"$runtime/server.log" 2>&1 &
+  server_pid=$!
+  printf '%s\n' "$server_pid" > "$pid_file"
+  for _ in 1 2 3 4 5 6 7 8 9 10; do
+    [ -s "$ready_file" ] && break
+    kill -0 "$server_pid" 2>/dev/null || break
+    sleep 0.1
+  done
+  if [ ! -s "$ready_file" ]; then
+    kill "$server_pid" 2>/dev/null || true
+    pactl unload-module "$source_module" 2>/dev/null || true
+    printf 'microphone loopback server failed to become ready\n' >&2
+    exit 1
+  fi
+  printf 'state=ready source=quest_mic loopback=127.0.0.1:%s\n' "$port"
+}
+
+stop_bridge() {
+  pid=$(server_pid 2>/dev/null || true)
+  if [ -n "$pid" ]; then
+    kill "$pid" 2>/dev/null || true
+    for _ in 1 2 3 4 5 6 7 8 9 10; do
+      kill -0 "$pid" 2>/dev/null || break
+      sleep 0.05
+    done
+    if kill -0 "$pid" 2>/dev/null; then kill -9 "$pid" 2>/dev/null || true; fi
+  fi
+  if [ -s "$module_file" ]; then pactl unload-module "$(cat "$module_file")" 2>/dev/null || true; fi
+  rm -rf "$runtime"
+  if pactl list short sources | awk '$2 == "OpenSL_ES_sink.monitor" { found=1 } END { exit !found }'; then
+    pactl set-default-source OpenSL_ES_sink.monitor
+  fi
+  printf 'state=stopped\n'
+}
+
+case "${1:-}" in
+  start) start_bridge ;;
+  stop) stop_bridge ;;
+  status)
+    if loopback_ready && source_exists; then
+      printf 'state=ready source=quest_mic loopback=127.0.0.1:%s\n' "$port"
+    else
+      printf 'state=stopped\n'
+      exit 1
+    fi
+    ;;
+  *) printf 'usage: %s {start|stop|status}\n' "$0" >&2; exit 2 ;;
+esac

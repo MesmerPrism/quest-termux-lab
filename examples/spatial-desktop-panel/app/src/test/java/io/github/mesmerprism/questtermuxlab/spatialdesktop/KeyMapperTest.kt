@@ -14,6 +14,12 @@ class KeyMapperTest {
     assertTrue(ControllerButtonMapper.isSecondaryClick(KeyEvent.KEYCODE_BUTTON_A))
     assertFalse(ControllerButtonMapper.isSecondaryClick(KeyEvent.KEYCODE_A))
     assertFalse(ControllerButtonMapper.isSecondaryClick(KeyEvent.KEYCODE_BUTTON_B))
+    assertTrue(ControllerButtonMapper.isVoiceClickToggle(KeyEvent.KEYCODE_BUTTON_B))
+    assertFalse(ControllerButtonMapper.isVoiceClickToggle(KeyEvent.KEYCODE_BUTTON_A))
+    assertFalse(ControllerButtonMapper.isVoiceClickToggle(KeyEvent.KEYCODE_BACK))
+    assertTrue(ControllerButtonMapper.isWindowVoiceClickToggle(KeyEvent.KEYCODE_BACK))
+    assertTrue(ControllerButtonMapper.isWindowVoiceClickToggle(KeyEvent.KEYCODE_BUTTON_B))
+    assertFalse(ControllerButtonMapper.isWindowVoiceClickToggle(KeyEvent.KEYCODE_BUTTON_A))
   }
 
   @Test fun joystickPrimaryButtonMotionMapsButPointerMotionDoesNot() {
@@ -31,6 +37,22 @@ class KeyMapperTest {
         MotionEvent.ACTION_BUTTON_PRESS,
         MotionEvent.BUTTON_PRIMARY,
         MotionEvent.BUTTON_PRIMARY,
+      )
+    )
+    assertTrue(
+      ControllerButtonMapper.isVoiceClickToggleMotion(
+        InputDevice.SOURCE_JOYSTICK,
+        MotionEvent.ACTION_BUTTON_PRESS,
+        MotionEvent.BUTTON_SECONDARY,
+        MotionEvent.BUTTON_SECONDARY,
+      )
+    )
+    assertFalse(
+      ControllerButtonMapper.isVoiceClickToggleMotion(
+        InputDevice.SOURCE_MOUSE,
+        MotionEvent.ACTION_BUTTON_PRESS,
+        MotionEvent.BUTTON_SECONDARY,
+        MotionEvent.BUTTON_SECONDARY,
       )
     )
   }

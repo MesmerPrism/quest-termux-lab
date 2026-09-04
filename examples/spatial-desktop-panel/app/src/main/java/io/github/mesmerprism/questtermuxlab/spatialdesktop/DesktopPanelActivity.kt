@@ -35,6 +35,11 @@ class DesktopPanelActivity : Activity(), DesktopPresentationHost {
   override fun dispatchGenericMotionEvent(event: MotionEvent): Boolean =
     session.handleControllerMotion(event) || super.dispatchGenericMotionEvent(event)
 
+  @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+  override fun onBackPressed() {
+    if (!session.handleWindowBackInvoked()) super.onBackPressed()
+  }
+
   override fun isPresentationReady(action: PanelAction): Boolean = true
 
   override fun resizeBy(factor: Float) {
