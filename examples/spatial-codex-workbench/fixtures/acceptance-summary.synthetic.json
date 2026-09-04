@@ -1,0 +1,84 @@
+{
+  "schema": "quest-termux-lab.spatial-codex-workbench-acceptance.v1",
+  "kind": "sanitized-live-result",
+  "result": "pass_with_optional_github_lane_not_exercised",
+  "environment": {
+    "device_family": "Meta Quest",
+    "sidecar": "Termux",
+    "codex_authentication": "chatgpt_subscription_device_login",
+    "github_authentication": "unauthenticated_optional"
+  },
+  "workflow": [
+    {
+      "gate": "capability_preflight",
+      "status": "pass"
+    },
+    {
+      "gate": "isolated_git_run",
+      "status": "pass"
+    },
+    {
+      "gate": "real_codex_edit",
+      "status": "pass"
+    },
+    {
+      "gate": "reviewed_diff",
+      "status": "pass"
+    },
+    {
+      "gate": "version_bump_and_clean_commit",
+      "status": "pass"
+    },
+    {
+      "gate": "candidate_build_hash_and_signature",
+      "status": "pass"
+    },
+    {
+      "gate": "exact_adb_shell_target",
+      "status": "pass",
+      "selected_target_count": 1,
+      "shell_uid_verified": true
+    },
+    {
+      "gate": "install_launch_and_readback",
+      "status": "pass",
+      "process_running": true,
+      "bounded_package_fatals": 0
+    },
+    {
+      "gate": "workbench_reconnect",
+      "status": "pass",
+      "same_run_restored": true,
+      "worktree_clean": true
+    },
+    {
+      "gate": "github_push_and_draft_pull_request",
+      "status": "not_exercised",
+      "reason": "GitHub CLI was not authenticated and the synthetic demo had no remote."
+    }
+  ],
+  "candidate": {
+    "version_code": 2,
+    "version_name": "0.1.1",
+    "source_commit_bound": true,
+    "hash_reverified_before_install": true,
+    "signature_verified": true,
+    "installed_version_matched": true
+  },
+  "cleanup": {
+    "workbench_broker_stopped": true,
+    "workbench_forward_removed": true,
+    "tested_app_processes_stopped": true,
+    "agent_board_leases_released": true,
+    "installed_packages_retained": "operator_approval_required_for_uninstall",
+    "private_toolchain_and_authentication_retained": true
+  },
+  "redactions": [
+    "device_serial",
+    "workspace_paths",
+    "branch_and_commit_identifiers",
+    "artifact_hash",
+    "signing_material",
+    "raw_logs"
+  ]
+}
