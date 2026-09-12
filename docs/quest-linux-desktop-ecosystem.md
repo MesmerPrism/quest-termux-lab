@@ -1,7 +1,9 @@
 # Quest Linux desktop ecosystem and development references
 
-Research reference date: 2026-09-12  
-Status: engineering reference, not a priority or patent search  
+Research reference date: 2026-09-12
+
+Status: engineering reference, not a priority or patent search
+
 Primary target: Spatial Linux Desktop for Meta Quest
 
 ## Why this document exists
