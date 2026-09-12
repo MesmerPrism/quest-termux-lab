@@ -1,0 +1,89 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.questtermuxlab.wirelessadbrecovery">
+
+    <permission
+        android:name="org.questtermuxlab.wirelessadbrecovery.permission.READ_LOOPBACK_ADB_PROOF"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission
+        android:name="android.permission.NEARBY_WIFI_DEVICES"
+        android:usesPermissionFlags="neverForLocation" />
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    <uses-permission android:name="com.termux.permission.RUN_COMMAND" />
+    <uses-permission
+        android:name="org.questtermuxlab.wirelessadbrecovery.permission.READ_LOOPBACK_ADB_PROOF" />
+
+    <queries>
+        <package android:name="com.termux" />
+    </queries>
+
+    <application
+        android:allowBackup="false"
+        android:debuggable="true"
+        android:label="Wireless ADB Recovery"
+        android:theme="@android:style/Theme.Material.NoActionBar">
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:resizeableActivity="true"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.questtermuxlab.wirelessadbrecovery.action.OPEN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <layout
+                android:defaultHeight="560dp"
+                android:defaultWidth="840dp"
+                android:minHeight="420dp"
+                android:minWidth="620dp" />
+        </activity>
+
+        <receiver
+            android:name=".BootReceiver"
+            android:directBootAware="false"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".RecoveryService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+        <service
+            android:name=".RecoveryResultService"
+            android:exported="false" />
+        <service
+            android:name=".TopologyProbeService"
+            android:exported="false"
+            android:foregroundServiceType="connectedDevice|dataSync" />
+
+        <provider
+            android:name=".LoopbackAdbProofProvider"
+            android:authorities="org.questtermuxlab.wirelessadbrecovery.loopbackproof"
+            android:enabled="true"
+            android:exported="true"
+            android:grantUriPermissions="false"
+            android:readPermission="org.questtermuxlab.wirelessadbrecovery.permission.READ_LOOPBACK_ADB_PROOF" />
+    </application>
+</manifest>
