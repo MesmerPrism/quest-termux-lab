@@ -216,8 +216,69 @@ is currently a design/test recipe, not a published live-device pass.
 A follow-up helper-app probe keeps the reboot boundary in place: a normal
 installed helper can receive boot and write its own status after it has been
 launched and pre-granted, but it did not restore classic WiFi ADB after reboot.
-Termux-local ADB still needs an external or user-authorized ADB bootstrap
-before it can connect and receive `uid=2000(shell)`.
+That fixed-port result did not test Android 11+ TLS Wireless Debugging. The
+separate opt-in helper under `examples/wireless-adb-recovery-helper` now
+implements Android NSD discovery plus the persistent-pairing route. Its
+pre-reboot helper state and outbound heartbeat both passed the
+`uid=2000(shell)` gate. USB-unplugged reboot tests on the selected Horizon OS
+build exposed a stricter platform boundary: Android clears the active Wi-Fi ADB
+transport before Wi-Fi joins, while rewriting `adb_wifi_enabled=1` launches
+Meta's protected Wi-Fi debugging alert. A post-boot heartbeat passed only after
+the operator accepted that alert. The helper now leaves settings untouched at
+boot and fails closed; **Restore Now** is the attended recovery path on this
+build. Its latest successful probe is also available for at most 60 seconds
+through a query-only, signature-permission ContentProvider so a deliberately
+same-signed Rusty Quest Fleet Agent can include the sanitized observation in
+its normal enrolled check-in. That bridge exposes no ADB target, network
+address, port, output, pairing material, command, or Fleet operation state.
+
+Follow-up no-router probes tested a peerless Wi-Fi Direct group and a
+Quest-owned `LocalOnlyHotspot`. Both self-hosted networks remained usable after
+the ordinary Wi-Fi connection was removed, but neither caused Horizon OS to
+start the Wireless Debugging TLS listener. A later post-reboot experiment on an
+inspected Quest repeated the `adb_wifi_enabled` setting for about 15 seconds
+against an app-owned local-only hotspot. It tested both hotspot-first and
+setting-pulse-first orderings. The setting briefly read `1`, was reset to `0`,
+and no TLS socket appeared during either bounded observation window. This does
+not rule out every timing race on other Android or Horizon OS versions; it is a
+negative result for these two orderings on the inspected Android 14 headset.
+
+The same run separated listener discovery from client authorization. An
+attended USB-backed classic-ADB handoff prompted the wearer to authorize the
+Termux client's own RSA key. That key then reached `uid=2000(shell)` through
+both classic loopback ADB and a fresh dynamic TLS endpoint on infrastructure
+Wi-Fi. The TLS check ran while classic TCP remained enabled; later cleanup
+removed both transports, so this did not prove an exclusive TLS-only runtime.
+Android NSD supplied the TLS port even though the Termux Android Tools build
+omits ADB-host mDNS commands. The runtime TLS-port property was blank
+while the listener and shell session were live, so it is diagnostic only on
+this headset. Require current NSD or socket evidence plus the independent
+shell-UID gate. The validated loopback TLS route still requires an
+eligible external station network on the tested headsets. A later test passed
+on an offline Windows Wi-Fi Direct autonomous group owner with legacy access-
+point support and Internet sharing disabled. After the wearer accepted Meta's
+network approval, Android NSD supplied a fresh TLS endpoint and the retained
+Termux client key reached `uid=2000(shell)` without another RSA-key prompt. The
+Windows host remained present as the group owner; this was not an AP-free or
+unattended bootstrap. Classic TCP also remained enabled during the TLS check,
+so it did not prove an exclusive TLS-only runtime. The result proves that this
+offline hosted network can satisfy the Quest station gate without Internet
+service or Windows Internet sharing.
+
+That accepted TLS endpoint later stopped after the Android framework observed a
+network disconnect and disabled Wi-Fi ADB, without restarting the `adbd`
+process. The Quest was subsequently associated with the same still-live hosted
+network again, with no observed user or helper disable action. Keep the initial
+bootstrap as a pass and the later shutdown as a separate durability failure;
+the test does not establish an always-on TLS lease across transient network
+events.
+
+The separate automatic network guardian then restored the original station
+network without operator recovery. Saved-network inventory remained exact and
+the `adbd` process identity stayed unchanged. ADB configuration had been
+finalized before the guardian was armed. This qualifies automatic restoration
+for the stable-daemon run; earlier testing showed that an ADB daemon or transport
+reconfiguration can terminate a detached shell guardian.
 
 The first outbound fleet-control-plane slice is simulator-only and public-safe:
 it defines Termux agent manifests, heartbeats, command requests/results, ADB
@@ -283,8 +344,12 @@ A normal helper-app restart path is also now live-tested. A pre-granted helper
 Activity can call Termux's `RunCommandService` with `startForegroundService()`
 and restart the fixed fleet-agent command after `com.termux` was force-stopped.
 Fresh controller heartbeats then showed loopback ADB available with
-`uid=2000(shell)`. This is useful operator-visible recovery, not WiFi ADB
-bootstrap, reboot-durable management, or helper-owned install authority.
+`uid=2000(shell)`. The new TLS helper builds on that result without treating
+Termux as shell authority: an attended restore may enable the approved system
+setting, Termux reconnects using its paired ADB identity, and the fleet agent
+rejects the route unless the shell UID is `2000`. This is ordinary recovery
+from an already paired and externally provisioned TLS route, not a bootstrap
+after reboot.
 
 The managed-device research note at `docs/managed-device-owner-options.md`
 summarizes the current production direction: Android phones should use fully
@@ -690,10 +755,13 @@ this repository unless license obligations are reviewed.
 47. Reboot ADB recovery: treat Termux:Boot and pre-granted normal helpers as
     status probes only unless the target OS proves an official user-authorized
     wireless-debugging route.
-48. Termux agent restart helper: use a visible, pre-granted helper Activity
+48. Self-hosted ADB topology probe: separately test peerless Wi-Fi Direct and
+    `LocalOnlyHotspot`, and require a live TLS listener plus shell UID `2000`;
+    never count an NSD callback alone.
+49. Termux agent restart helper: use a visible, pre-granted helper Activity
     only to ask Termux to restart the fixed fleet-agent command; prove recovery
     with fresh heartbeats and the loopback ADB `uid=2000(shell)` gate.
-49. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
+50. Boot, wake-lock, desktop environments, audio, and graphics acceleration:
     treat each as a separate high-risk gate.
 
 ## Validation
@@ -703,6 +771,9 @@ python tools/check_public_boundary.py --repo-root .
 python -m py_compile tools/capture_vnc_screenshot.py tools/stream_vnc_mjpeg.py tools/check_public_boundary.py
 python -m py_compile tools/fleet_control_plane.py scripts/termux_fleet_agent.py scripts/mirror_commander.py tools/test_fleet_control_plane.py tools/test_mirror_protocol.py
 python -m unittest tools.test_fleet_control_plane
+python -m py_compile examples/wireless-adb-recovery-helper/assets/wireless_adb_recovery.py tools/test_wireless_adb_recovery.py
+python -m unittest tools.test_wireless_adb_recovery
+pwsh -NoProfile -Command "[scriptblock]::Create((Get-Content -Raw tools\Invoke-SelfHostedWirelessAdbProbe.ps1)) | Out-Null"
 python -m unittest tools.test_mirror_protocol
 python -m py_compile tools/peer_mesh_gossip.py tools/test_peer_mesh_gossip.py
 python -m unittest tools.test_peer_mesh_gossip
