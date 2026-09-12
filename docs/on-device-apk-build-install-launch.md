@@ -26,11 +26,21 @@ the user-approved debugging session, not from Termux itself.
 
 - No root, device-owner, HOME, kiosk, or hidden boot authority.
 - No ADB authorization bypass.
-- No persistence across reboot, `adb usb`, adbd restart, debugging timeout, or
-  user revocation.
-- No proof that a pre-granted normal helper app can restore WiFi ADB after
-  reboot. A helper can record app-owned boot/status evidence, but shell lease
-  recovery remains external or user-authorized.
+- Classic fixed-port `adb tcpip 5555` did not persist across reboot in the
+  tested route. That result does not settle Android 11+ TLS Wireless Debugging.
+- The opt-in helper under `examples/wireless-adb-recovery-helper` implements the
+  separate TLS recovery candidate: pre-granted settings write, Android NSD
+  discovery of the dynamic TLS port, previously paired Termux key, loopback
+  reconnect, and shell-UID gate. The attended helper and heartbeat checks pass.
+  Fully unattended reboot recovery does not pass on the tested Horizon OS
+  build: enabling Wi-Fi ADB launches Meta's protected alert, while a read-only
+  boot attempt leaves no TLS service. Use the helper's attended **Restore Now**
+  route after reboot.
+- Peerless Wi-Fi Direct and a Quest-owned `LocalOnlyHotspot` were both tested as
+  replacements for an infrastructure access point. The local interfaces worked,
+  but Horizon OS did not start Wireless Debugging on either topology. The
+  current TLS loopback route still needs an ordinary Wi-Fi access point; it does
+  not need internet service or a PC once pairing and setup are complete.
 - No Makepad or full XR app build loop yet.
 - No OpenXR session creation or headset-rendered XR frame yet.
 - No permission to commit generated APKs, keystores, platform jars, logs, or
@@ -89,10 +99,12 @@ If this returns an app UID or cannot connect, the sidecar does not have ADB
 shell authority. Stop and fix the external authorization route before install,
 launch, logcat, or wake-state work.
 
-Do not substitute Termux:Boot or a pre-granted ordinary helper APK for this
-gate. Current public-safe lab evidence says those routes can at most provide
-status evidence after reboot; they did not reopen classic WiFi ADB or create a
-new shell lease.
+Do not substitute boot receipt or settings-write success for this gate. The old
+helper probe did not reopen classic WiFi ADB. The modern TLS helper is successful
+only when it discovers `_adb-tls-connect._tcp` through Android NSD, reconnects
+with a previously paired key, and the same `uid=2000(shell)` check passes. Its
+attended restore is ordinary recovery from an externally provisioned debugging
+session; it cannot bootstrap a new TLS lease after reboot on the tested build.
 
 A later helper probe proved only a narrower stopped-process recovery case: a
 visible, pre-granted helper Activity can call Termux `RunCommandService` with

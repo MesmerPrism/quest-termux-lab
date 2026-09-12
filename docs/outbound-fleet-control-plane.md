@@ -128,9 +128,19 @@ adb.lease_disconnect
 `termux.exec_allowlisted` does not accept arbitrary shell text. It accepts an
 alias that must be present in the agent config, such as `python_version`.
 
-`adb.self_check` is disabled unless the config enables local ADB. Even then it
-only checks an already authorized loopback target. It does not pair ADB, enable
-wireless debugging, or recover ADB after reboot.
+`adb.self_check` is disabled unless the config enables local ADB. The default
+`local_adb_discovery=fixed` mode preserves the existing configured endpoint.
+`local_adb_discovery=tls_mdns` instead discovers only
+`_adb-tls-connect._tcp`, rewrites its dynamic port to loopback, reconnects, and
+still requires `uid=2000(shell)`. The agent does not pair ADB or write Android
+settings; the opt-in normal helper owns that separate recovery step.
+`local_adb_discovery=tls_nsd` accepts the same dynamic loopback target from the
+visible Android helper after Android NSD discovery. This mode exists because
+some Termux `android-tools` builds omit the ADB server's `mdns` host service.
+It still performs the same ADB connect and shell-UID gate. An NSD callback is
+not sufficient evidence by itself because Android may return a cached service
+from a previous network epoch. Require the enabled setting, a live TLS
+listener, and `uid=2000(shell)` before publishing an available heartbeat.
 
 `apk.update_verified` is the first update command shape. It accepts an embedded
 `quest-termux-lab.apk-update-manifest.v1` manifest with:
@@ -328,13 +338,21 @@ local ADB was unavailable. That is the handoff point for a central direct-ADB
 recovery workflow owned by the live Quest operations layer.
 
 When the agent itself is stopped, the controller cannot cause it to self-wake.
-A live Quest probe showed that a visible normal helper APK can restart Termux's
-fixed fleet-agent command through `RunCommandService` after the helper is
-installed, launched, granted `com.termux.permission.RUN_COMMAND`, and Termux
-allows external commands. Treat that as an operator-visible recovery route and
-verify it with fresh heartbeats and the local ADB shell gate. It does not
-replace central direct ADB or a managed-device plane for WiFi ADB loss, reboot,
-or sleeping/offline headsets.
+The visible helper route can restart Termux through `RunCommandService`. The TLS
+recovery helper extends that route with opt-in `BOOT_COMPLETED`, a one-time
+`WRITE_SECURE_SETTINGS` grant, dynamic TLS service discovery, and an optional
+generated Fleet runtime config. On the tested Termux build, Android NSD supplies
+the dynamic TLS port and an enabled Fleet config records `tls_nsd`. Fleet start
+is not a recovery prerequisite: settings state, boot receipt, or command
+dispatch alone is insufficient, and an enabled agent still needs a fresh
+shell-UID heartbeat.
+
+On the tested Horizon OS build, the boot path must remain read-only. Rewriting
+`adb_wifi_enabled=1` launches Meta's protected Wi-Fi debugging alert, while
+Android's early-boot ADB manager resets the transport before Wi-Fi joins. The
+helper therefore fails closed at boot and relies on its attended **Restore
+Now** fallback; no controller heartbeat may be labeled autonomous when an
+operator accepted the alert.
 
 ## Source-Backed Constraints
 
@@ -344,6 +362,11 @@ These external sources support the boundaries above:
   authorization of the host RSA key, and wireless debugging can turn off or
   need reconnect after network changes:
   <https://developer.android.com/tools/adb>
+- Android's ADB manager resets `ADB_WIFI_ENABLED` when Wi-Fi is unavailable
+  during enablement, and its direct enable/allow methods are system-managed
+  debugging operations. This matches the tested early-boot reset, while Meta's
+  protected confirmation Activity remains a Horizon OS addition:
+  <https://android.googlesource.com/platform/frameworks/base/+/f2387994151f/services/core/java/com/android/server/adb/AdbDebuggingManager.java>
 - Termux `RUN_COMMAND` requires the caller permission and Termux's external
   command setting, and Termux warns that returned transcripts/stdout/stderr can
   expose private data:
